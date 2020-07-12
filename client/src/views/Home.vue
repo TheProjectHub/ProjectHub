@@ -1,8 +1,5 @@
 <template>
   <div class="home">
-    <<<<<<< HEAD
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-    =======
     <img alt="Vue logo" src="../assets/logo.png" />
     <HelloWorld msg="Welcome to Your Vue.js App" />
     <button
@@ -13,7 +10,6 @@
     >
       Click Me!
     </button>
-    >>>>>>> c41f5e10f3e8d29a74e9c00096eb7998c0185ede
   </div>
 </template>
 
