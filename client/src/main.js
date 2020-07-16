@@ -6,6 +6,11 @@ import router from './router';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+// dotenv
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 Vue.config.productionTip = false;
 
 new Vue({
