@@ -1,35 +1,79 @@
 const User = require("../models/user.model");
 
-// Create and Save a new Customer
+// Create and Save a new user
 exports.create = (req, res) => {
-  
-};
-
-// Retrieve all Customers from the database.
-exports.findAll = (req, res) => {
-  
-};
-
-// Find a single Customer with a customerId
-exports.getUserByID = (id, res) => {
-    User.findById(id, (err, data) => {
-        if (err) {
-            throw err;
-        } else res = data;
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!",
     });
+  }
+
+  // Create a user
+  const user = new user({
+    id: req.body.id,
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+    project_affiliation: req.body.project_affiliation,
+    email: req.body.email,
+    password_hash: req.body.password_hash,
+    search_filters: req.body.search_filters,
+    looking_for_project: req.body.looking_for_project,
+    skills: req.body.skills,
+    bio: req.body.bio,
+    conversations: req.body.conversations,
+    unread_conversations: req.body.unread_conversations,
+    age: req.body.age,
+    location: req.body.location,
+  });
+
+  // Save user in the database
+  User.create(user, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message: err.message || "Some error occurred while creating the User.",
+      });
+    else res.send(data);
+  });
 };
 
-// Update a Customer identified by the customerId in the request
+// Find a single user with a userId
+exports.getUserByID = (req, res) => {
+  User.findById(req.params.userId, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          message: `Not found User with id ${req.params.userId}.`,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error retrieving User with id " + req.params.userId,
+        });
+      }
+    } else res.send(data);
+  });
+};
+
+// Update a user identified by the userId in the request
 exports.update = (req, res) => {
-  
-};
+  // Validate Request
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!",
+    });
+  }
 
-// Delete a Customer with the specified customerId in the request
-exports.delete = (req, res) => {
-  
-};
-
-// Delete all Customers from the database.
-exports.deleteAll = (req, res) => {
-  
+  User.updateById(req.params.userId, new User(req.body), (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          message: `Not found User with id ${req.params.userId}.`,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error updating User with id " + req.params.userId,
+        });
+      }
+    } else res.send(data);
+  });
 };

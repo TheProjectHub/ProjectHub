@@ -14,6 +14,9 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to Projectly." });
 });
 
+// User routes
+require("./routes/user.routes")(app);
+
 // set port, listen for requests
 app.listen(3000, () => {
   console.log("Server is running on port 3000.");
