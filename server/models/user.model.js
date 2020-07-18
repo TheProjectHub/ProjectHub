@@ -52,11 +52,26 @@ User.findById = (userID, result) => {
 User.updateById = (id, user, result) => {
   sql.query(
     "UPDATE users SET \
-    first_name = ?, last_name = ?, project_affiliation = ? email = ? password_hash = ?\
-    search_filters = ?, looking_for_project = ?, skills = ?, bio = ?, conversations = ?\
+    first_name = ?, last_name = ?, project_affiliation = ?, email = ?, password_hash = ?, \
+    search_filters = ?, looking_for_project = ?, skills = ?, bio = ?, conversations = ?, \
     unread_conversations = ?, age = ?, location = ?\
     WHERE id = ?",
-    Object.values(user),
+    [
+      user.first_name,
+      user.last_name,
+      user.project_affiliation,
+      user.email,
+      user.password_hash,
+      user.search_filters,
+      user.looking_for_project,
+      user.skills,
+      user.bio,
+      user.conversations,
+      user.unread_conversations,
+      user.age,
+      user.location,
+      user.id,
+    ],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
