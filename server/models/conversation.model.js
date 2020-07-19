@@ -42,12 +42,13 @@ Conversation.findById = (conversationID, result) => {
 Conversation.updateById = (id, conversation, result) => {
   sql.query(
     "UPDATE conversations SET \
-    users = ?, messages = ?, name = ?, email = ?, password_hash = ?, \
+    users = ?, messages = ?, name = ?\
     WHERE id = ?",
     [
       conversation.users,
       conversation.messages,
       conversation.name,
+      id
     ],
     (err, res) => {
       if (err) {

@@ -5,7 +5,7 @@ const Project = function (project) {
   this.id = project.id;
   this.members = project.members;
   this.name = project.name;
-  this.link = project.link;
+  this.links = project.links;
   this.looking_for_new_members = project.looking_for_new_members;
   this.search_filters = project.search_filters;
   this.applicants = project.applicants;
@@ -45,17 +45,17 @@ Project.findById = (projectID, result) => {
 Project.updateById = (id, project, result) => {
   sql.query(
     "UPDATE projects SET \
-    members = ?, name = ?, link = ?, looking_for_new_members = ?, search_filters = ?, \
+    members = ?, name = ?, links = ?, looking_for_new_members = ?, search_filters = ?, \
     applicants = ?\
     WHERE id = ?",
     [
-      project.id,
       project.members,
       project.name,
-      project.link,
+      project.links,
       project.looking_for_new_members,
       project.search_filters,
-      project.applicants
+      project.applicants,
+      id
     ],
     (err, res) => {
       if (err) {

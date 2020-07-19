@@ -14,7 +14,7 @@ exports.create = (req, res) => {
     id: req.body.id,
     members: req.body.members,
     name: req.body.name,
-    link: req.body.link,
+    links: req.body.links,
     looking_for_new_members: req.body.looking_for_new_members,
     search_filters: req.body.search_filters,
     applicants: req.body.search_filters,
