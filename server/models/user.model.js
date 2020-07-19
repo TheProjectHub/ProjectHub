@@ -80,7 +80,7 @@ User.updateById = (id, user, result) => {
       }
 
       if (res.affectedRows == 0) {
-        // not found user with the id
+        // could not find user with the id provided
         result({ kind: "not_found" }, null);
         return;
       }
