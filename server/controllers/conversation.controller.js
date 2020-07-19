@@ -16,7 +16,7 @@ exports.create = (req, res) => {
     messages: req.body.messages,
     name: req.body.name,
   });
-  console.log(req.body)
+
   // Save conversation in the database
   Conversation.create(conversation, (err, data) => {
     if (err)
