@@ -14,6 +14,12 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to Projectly." });
 });
 
+// Conversation routes
+require("./routes/conversation.routes")(app);
+
+// Project routes
+require("./routes/project.routes")(app);
+
 // User routes
 require("./routes/user.routes")(app);
 
