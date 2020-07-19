@@ -1,7 +1,7 @@
 <template>
 <body>
   <div class="home">
-    <Brandname msg="Welcome to Projectly" />
+    <Brandname />
   </div>
 </body>
 </template>
