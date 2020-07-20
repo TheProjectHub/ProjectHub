@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <p v-if="$auth.isAuthenticated">What's up, {{ $auth.user.name }}!</p>
+    <p v-if="$auth.isAuthenticatedÎ">What's up, {{ $auth.user.name }}!</p>
     <div v-if="!$auth.loading">
       <!-- show login when not authenticated -->
       <button
