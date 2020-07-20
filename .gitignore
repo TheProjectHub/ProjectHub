@@ -6,6 +6,7 @@ node_modules
 .env
 .env.*.local
 *.config.js
+auth_config.json
 
 # Log files
 npm-debug.log*
