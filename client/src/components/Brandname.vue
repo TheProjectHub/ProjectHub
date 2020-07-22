@@ -18,7 +18,7 @@ import User from "../services/Users";
 export default {
   name: "Brandname",
   props: {
-    currentUser: null,
+    currentUser: { first_name: "" },
 
     msg: String
   },
@@ -30,7 +30,7 @@ export default {
     }
   },
   mounted() {
-    this.getName(2);
+    this.getName(1);
   }
 };
 </script>

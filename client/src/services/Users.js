@@ -1,4 +1,4 @@
-import http from '../../http-common';
+import http from "../../http-common";
 
 class Users {
   get(id) {
@@ -6,7 +6,7 @@ class Users {
   }
 
   create(data) {
-    return http.post('/users', data);
+    return http.post("/users", data);
   }
 
   update(id, data) {

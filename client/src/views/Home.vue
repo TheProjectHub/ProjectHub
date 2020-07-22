@@ -1,9 +1,14 @@
 <template>
-<body>
-  <div class="home">
-    <Brandname />
-  </div>
-</body>
+<html>
+  <head>
+    <title>Welcome to Projectly</title>
+  </head>
+  <body>
+    <div class="home">
+      <Brandname />
+    </div>
+  </body>
+</html>
 </template>
 
 <script>
@@ -20,6 +25,6 @@ export default {
 
 <style>
 body {
-  background: linear-gradient(#500000, #000000) fixed;
+  background: linear-gradient(#88ff00, #40a3ff) fixed;
 }
 </style>
