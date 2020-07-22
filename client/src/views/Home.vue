@@ -5,6 +5,7 @@
   </head>
   <body>
     <div class="home">
+      <HelloWorld msg="Howdy" />
       <Brandname />
     </div>
   </body>
@@ -14,17 +15,19 @@
 <script>
 // @ is an alias to /src
 import Brandname from "../components/Brandname.vue";
+import HelloWorld from "../components/HelloWorld.vue";
 
 export default {
   name: "Home",
   components: {
-    Brandname
+    Brandname,
+    HelloWorld
   }
 };
 </script>
 
 <style>
 body {
-  background: linear-gradient(#88ff00, #40a3ff) fixed;
+  background: linear-gradient(#21defd, #b721ff) fixed;
 }
 </style>

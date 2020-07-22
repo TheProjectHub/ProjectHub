@@ -3,19 +3,11 @@
     <p v-if="$auth.isAuthenticatedÎ">What's up, {{ $auth.user.name }}!</p>
     <div v-if="!$auth.loading">
       <!-- show login when not authenticated -->
-      <button
-        v-if="!$auth.isAuthenticated"
-        @click="login"
-        class="button is-dark"
-      >
+      <button v-if="!$auth.isAuthenticated" @click="login" class="button is-dark">
         <strong>Sign in</strong>
       </button>
       <!-- show logout when authenticated -->
-      <button
-        v-if="$auth.isAuthenticated"
-        @click="logout"
-        class="button is-dark"
-      >
+      <button v-if="$auth.isAuthenticated" @click="logout" class="button is-dark">
         <strong>Log out</strong>
       </button>
     </div>
@@ -26,7 +18,7 @@
 export default {
   name: "HelloWorld",
   props: {
-    msg: String,
+    msg: String
   },
   methods: {
     // Log the user in
@@ -36,10 +28,10 @@ export default {
     // Log the user out
     logout() {
       this.$auth.logout({
-        returnTo: window.location.origin,
+        returnTo: window.location.origin
       });
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve main.js",
-    "build": "vue-cli-service build main.js",
-    "lint": "vue-cli-service lint main.js"
+    "serve": "vue-cli-service serve src/main.js",
+    "build": "vue-cli-service build src/main.js",
+    "lint": "vue-cli-service lint src/main.js"
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.10.0",
