@@ -7,7 +7,9 @@
       <img alt="Vue logo" src="../assets/Logo(400).png" />
     </div>
     <div>
-      <p style="color: white; text-align: center">User firstname: {{ currentUser.first_name }}</p>
+      <p style="color: white; text-align: center">
+        User firstname: {{ currentUser.first_name }}
+      </p>
     </div>
   </div>
 </template>
@@ -20,18 +22,18 @@ export default {
   props: {
     currentUser: { first_name: "" },
 
-    msg: String
+    msg: String,
   },
   methods: {
     getName(id) {
-      User.get(id).then(res => {
+      User.get(id).then((res) => {
         this.currentUser = res.data;
       });
-    }
+    },
   },
   mounted() {
     this.getName(1);
-  }
+  },
 };
 </script>
 
