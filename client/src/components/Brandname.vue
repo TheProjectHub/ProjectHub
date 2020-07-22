@@ -1,6 +1,7 @@
 <template>
 <html>
   <head>
+    <title>Welcome to Projectly</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap"
       rel="stylesheet"
