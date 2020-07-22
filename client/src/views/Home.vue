@@ -4,8 +4,8 @@
     <title>Welcome to Projectly</title>
   </head>
   <body>
-    <div class='home'>
-      <HelloWorld msg='Howdy' />
+    <div class="home">
+      <HelloWorld msg="Howdy" />
       <Brandname />
     </div>
   </body>
@@ -14,11 +14,11 @@
 
 <script>
 // @ is an alias to /src
-import Brandname from '../components/Brandname.vue';
-import HelloWorld from '../components/HelloWorld.vue';
+import Brandname from "../components/Brandname.vue";
+import HelloWorld from "../components/HelloWorld.vue";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
     Brandname,
     HelloWorld,
@@ -28,9 +28,9 @@ export default {
 
 <style>
 body {
-  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background: linear-gradient(-45deg, #36d65e, #b721ff, #23a6d5, #500000) fixed;
   background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
+  animation: gradient 45s ease infinite;
 }
 
 @keyframes gradient {
