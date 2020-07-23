@@ -18,7 +18,7 @@
 export default {
   name: "HelloWorld",
   props: {
-    msg: String
+    msg: String,
   },
   methods: {
     // Log the user in
@@ -28,10 +28,10 @@ export default {
     // Log the user out
     logout() {
       this.$auth.logout({
-        returnTo: window.location.origin
+        returnTo: window.location.origin,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

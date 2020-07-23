@@ -16,12 +16,20 @@
     </div>
     <div class="intro">
       <h2>
-        Here at Projectly, we want to help you change the world, by letting you find other like
-        minded indiviuals to accomplish your task. Whether it be in the music and tech inudstry or
-        hollywood, we are here to help you find your team. Go change the world.
+        Here at Projectly, we want to help you change the world by providing you a platform to find other like
+        minded indiviuals. Whether you want to disrupt the music industry, create new businesses, or even
+        use your creative to create the newest blockbuster we are here for you. Go change the world.
       </h2>
+      <br />
+      <h2>-Your Friends at Projectly</h2>
     </div>
   </div>
+  <br />
+  <br />
+  <br />
+  <footer>
+    <p>Copyright &copy; 2020 Projectly</p>
+  </footer>
 </html>
 </template>
 
@@ -76,5 +84,10 @@ h1 {
 h2 {
   color: white;
   font-family: "Poppins", sans-serif;
+}
+p {
+  color: white;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
 }
 </style>

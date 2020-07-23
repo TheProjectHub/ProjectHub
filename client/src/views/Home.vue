@@ -5,7 +5,6 @@
   </head>
   <body>
     <div class="home">
-      <HelloWorld msg="Howdy" />
       <Brandname />
     </div>
   </body>
@@ -21,14 +20,13 @@ export default {
   name: "Home",
   components: {
     Brandname,
-    HelloWorld,
   },
 };
 </script>
 
 <style>
 body {
-  background: linear-gradient(-45deg, #36d65e, #b721ff, #23a6d5, #500000) fixed;
+  background: linear-gradient(-45deg, #b721ff, #23a6d5, #500000) fixed;
   background-size: 400% 400%;
   animation: gradient 45s ease infinite;
 }
