@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <p v-if="$auth.isAuthenticatedÎ">What's up, {{ $auth.user.name }}!</p>
+    <p v-if="$auth.isAuthenticated">What's up, {{ $auth.user.name }}!</p>
     <div v-if="!$auth.loading">
       <!-- show login when not authenticated -->
       <button
@@ -23,10 +23,13 @@
 </template>
 
 <script>
+import User from '../services/Users'
+
 export default {
   name: 'HelloWorld',
   props: {
     msg: String,
+    user: '',
   },
   methods: {
     // Log the user in
@@ -38,6 +41,17 @@ export default {
       this.$auth.logout({
         returnTo: window.location.origin,
       });
+    },
+    async getEventData() {
+      // Get the access token from the auth wrapper
+      const accessToken = await this.$auth.getTokenSilently();
+
+      // Use the eventService to call the getEventSingle method
+      User.get(this.$route.params.id, accessToken).then(
+        ((event) => {
+          this.$set(this, 'event', event);
+        }).bind(this)
+      );
     },
   },
 };
