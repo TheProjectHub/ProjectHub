@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 
@@ -10,14 +11,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // cors
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:8080'); // update to match the domain you will make the request from
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
-  );
-  next();
-});
+// app.use(function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', 'http://localhost:8080'); // update to match the domain you will make the request from
+//   res.setHeader(
+//     'Access-Control-Allow-Headers',
+//     'Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-Credentials'
+//   );
+//   res.setHeader('Access-Control-Allow-Credentials', 'true');
+//   next();
+// });
+
+app.use(
+  cors({
+    origin: ['http://localhost:8080'],
+    credentials: true,
+  })
+);
 
 // simple route
 app.get('/', (req, res) => {

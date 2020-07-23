@@ -1,3 +1,4 @@
+/* eslint-disable */
 import http from '../http-common';
 
 class Users {
@@ -8,6 +9,9 @@ class Users {
       },
     });
   }
+  // get(id) {
+  //   return http.get(`/users/${id}`);
+  // }
 
   create(data, token) {
     return http.post('/users', data, {
