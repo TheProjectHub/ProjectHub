@@ -60,8 +60,6 @@ export default {
       // Use the eventService to call the getEventSingle method
       User.get(id, accessToken).then((event) => {
         this.$set(this, 'user', event.data);
-        /* eslint-disable-next-line */
-        console.log(this.user);
       });
     },
   },
