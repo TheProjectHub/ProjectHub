@@ -1,23 +1,23 @@
 <template>
-<html>
-  <head>
-    <title>Welcome to Projectly</title>
-  </head>
-  <body>
-    <div class="home">
-      <Brandname />
-    </div>
-  </body>
-</html>
+  <html>
+    <head>
+      <title>Welcome to Projectly</title>
+    </head>
+    <body>
+      <div class="home">
+        <Brandname />
+      </div>
+    </body>
+  </html>
 </template>
 
 <script>
 // @ is an alias to /src
-import Brandname from "../components/Brandname.vue";
-import HelloWorld from "../components/HelloWorld.vue";
+import Brandname from '../components/Brandname.vue';
+// import HelloWorld from "../components/HelloWorld.vue";
 
 export default {
-  name: "Home",
+  name: 'Home',
   components: {
     Brandname,
   },

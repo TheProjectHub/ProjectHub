@@ -1,13 +1,23 @@
 <template>
   <div class="hello">
-    <p v-if="$auth.isAuthenticatedÎ">What's up, {{ $auth.user.name }}!</p>
+    <!-- <p v-if="$auth.isAuthenticated">What's up, {{ $auth.user.name }}!</p> -->
     <div v-if="!$auth.loading">
       <!-- show login when not authenticated -->
-      <button v-if="!$auth.isAuthenticated" @click="login" class="button is-dark">
+      <button
+        v-if="!$auth.isAuthenticated"
+        @click="login"
+        type="button"
+        class="btn btn-light"
+      >
         <strong>Sign in</strong>
       </button>
       <!-- show logout when authenticated -->
-      <button v-if="$auth.isAuthenticated" @click="logout" class="button is-dark">
+      <button
+        v-if="$auth.isAuthenticated"
+        @click="logout"
+        type="button"
+        class="btn btn-light"
+      >
         <strong>Log out</strong>
       </button>
     </div>
@@ -16,7 +26,7 @@
 
 <script>
 export default {
-  name: "HelloWorld",
+  name: 'HelloWorld',
   props: {
     msg: String,
   },
