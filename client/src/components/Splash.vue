@@ -57,12 +57,12 @@
 </template>
 
 <script>
-import User from '../services/Users';
+import User from "../services/Users";
 
 export default {
-  name: 'Brandname',
+  name: "Brandname",
   props: {
-    currentUser: { first_name: '' },
+    currentUser: { first_name: "" },
 
     msg: String,
   },
@@ -96,7 +96,7 @@ export default {
 h1 {
   font-size: 100px;
   color: white;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 .column {
   float: left;
@@ -106,7 +106,7 @@ h1 {
   text-align: center;
 }
 .row:after {
-  content: '';
+  content: "";
   display: table;
   clear: both;
 }
@@ -123,11 +123,11 @@ h1 {
 }
 h2 {
   color: white;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 p {
   color: white;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   text-align: center;
 }
 
