@@ -1,15 +1,15 @@
-import Vue from "vue";
-import App from "./App.vue";
-import router from "./router";
+import Vue from 'vue';
+import App from './App.vue';
+import router from './router';
 
 // Bootstrap
-import "bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { domain, clientId, audience } from '../auth_config.json';
 
 // Import the plugin here
-import { Auth0Plugin } from "./auth";
+import { Auth0Plugin } from './auth';
 
 // Install the authentication plugin here
 Vue.use(Auth0Plugin, {
@@ -20,7 +20,7 @@ Vue.use(Auth0Plugin, {
     router.push(
       appState && appState.targetUrl
         ? appState.targetUrl
-        : window.location.pathname
+        : window.location.pathname // eslint-disable-line
     );
   },
 });
@@ -30,4 +30,4 @@ Vue.config.productionTip = false;
 new Vue({
   router,
   render: (h) => h(App),
-}).$mount("#app");
+}).$mount('#app');
