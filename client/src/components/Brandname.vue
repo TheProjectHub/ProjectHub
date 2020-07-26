@@ -27,7 +27,27 @@
       </div>
     </div>
     <br />
-    <HelloWorld msg="Howdy" />
+    <div class="login-button text-center">
+      <!-- <p v-if="$auth.isAuthenticated">What's up, {{ $auth.user.name }}!</p> -->
+      <div v-if="!$auth.loading">
+        <!-- show login when not authenticated -->
+        <button
+          v-if="!$auth.isAuthenticated"
+          @click="login"
+          class="btn btn-light"
+        >
+          <strong>Get Started!</strong>
+        </button>
+        <!-- show logout when authenticated -->
+        <button
+          v-if="$auth.isAuthenticated"
+          @click="logout"
+          class="btn btn-light"
+        >
+          <strong>Log out</strong>
+        </button>
+      </div>
+    </div>
     <br />
     <br />
     <footer>
@@ -38,7 +58,6 @@
 
 <script>
 import User from '../services/Users';
-import HelloWorld from './HelloWorld.vue';
 
 export default {
   name: 'Brandname',
@@ -48,12 +67,21 @@ export default {
     msg: String,
   },
   components: {
-    HelloWorld,
+    // HelloWorld,
   },
   methods: {
     getName(id) {
       User.get(id).then((res) => {
         this.currentUser = res.data;
+      });
+    },
+    login() {
+      this.$auth.loginWithRedirect();
+    },
+    // Log the user out
+    logout() {
+      this.$auth.logout({
+        returnTo: window.location.origin,
       });
     },
   },
@@ -96,5 +124,9 @@ p {
   color: white;
   font-family: 'Poppins', sans-serif;
   text-align: center;
+}
+
+button {
+  width: 50%;
 }
 </style>
