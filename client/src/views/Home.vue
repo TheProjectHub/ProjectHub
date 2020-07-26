@@ -5,19 +5,19 @@
     </head>
     <body>
       <div class="home">
-        <Brandname />
+        <Splash />
       </div>
     </body>
   </html>
 </template>
 
 <script>
-import Brandname from '../components/Brandname.vue';
+import Splash from '../components/Splash.vue';
 
 export default {
   name: 'Home',
   components: {
-    Brandname,
+    Splash,
   },
 };
 </script>

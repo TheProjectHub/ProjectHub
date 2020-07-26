@@ -110,8 +110,13 @@ h1 {
   display: table;
   clear: both;
 }
+.row {
+  max-width: 83vw;
+  margin: auto;
+}
 .intro {
   width: 80%;
+  max-width: 98vw;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
@@ -124,6 +129,10 @@ p {
   color: white;
   font-family: 'Poppins', sans-serif;
   text-align: center;
+}
+
+html {
+  max-width: 100vw;
 }
 
 button {
