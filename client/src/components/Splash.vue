@@ -28,7 +28,7 @@
       <div class="intro">
         <h2 style="margin-bottom: 2vh;">
           Here at Projectly, we want to help you change the world by providing
-          you a platform to find other like-minded indiviuals. Whether you want
+          you with a platform to find other like-minded indiviuals. Whether you want
           to disrupt the music industry, create new businesses, or even use your
           creativity to create the newest blockbuster we are here for you. Go
           change the world!
