@@ -1,7 +1,7 @@
 const sql = require('./db');
 
 // constructor
-const User = function (user) {
+const User = function(user) {
   this.id = user.id;
   this.first_name = user.first_name;
   this.last_name = user.last_name;
