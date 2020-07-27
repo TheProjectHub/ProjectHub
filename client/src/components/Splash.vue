@@ -12,21 +12,23 @@
         <h1>Find Your Team with Projectly</h1>
       </div>
       <div class="column">
-        <img alt="Vue logo" src="../assets/logo.png" />
+        <img
+          alt="Vue logo"
+          src="../assets/logo.png"
+          style="margin-top: -5vh;"
+        />
       </div>
       <div class="intro">
-        <h2>
+        <h2 style="margin-bottom: 2vh;">
           Here at Projectly, we want to help you change the world by providing
-          you a platform to find other like minded indiviuals. Whether you want
+          you a platform to find other like-minded indiviuals. Whether you want
           to disrupt the music industry, create new businesses, or even use your
-          creative to create the newest blockbuster we are here for you. Go
-          change the world.
+          creativity to create the newest blockbuster we are here for you. Go
+          change the world!
         </h2>
-        <br />
-        <h2>-Your Friends at Projectly</h2>
+        <h2 style="font-size: 25px; margin-bottom: 2vh;">-Your Friends at Projectly</h2>
       </div>
     </div>
-    <br />
     <div class="login-button text-center">
       <!-- <p v-if="$auth.isAuthenticated">What's up, {{ $auth.user.name }}!</p> -->
       <div v-if="!$auth.loading">
@@ -48,21 +50,19 @@
         </button>
       </div>
     </div>
-    <br />
-    <br />
     <footer>
-      <p>Copyright &copy; 2020 Projectly</p>
+      <p style="padding-top: 2vh;">Copyright &copy; 2020 Projectly</p>
     </footer>
   </html>
 </template>
 
 <script>
-import User from "../services/Users";
+import User from '../services/Users';
 
 export default {
-  name: "Brandname",
+  name: 'Brandname',
   props: {
-    currentUser: { first_name: "" },
+    currentUser: { first_name: '' },
 
     msg: String,
   },
@@ -94,9 +94,9 @@ export default {
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
 h1 {
-  font-size: 100px;
+  font-size: 90px;
   color: white;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 .column {
   float: left;
@@ -106,7 +106,7 @@ h1 {
   text-align: center;
 }
 .row:after {
-  content: "";
+  content: '';
   display: table;
   clear: both;
 }
@@ -123,11 +123,11 @@ h1 {
 }
 h2 {
   color: white;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 p {
   color: white;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
   text-align: center;
 }
 
