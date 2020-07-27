@@ -1,15 +1,79 @@
 <template>
   <html>
     <div id="app">
+      <link
+        rel="stylesheet"
+        href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+        integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+        crossorigin="anonymous"
+      />
+      <sidebar-menu
+        v-if="$auth.isAuthenticated"
+        @toggle-collapse="this.onToggleCollapse"
+        :menu="menu"
+        @item-click="onItemClick"
+      />
       <router-view />
+      <div id="fade-to-black"></div>
     </div>
   </html>
 </template>
 
 <script>
 export default {
+  // profile (via a profile picture), MyProjects, Search, conversations. Try to use icons for each.
   name: 'App',
   components: {},
+  data() {
+    return {
+      isNavBarOpen: false,
+      menu: [
+        {
+          header: true,
+          title: 'Projectly',
+          hiddenOnCollapse: true,
+        },
+        {
+          href: '/profile',
+          title: 'Profile',
+          icon: 'fa fa-user',
+        },
+        {
+          href: '/myprojects',
+          title: 'My Projects',
+          icon: 'fa fa-chart-area',
+        },
+        {
+          href: '/search',
+          title: 'Search for Projects',
+          icon: 'fa fa-search',
+        },
+        {
+          href: '/conversations',
+          title: 'Conversations',
+          icon: 'fa fa-comment',
+        },
+        {
+          title: 'Logout',
+          icon: 'fa fa-user-times',
+        },
+      ],
+    };
+  },
+  methods: {
+    onToggleCollapse() {
+      document.getElementById('fade-to-black').style.display = this.isNavBarOpen
+        ? 'block'
+        : 'none';
+      this.isNavBarOpen = !this.isNavBarOpen;
+    },
+    onItemClick(event, item) {
+      if (item.title === 'Logout') {
+        document.getElementById('fade-to-black').style.display = 'none';
+        this.$auth.logout();
+      }
+    },
+  },
 };
 </script>
 
@@ -33,5 +97,16 @@ export default {
 
 #nav a.router-link-exact-active {
   color: white;
+}
+
+#fade-to-black {
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  height: 135vh;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 5;
 }
 </style>
