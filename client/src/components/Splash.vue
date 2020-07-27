@@ -17,7 +17,7 @@
           Find Your Team with
           <span
             style="background-color: rgba(255, 255, 255, 0.5);
-            color: transparent; border-radius: 25px;"
+            color: transparent; border-radius: 25px; padding-bottom: 10px"
           >
             <span style="font-family: Comfortaa, cursive; padding: 10px" class="gradient"
               >Projectly</span
