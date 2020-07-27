@@ -7,15 +7,16 @@
         rel="stylesheet"
       /> -->
       <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Lato&family=Patrick+Hand&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Comfortaa:wght@700&family=Lato&family=Patrick+Hand&display=swap"
         rel="stylesheet"
       />
     </head>
     <div class="row">
       <div class="column">
         <h1>
-          Find Your Team with
-          <span style="font-size: 100px; font-family: Patrick Hand, cursive">Projectly</span>
+          Find Your Team with <span style="font-family: Comfortaa, cursive; color: black;"
+            >Projectly</span
+          >
         </h1>
       </div>
       <div class="column">
@@ -28,10 +29,10 @@
       <div class="intro">
         <h2 style="margin-bottom: 2vh;">
           Here at Projectly, we want to help you change the world by providing
-          you with a platform to find other like-minded indiviuals. Whether you want
-          to disrupt the music industry, create new businesses, or even use your
-          creativity to create the newest blockbuster we are here for you. Go
-          change the world!
+          you with a platform to find other like-minded indiviuals. Whether you
+          want to disrupt the music industry, create new businesses, or even use
+          your creativity to create the newest blockbuster we are here for you.
+          Go change the world!
         </h2>
         <h2 style="font-size: 25px; margin-bottom: 2vh;">
           -Your Friends at Projectly
@@ -142,5 +143,11 @@ html {
 
 button {
   width: 50%;
+}
+
+.gradient {
+  background: -webkit-linear-gradient(45deg, rgb(179, 33, 33), rgb(6, 84, 107));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 </style>
