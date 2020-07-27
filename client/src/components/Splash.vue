@@ -153,6 +153,7 @@ button {
 
 .gradient {
   background: linear-gradient(-45deg, #b721ff, #23a6d5, #500000) fixed;
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: gradient 5s ease infinite;
