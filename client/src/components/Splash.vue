@@ -63,11 +63,9 @@ export default {
   name: 'Brandname',
   props: {
     currentUser: { first_name: '' },
-
     msg: String,
   },
   components: {
-    // HelloWorld,
   },
   methods: {
     getName(id) {
@@ -78,7 +76,6 @@ export default {
     login() {
       this.$auth.loginWithRedirect();
     },
-    // Log the user out
     logout() {
       this.$auth.logout({
         returnTo: window.location.origin,
