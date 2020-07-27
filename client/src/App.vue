@@ -11,6 +11,7 @@
         v-if="$auth.isAuthenticated"
         @toggle-collapse="this.onToggleCollapse"
         :menu="menu"
+        :collapsed="collapsed"
         @item-click="onItemClick"
       />
       <router-view />
@@ -27,6 +28,10 @@ export default {
   data() {
     return {
       isNavBarOpen: false,
+      collapsed: {
+        type: Boolean,
+        default: true,
+      },
       menu: [
         {
           header: true,
@@ -62,10 +67,10 @@ export default {
   },
   methods: {
     onToggleCollapse() {
+      this.isNavBarOpen = !this.isNavBarOpen;
       document.getElementById('fade-to-black').style.display = this.isNavBarOpen
         ? 'block'
         : 'none';
-      this.isNavBarOpen = !this.isNavBarOpen;
     },
     onItemClick(event, item) {
       if (item.title === 'Logout') {
