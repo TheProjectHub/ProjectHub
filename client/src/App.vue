@@ -1,12 +1,85 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <html>
+    <div id="app">
+      <link
+        rel="stylesheet"
+        href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+        integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+        crossorigin="anonymous"
+      />
+      <sidebar-menu
+        v-if="$auth.isAuthenticated"
+        @toggle-collapse="this.onToggleCollapse"
+        :menu="menu"
+        :collapsed="collapsed"
+        @item-click="onItemClick"
+      />
+      <router-view />
+      <div id="fade-to-black"></div>
     </div>
-    <router-view/>
-  </div>
+  </html>
 </template>
+
+<script>
+export default {
+  // profile (via a profile picture), MyProjects, Search, conversations. Try to use icons for each.
+  name: 'App',
+  components: {},
+  data() {
+    return {
+      isNavBarOpen: false,
+      collapsed: {
+        type: Boolean,
+        default: true,
+      },
+      menu: [
+        {
+          header: true,
+          title: 'Projectly',
+          hiddenOnCollapse: true,
+        },
+        {
+          href: '/profile',
+          title: 'Profile',
+          icon: 'fa fa-user',
+        },
+        {
+          href: '/myprojects',
+          title: 'My Projects',
+          icon: 'fa fa-chart-area',
+        },
+        {
+          href: '/search',
+          title: 'Search for Projects',
+          icon: 'fa fa-search',
+        },
+        {
+          href: '/conversations',
+          title: 'Conversations',
+          icon: 'fa fa-comment',
+        },
+        {
+          title: 'Logout',
+          icon: 'fa fa-user-times',
+        },
+      ],
+    };
+  },
+  methods: {
+    onToggleCollapse() {
+      this.isNavBarOpen = !this.isNavBarOpen;
+      document.getElementById('fade-to-black').style.display = this.isNavBarOpen
+        ? 'block'
+        : 'none';
+    },
+    onItemClick(event, item) {
+      if (item.title === 'Logout') {
+        this.$auth.logout();
+      }
+    },
+  },
+};
+</script>
 
 <style>
 #app {
@@ -23,10 +96,21 @@
 
 #nav a {
   font-weight: bold;
-  color: #2c3e50;
+  color: white;
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+  color: white;
+}
+
+#fade-to-black {
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  height: 135vh;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 5;
 }
 </style>

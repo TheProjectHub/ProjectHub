@@ -9,9 +9,6 @@ class Users {
       },
     });
   }
-  // get(id) {
-  //   return http.get(`/users/${id}`);
-  // }
 
   create(data, token) {
     return http.post('/users', data, {

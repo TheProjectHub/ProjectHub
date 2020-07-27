@@ -1,6 +1,10 @@
 import Vue from 'vue';
+import VueSidebarMenu from 'vue-sidebar-menu';
 import App from './App.vue';
 import router from './router';
+
+// Navbar (Sidebar)
+import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 
 // Bootstrap
 import 'bootstrap';
@@ -11,6 +15,9 @@ import { domain, clientId, audience } from '../auth_config.json';
 // Import the plugin here
 import { Auth0Plugin } from './auth';
 
+// Plugin Navbar
+Vue.use(VueSidebarMenu);
+
 // Install the authentication plugin here
 Vue.use(Auth0Plugin, {
   domain,
@@ -20,7 +27,7 @@ Vue.use(Auth0Plugin, {
     router.push(
       appState && appState.targetUrl
         ? appState.targetUrl
-        : window.location.pathname,
+        : window.location.pathname // eslint-disable-line
     );
   },
 });
