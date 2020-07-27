@@ -74,7 +74,6 @@ export default {
     },
     onItemClick(event, item) {
       if (item.title === 'Logout') {
-        document.getElementById('fade-to-black').style.display = 'none';
         this.$auth.logout();
       }
     },
