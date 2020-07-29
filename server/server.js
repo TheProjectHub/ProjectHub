@@ -32,6 +32,16 @@ require('./routes/project.routes')(app);
 require('./routes/user.routes')(app);
 
 // set port, listen for requests
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
   console.log('Server is running on port 3000.');
+});
+
+const io = require('socket.io')(server);
+
+io.on('connection', function (socket) {
+  socket.on('SEND_MESSAGE', (data) => {
+    console.log(data);
+    if (data.user != 'Shamy')
+      io.emit('MESSAGE', data);
+  });
 });

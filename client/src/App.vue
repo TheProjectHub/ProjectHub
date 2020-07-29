@@ -22,7 +22,6 @@
 
 <script>
 export default {
-  // profile (via a profile picture), MyProjects, Search, conversations. Try to use icons for each.
   name: 'App',
   components: {},
   data() {
