@@ -2,10 +2,6 @@
   <html>
     <head>
       <title>Welcome to Projectly</title>
-      <!-- <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap"
-        rel="stylesheet"
-      /> -->
       <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Comfortaa:wght@700&family=Lato&family=Patrick+Hand&display=swap"
         rel="stylesheet"
@@ -48,7 +44,6 @@
       </div>
     </div>
     <div class="login-button text-center">
-      <!-- <p v-if="$auth.isAuthenticated">What's up, {{ $auth.user.name }}!</p> -->
       <div v-if="!$auth.loading">
         <!-- show login when not authenticated -->
         <button
@@ -75,24 +70,14 @@
 </template>
 
 <script>
-import User from '../services/Users';
 
 export default {
-  name: 'Brandname',
+  name: 'Splash',
   props: {
-    currentUser: { first_name: '' },
     msg: String,
   },
   components: {},
   methods: {
-    async getUser(id) {
-      // Get the access token from the auth wrapper
-      const accessToken = await this.$auth.getTokenSilently();
-
-      User.get(id, accessToken).then((event) => {
-        this.$set(this, 'user', event.data);
-      });
-    },
     login() {
       this.$auth.loginWithRedirect();
     },
@@ -101,9 +86,6 @@ export default {
         returnTo: window.location.origin,
       });
     },
-  },
-  mounted() {
-    this.getName(1);
   },
 };
 </script>

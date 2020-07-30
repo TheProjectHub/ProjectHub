@@ -13,11 +13,24 @@
 
 <script>
 import Splash from '../components/Splash.vue';
+import User from '../services/Users';
 
 export default {
   name: 'Home',
   components: {
     Splash,
+  },
+  methods: {
+    async setCurrentUser() {
+      const accessToken = await this.$auth.getTokenSilently();
+      // Use the eventService to call the getEventSingle method
+      User.get(this.$auth.user.email, accessToken).then((event) => {
+        this.$store.commit('updateCurrentUser', event.data);
+      });
+    },
+  },
+  mounted() {
+    this.setCurrentUser();
   },
 };
 </script>

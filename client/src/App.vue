@@ -50,12 +50,12 @@ export default {
           icon: 'fa fa-chart-area',
         },
         {
-          href: '/search',
+          href: '/about',
           title: 'Search for Projects',
           icon: 'fa fa-search',
         },
         {
-          href: '/conversations',
+          href: '/messaging',
           title: 'Conversations',
           icon: 'fa fa-comment',
         },
@@ -67,12 +67,6 @@ export default {
     };
   },
   methods: {
-    async setUser() {
-      const accessToken = await this.$auth.getTokenSilently();
-      User.get(this.$auth.user.email, accessToken).then((event) => {
-        this.$store.commit('updateCurrentUser', event.data);
-      });
-    },
     onToggleCollapse() {
       this.isNavBarOpen = !this.isNavBarOpen;
       document.getElementById('fade-to-black').style.display = this.isNavBarOpen
@@ -84,9 +78,16 @@ export default {
         this.$auth.logout();
       }
     },
+    async setCurrentUser() {
+      const accessToken = await this.$auth.getTokenSilently();
+      // Use the eventService to call the getEventSingle method
+      User.get(this.$auth.user.email, accessToken).then((event) => {
+        this.$store.commit('updateCurrentUser', event.data);
+      });
+    },
   },
   mounted() {
-    if (this.$auth.isAuthenticated) this.setUser();
+    // this.setCurrentUser();
   },
 };
 </script>
