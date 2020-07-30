@@ -87,7 +87,7 @@ export default {
     },
   },
   mounted() {
-    // this.setCurrentUser();
+    setTimeout(() => this.setUser(), 1000);
   },
 };
 </script>
