@@ -38,20 +38,37 @@ exports.create = (req, res) => {
 };
 
 // Find a single user with a userId
-exports.getUserByID = (req, res) => {
-  User.findById(req.params.userId, (err, data) => {
-    if (err) {
-      if (err.kind === 'not_found') {
-        res.status(404).send({
-          message: `Not found User with id ${req.params.userId}.`,
-        });
-      } else {
-        res.status(500).send({
-          message: 'Error retrieving User with id ' + req.params.userId,
-        });
-      }
-    } else res.send(data);
-  });
+exports.getUser = (req, res) => {
+  if (req.params.identifier.includes('@')) {
+    User.findByEmail(req.params.identifier, (err, data) => {
+      if (err) {
+        if (err.kind === 'not_found') {
+          res.status(404).send({
+            message: `Not found User with email ${req.params.identifier}.`,
+          });
+        } else {
+          res.status(500).send({
+            message:
+              'Error retrieving User with email ' + req.params.identifier,
+          });
+        }
+      } else res.send(data);
+    });
+  } else {
+    User.findById(req.params.identifier, (err, data) => {
+      if (err) {
+        if (err.kind === 'not_found') {
+          res.status(404).send({
+            message: `Not found User with id ${req.params.identifier}.`,
+          });
+        } else {
+          res.status(500).send({
+            message: 'Error retrieving User with id ' + req.params.identifier,
+          });
+        }
+      } else res.send(data);
+    });
+  }
 };
 
 // Update a user identified by the userId in the request
