@@ -5,6 +5,9 @@ module.exports = (app) => {
   // Create a new project
   app.post('/projects', auth.checkJwt, projects.create);
 
+  // Get all project names
+  app.get('/projects', auth.checkJwt, projects.getNames);
+
   // Retrieve a single project with projectId
   app.get('/projects/:projectId', auth.checkJwt, projects.getProjectByID);
 

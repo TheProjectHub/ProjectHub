@@ -60,6 +60,11 @@ export default {
           icon: 'fa fa-comment',
         },
         {
+          href: '/new-project',
+          title: 'Create New Project',
+          icon: 'fa fa-plus',
+        },
+        {
           title: 'Logout',
           icon: 'fa fa-user-times',
         },
@@ -87,12 +92,12 @@ export default {
     },
   },
   mounted() {
-    // setTimeout(() => this.setCurrentUser(), 2000);
-    setInterval(() => {
+    const checkIsAuthLoaded = setInterval(() => {
       if (!this.$auth.loading) {
-        this.setCurrentUser();
+        this.setUser();
+        clearInterval(checkIsAuthLoaded);
       }
-    }, 200);
+    }, 100);
   },
 };
 </script>

@@ -10,6 +10,14 @@ class Projects {
     });
   }
 
+  getAllProjectNames(token) {
+    return http.get(`/projects`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
   create(data, token) {
     return http.post('/projects', data, {
       headers: {
