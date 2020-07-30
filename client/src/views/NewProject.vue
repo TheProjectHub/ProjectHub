@@ -18,9 +18,9 @@
           </div>
         </div>
         <div class="field">
-          <label class="label">Invite:</label>
+          <label class="label">Links:</label>
           <div class="control">
-            <input class="input" type="text" v-model="form.invite" />
+            <input class="input" type="text" v-model="form.links" />
           </div>
         </div>
         <div class="field">
@@ -31,100 +31,78 @@
             </label>
           </div>
         </div>
-        <input class="button is-primary margin-bottom" type="submit" @click.prevent="toSubmit" />
-    </form>
-       <transition name="fade" mode="out-in">
-        <article class="message is-primary" v-show="showSubmitFeedback">
-          <div class="message-header">
-            <p>Status:</p>
-          </div>
-          <div class="message-body">
-            Successfully Submitted!
-          </div>
-        </article>
-      </transition>
-        
-    <hr>
-    
-    <h5>
-        JSON
-    </h5>
-    <pre><code>{{form}}</code></pre>
+        <input
+          class="button is-primary margin-bottom"
+          type="submit"
+          @click.prevent="toSubmit"
+          @click="submitProject"
+        />
+      </form>
     </section>
   </html>
 </template>
 
 <script>
-/* eslint-disable */
-import User from '../services/Users';
 import Projects from '../services/Projects';
+
 export default {
-  name: 'newproject',
+  name: 'NewProject',
   data() {
     return {
-      user: {},
-      projects: [],
+      takenProjectNames: [],
+      form: {
+        projectName: '',
+        description: '',
+        links: '',
+        look: [],
+      },
     };
   },
   methods: {
-    async getUser(id) {
-      // Get the access token from the auth wrapper
+    async getTakenProjectNames() {
       const accessToken = await this.$auth.getTokenSilently();
-      //const newProjects = [];
-      // Use the eventService to call the getEventSingle method
-      User.get(id, accessToken).then((event) => {
-        this.$set(this, 'user', event.data);
-        const look = event.data.looking_for_project;
-        // // Convert string representation of skills to array object
-        // const skills = event.data.skills;
-        // this.user.skills = skills.substring(1, skills.indexOf(']')).split(', ');
-        // // Convert string representation of project_affiliations to array object
-        // const project_affiliation = event.data.project_affiliation;
-        // this.user.project_affiliation = project_affiliation
-        //   .substring(1, project_affiliation.indexOf(']'))
-        //   .split(', ');
-        // // Loop through project affiliations and get objects by id
-        // for (
-        //   let index = 0;
-        //   index < this.user.project_affiliation.length;
-        //   index += 1
-        // ) {
-        //   const pid = this.user.project_affiliation[index];
-        //   Projects.get(pid, accessToken).then((newEvent) => {
-        //     newProjects.push(newEvent.data);
-        //   });
-        // }
+
+      Projects.getAllProjectNames(accessToken).then((event) => {
+        const takenNames = event.data;
+        takenNames.forEach((project) => {
+          this.takenProjectNames.push(project.name);
+        });
       });
-      //this.$set(this, 'projects', newProjects);
     },
-    async getProjectNameAvail(id) {
-        
+    isNameTaken(name) {
+      return this.takenProjectNames.includes(name);
+    },
+    async submitProject() {
+      if (this.isNameTaken(this.form.projectName) && this.form.name) {
+        alert(`The name: ${this.form.projectName} is taken!`);
+      } else {
+        const accessToken = await this.$auth.getTokenSilently();
+        console.log(accessToken);
+
+        const project = {
+          members: JSON.stringify([this.$store.state.currentUser.id]),
+          name: this.form.projectName,
+          links: this.form.links,
+          description: this.form.description,
+          looking_for_new_members: this.form.look.length,
+          search_filters: '[]',
+          applicants: '[]',
+        };
+        Projects.create(project, accessToken).then(() => {
+          this.$router.push('/');
+        });
+      }
     },
   },
   mounted() {
-    this.getUser(2);
+    const checkIsAuthLoaded = setInterval(() => {
+      if (!this.$auth.loading) {
+        this.getTakenProjectNames();
+        clearInterval(checkIsAuthLoaded);
+      }
+    }, 100);
   },
 };
-new Vue({
-  el: '#new',
-  data: {
-    form: {
-      projectName: '',
-      description: '',
-      invite: '',
-      look: [],
-    },
-    showSubmitFeedback: false
-  },
-  methods: {
-    toSubmit(){
-      this.showSubmitFeedback = true;
-      setTimeout(() => {
-        this.showSubmitFeedback = false;
-      }, 3000);
-    }
-  }
-});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

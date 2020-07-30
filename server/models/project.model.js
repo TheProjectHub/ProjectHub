@@ -5,6 +5,7 @@ const Project = function (project) {
   this.id = project.id;
   this.members = project.members;
   this.name = project.name;
+  this.description = project.description;
   this.links = project.links;
   this.looking_for_new_members = project.looking_for_new_members;
   this.search_filters = project.search_filters;
@@ -41,6 +42,21 @@ Project.findById = (projectID, result) => {
     result({ kind: "not_found" }, null);
   });
 };
+
+Project.getAllNames = (result) => {
+  sql.query(`SELECT name FROM projects`, (err, res) => {
+    if (err) {
+      console.log('error: ', err);
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      result(null, res);
+      return;
+    }
+  });
+}
 
 Project.updateById = (id, project, result) => {
   sql.query(

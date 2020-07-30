@@ -61,7 +61,7 @@ export default {
           icon: 'fa fa-comment',
         },
         {
-          href: '/newproject',
+          href: '/new-project',
           title: 'Create New Project',
           icon: 'fa fa-plus',
         },
@@ -92,7 +92,12 @@ export default {
     },
   },
   mounted() {
-    setTimeout(() => this.setUser(), 1000);
+    const checkIsAuthLoaded = setInterval(() => {
+      if (!this.$auth.loading) {
+        this.setUser();
+        clearInterval(checkIsAuthLoaded);
+      }
+    }, 100);
   },
 };
 </script>
