@@ -30,7 +30,7 @@ export default {
     },
   },
   mounted() {
-    this.setCurrentUser();
+    setTimeout(() => this.setCurrentUser(), 2000);
   },
 };
 </script>
