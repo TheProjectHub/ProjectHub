@@ -87,7 +87,12 @@ export default {
     },
   },
   mounted() {
-    setTimeout(() => this.setUser(), 1000);
+    // setTimeout(() => this.setCurrentUser(), 2000);
+    setInterval(() => {
+      if (!this.$auth.loading) {
+        this.setCurrentUser();
+      }
+    }, 200);
   },
 };
 </script>

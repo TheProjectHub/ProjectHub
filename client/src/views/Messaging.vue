@@ -16,10 +16,6 @@
     <div>
       <form @submit.prevent="sendMessage">
         <div>
-          <label for="conversationId">Conversation ID:</label>
-          <input type="text" v-model="conversationId" />
-        </div>
-        <div>
           <label for="message">Message:</label>
           <input type="text" v-model="message" />
         </div>
@@ -38,7 +34,7 @@ export default {
       message: '',
       messages: [],
       socket: io('localhost:3000'),
-      conversationId: 1,
+      conversationId: 0,
       conversationName: '',
     };
   },
@@ -46,10 +42,12 @@ export default {
     async setMessages(id) {
       // Get the access token from the auth wrapper
       const accessToken = await this.$auth.getTokenSilently();
+      // console.log(accessToken);
 
       Conversation.get(id, accessToken).then((event) => {
         this.$set(this, 'messages', JSON.parse(event.data.messages));
         this.conversationName = event.data.name;
+        this.conversationId = event.data.id;
       });
     },
     sendMessage(e) {
@@ -57,7 +55,7 @@ export default {
 
       this.socket.emit('SEND_MESSAGE', {
         message: {
-          userId: 1,
+          userId: this.$store.state.currentUser.id,
           text: this.message,
           timestamp: new Date(),
         },
@@ -67,12 +65,20 @@ export default {
     },
   },
   mounted() {
-    this.setMessages(1);
-    this.socket.on('broadcast', (conversationId) => {
-      if (this.conversationId === conversationId) {
-        this.setMessages(conversationId);
-      }
-    });
+    nextTick().then(() => {
+      console.log(this.$store.state.currentUser.conversations);
+      const conversations = JSON.parse(
+        this.$store.state.currentUser.conversations,
+      );
+      console.log(conversations);
+      // this.setMessages(conversations[0]);
+      this.setMessages(1);
+      this.socket.on('broadcast', (conversationId) => {
+        if (this.conversationId === conversationId) {
+          this.setMessages(conversationId);
+        }
+      });
+    })
   },
 };
 </script>
