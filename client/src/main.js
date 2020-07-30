@@ -1,5 +1,7 @@
 import Vue from 'vue';
+import Vuex from 'vuex';
 import VueSidebarMenu from 'vue-sidebar-menu';
+
 import App from './App.vue';
 import router from './router';
 
@@ -34,7 +36,21 @@ Vue.use(Auth0Plugin, {
 
 Vue.config.productionTip = false;
 
+Vue.use(Vuex);
+
+const store = new Vuex.Store({
+  state: {
+    currentUser: {},
+  },
+  mutations: {
+    updateCurrentUser(state, newUser) {
+      state.currentUser = newUser;
+    },
+  },
+});
+
 new Vue({
   router,
   render: (h) => h(App),
+  store,
 }).$mount('#app');

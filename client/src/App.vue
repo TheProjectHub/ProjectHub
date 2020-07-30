@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import User from './services/Users';
+
 export default {
   name: 'App',
   components: {},
@@ -65,6 +67,12 @@ export default {
     };
   },
   methods: {
+    async setUser() {
+      const accessToken = await this.$auth.getTokenSilently();
+      User.get(this.$auth.user.email, accessToken).then((event) => {
+        this.$store.commit('updateCurrentUser', event.data);
+      });
+    },
     onToggleCollapse() {
       this.isNavBarOpen = !this.isNavBarOpen;
       document.getElementById('fade-to-black').style.display = this.isNavBarOpen
@@ -76,6 +84,9 @@ export default {
         this.$auth.logout();
       }
     },
+  },
+  mounted() {
+    if (this.$auth.isAuthenticated) this.setUser();
   },
 };
 </script>
