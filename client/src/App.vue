@@ -1,8 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <div id="app">
-    <div id="nav">
-=======
   <html>
     <div id="app">
       <link
@@ -20,7 +16,6 @@
       />
       <router-view />
       <div id="fade-to-black"></div>
->>>>>>> dev
     </div>
   </html>
 </template>
