@@ -2,14 +2,14 @@
 import http from '../http-common';
 
 class Users {
-  get(id, token) {
-    return http.get(`/users/${id}`, {
+  get(identifier, token) {
+    return http.get(`/users/${identifier}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
   }
-
+  
   create(data, token) {
     return http.post('/users', data, {
       headers: {

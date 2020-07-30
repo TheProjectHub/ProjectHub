@@ -2,7 +2,7 @@
 import http from '../http-common';
 
 class Conversations {
-  get(id) {
+  get(id, token) {
     return http.get(`/conversations/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -10,7 +10,7 @@ class Conversations {
     });
   }
 
-  create(data) {
+  create(data, token) {
     return http.post('/conversations', data, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -18,7 +18,7 @@ class Conversations {
     });
   }
 
-  update(id, data) {
+  update(id, data, token) {
     return http.put(`/conversations/${id}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,

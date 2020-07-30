@@ -1,24 +1,43 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-  </div>
+  <html>
+    <head>
+      <title>Welcome to Projectly</title>
+    </head>
+    <body>
+      <div class="home">
+        <Splash />
+      </div>
+    </body>
+  </html>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '../components/HelloWorld.vue';
+import Splash from '../components/Splash.vue';
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld,
-  },
-  methods: {
-    greet() {
-      // eslint-disable-next-line
-      alert('Wassup!');
-    },
+    Splash,
   },
 };
 </script>
+
+<style>
+body {
+  background: linear-gradient(-45deg, #fbff21, #23a6d5, #500000) fixed;
+  background-size: 400% 400%;
+  animation: gradient 45s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+</style>

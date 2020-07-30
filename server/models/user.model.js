@@ -1,7 +1,7 @@
 const sql = require('./db');
 
 // constructor
-const User = function (user) {
+const User = function(user) {
   this.id = user.id;
   this.first_name = user.first_name;
   this.last_name = user.last_name;
@@ -33,6 +33,24 @@ User.create = (user, result) => {
 
 User.findById = (userID, result) => {
   sql.query(`SELECT * FROM users WHERE id = ${userID}`, (err, res) => {
+    if (err) {
+      console.log('error: ', err);
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      result(null, res[0]);
+      return;
+    }
+
+    // not found User with the id
+    result({ kind: 'not_found' }, null);
+  });
+};
+
+User.findByEmail = (email, result) => {
+  sql.query(`SELECT * FROM users WHERE email = \'${email}\'`, (err, res) => {
     if (err) {
       console.log('error: ', err);
       result(err, null);
