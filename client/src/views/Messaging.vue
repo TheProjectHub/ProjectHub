@@ -67,13 +67,10 @@ export default {
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
       if (!this.$auth.loading) {
-        console.log(this.$store.state.currentUser.conversations);
         const conversations = JSON.parse(
           this.$store.state.currentUser.conversations,
         );
-        console.log(conversations);
-        // this.setMessages(conversations[0]);
-        this.setMessages(1);
+        this.setMessages(conversations[0]);
         this.socket.on('broadcast', (conversationId) => {
           if (this.conversationId === conversationId) {
             this.setMessages(conversationId);

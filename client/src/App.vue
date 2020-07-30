@@ -94,7 +94,7 @@ export default {
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
       if (!this.$auth.loading) {
-        this.setUser();
+        this.setCurrentUser();
         clearInterval(checkIsAuthLoaded);
       }
     }, 100);
