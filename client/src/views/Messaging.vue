@@ -68,7 +68,7 @@ export default {
   },
   mounted() {
     this.setMessages(1);
-    this.socket.on('NEW_MESSAGE', (conversationId) => {
+    this.socket.on('broadcast', (conversationId) => {
       if (this.conversationId === conversationId) {
         this.setMessages(conversationId);
       }

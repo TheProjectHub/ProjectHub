@@ -29,7 +29,7 @@ module.exports = (server) => {
 
       // broadcast to all currently connected sockets that there has been
       // a new message to the conversation id thats passed
-      io.emit('NEW_MESSAGE', data.conversationId);
+      io.emit('broadcast', data.conversationId);
     });
   });
 };
