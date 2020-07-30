@@ -59,6 +59,11 @@ export default {
           icon: 'fa fa-comment',
         },
         {
+          href: '/newproject',
+          title: 'Create New Project',
+          icon: 'fa fa-plus',
+        },
+        {
           title: 'Logout',
           icon: 'fa fa-user-times',
         },
