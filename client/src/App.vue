@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import User from './services/Users';
+
 export default {
   // profile (via a profile picture), MyProjects, Search, conversations. Try to use icons for each.
   name: 'App',
@@ -59,6 +61,11 @@ export default {
           icon: 'fa fa-comment',
         },
         {
+          href: '/new-project',
+          title: 'Create New Project',
+          icon: 'fa fa-plus',
+        },
+        {
           title: 'Logout',
           icon: 'fa fa-user-times',
         },
@@ -66,6 +73,12 @@ export default {
     };
   },
   methods: {
+    async setUser() {
+      const accessToken = await this.$auth.getTokenSilently();
+      User.get(this.$auth.user.email, accessToken).then((event) => {
+        this.$store.commit('updateCurrentUser', event.data);
+      });
+    },
     onToggleCollapse() {
       this.isNavBarOpen = !this.isNavBarOpen;
       document.getElementById('fade-to-black').style.display = this.isNavBarOpen
@@ -77,6 +90,14 @@ export default {
         this.$auth.logout();
       }
     },
+  },
+  mounted() {
+    const checkIsAuthLoaded = setInterval(() => {
+      if (!this.$auth.loading) {
+        this.setUser();
+        clearInterval(checkIsAuthLoaded);
+      }
+    }, 100);
   },
 };
 </script>

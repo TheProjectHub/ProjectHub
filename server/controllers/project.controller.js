@@ -13,6 +13,7 @@ exports.create = (req, res) => {
   var project = new Project({
     id: req.body.id,
     members: req.body.members,
+    description: req.body.description,
     name: req.body.name,
     links: req.body.links,
     looking_for_new_members: req.body.looking_for_new_members,
@@ -46,6 +47,12 @@ exports.getProjectByID = (req, res) => {
     } else res.send(data);
   });
 };
+
+exports.getNames = (req, res) => {
+  Project.getAllNames((err, data) => {
+    res.send(data);
+  })
+}
 
 // Update a project identified by the projectId in the request
 exports.update = (req, res) => {

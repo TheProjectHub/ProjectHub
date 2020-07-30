@@ -1,8 +1,17 @@
+/* eslint-disable */
 import http from '../http-common';
 
 class Projects {
   get(id, token) {
     return http.get(`/projects/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  getAllProjectNames(token) {
+    return http.get(`/projects`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
