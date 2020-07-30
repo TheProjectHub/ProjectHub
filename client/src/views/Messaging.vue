@@ -1,15 +1,14 @@
 <template>
   <div>
     <div>
-      <div>
-        <h3>Chat Group</h3>
+      <div class="col">
+        <h1>{{ this.conversationName }}</h1>
         <hr />
       </div>
       <div>
-        <div class="messages" v-for="(msg, index) in messages" :key="index">
+        <div class="messages" v-for="msg in this.messages" :key="msg">
           <p>
-            <span class="font-weight-bold">{{ msg.user }}: </span
-            >{{ msg.message }}
+            <span class="font-weight-bold">{{ msg.text }} </span>
           </p>
         </div>
       </div>
@@ -17,8 +16,8 @@
     <div>
       <form @submit.prevent="sendMessage">
         <div>
-          <label for="user">User:</label>
-          <input type="text" v-model="user" />
+          <label for="conversationId">Conversation ID:</label>
+          <input type="text" v-model="conversationId" />
         </div>
         <div>
           <label for="message">Message:</label>
@@ -31,31 +30,48 @@
 </template>
 <script>
 import io from 'socket.io-client';
+import Conversation from '../services/Conversations';
 
 export default {
   data() {
     return {
-      user: '',
       message: '',
       messages: [],
       socket: io('localhost:3000'),
+      conversationId: 1,
+      conversationName: '',
     };
   },
   methods: {
+    async setMessages(id) {
+      // Get the access token from the auth wrapper
+      const accessToken = await this.$auth.getTokenSilently();
+
+      Conversation.get(id, accessToken).then((event) => {
+        this.$set(this, 'messages', JSON.parse(event.data.messages));
+        this.conversationName = event.data.name;
+      });
+    },
     sendMessage(e) {
       e.preventDefault();
 
       this.socket.emit('SEND_MESSAGE', {
-        user: this.user,
-        message: this.message,
+        message: {
+          userId: 1,
+          text: this.message,
+          timestamp: new Date(),
+        },
+        conversationId: this.conversationId,
       });
       this.message = '';
     },
   },
   mounted() {
-    this.socket.on('MESSAGE', (data) => {
-      this.messages = [...this.messages, data];
-      // you can also do this.messages.push(data)
+    this.setMessages(1);
+    this.socket.on('NEW_MESSAGE', (conversationId) => {
+      if (this.conversationId === conversationId) {
+        this.setMessages(conversationId);
+      }
     });
   },
 };

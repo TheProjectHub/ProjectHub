@@ -19,7 +19,9 @@
             style="background-color: rgba(255, 255, 255, 0.5);
             color: transparent; border-radius: 25px; padding-bottom: 10px"
           >
-            <span style="font-family: Comfortaa, cursive; padding: 10px" class="gradient"
+            <span
+              style="font-family: Comfortaa, cursive; padding: 10px"
+              class="gradient"
               >Projectly</span
             >
           </span>
@@ -83,9 +85,12 @@ export default {
   },
   components: {},
   methods: {
-    getName(id) {
-      User.get(id).then((res) => {
-        this.currentUser = res.data;
+    async getUser(id) {
+      // Get the access token from the auth wrapper
+      const accessToken = await this.$auth.getTokenSilently();
+
+      User.get(id, accessToken).then((event) => {
+        this.$set(this, 'user', event.data);
       });
     },
     login() {
