@@ -87,7 +87,7 @@ export default {
     },
   },
   mounted() {
-    if (this.$auth.isAuthenticated) this.setUser();
+    setTimeout(() => this.setUser(), 1000);
   },
 };
 </script>
