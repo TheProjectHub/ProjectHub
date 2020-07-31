@@ -94,7 +94,7 @@ export default {
     },
   },
   mounted() {
-    this.getUser(2);
+    this.getUser(1);
   },
 };
 </script>
