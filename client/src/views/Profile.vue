@@ -106,9 +106,7 @@ export default {
       this.$set(this, "projects", newProjects);
     },
   },
-  mounted() {
-    this.getUser(1);
-  },
+  mounted() {},
 };
 </script>
 
