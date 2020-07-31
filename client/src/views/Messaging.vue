@@ -2,107 +2,96 @@
   <body>
     <div class="container">
       <div class="messaging">
-        <div class="inbox_msg">
-          <div class="inbox_people">
-            <div class="heading_srch">
-              <div class="srch_bar">
-                <div class="stylish-input-group">
-                  <input type="text" class="search-bar" placeholder="Search" />
-                  <span class="input-group-addon">
-                    <button type="button">
-                      <i class="fa fa-search" aria-hidden="true"></i>
-                    </button>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div class="inbox_chat">
-              <div class="chat_list active_chat">
-                <div class="chat_people">
-                  <div class="chat_img">
-                    <img
-                      src="https://ptetutorials.com/images/user-profile.png"
-                      alt="sunil"
-                    />
-                  </div>
-                  <div class="chat_ib">
-                    <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                    <p>
-                      Test, which is a new approach to have all solutions
-                      astrology under one roof.
-                    </p>
+        <div class="inbox-msg">
+          <div class="conversations-inbox">
+            <div class="conversations">
+              <div
+                v-for="name in this.conversationNames"
+                v-bind:key="name"
+              >
+                <div class="chat-list active-chat conversation-preview">
+                  <div class="chat-people">
+                    <div class="chat-img">
+                      <img
+                        src="https://ptetutorials.com/images/user-profile.png"
+                        alt="sunil"
+                      />
+                    </div>
+                    <div class="chat-ib">
+                      <h5>{{ name }}</h5>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
           <div class="mesgs">
-            <div class="msg_history">
-              <div class="incoming_msg">
-                <div class="incoming_msg_img">
+            <div class="msg-history">
+              <div class="incoming-msg">
+                <div class="incoming-msg-img">
                   <img
                     src="https://ptetutorials.com/images/user-profile.png"
                     alt="sunil"
                   />
                 </div>
-                <div class="received_msg">
-                  <div class="received_withd_msg">
+                <div class="received-msg">
+                  <div class="received-withd-msg">
                     <p>Test, which is a new approach to have</p>
-                    <span class="time_date"> 11:01 AM | Yesterday</span>
+                    <span class="time-date"> 11:01 AM | Yesterday</span>
                   </div>
                 </div>
               </div>
-              <div class="outgoing_msg">
-                <div class="sent_msg">
+              <div class="outgoing-msg">
+                <div class="sent-msg">
                   <p>Apollo University, Delhi, India Test</p>
-                  <span class="time_date"> 11:01 AM | Today</span>
+                  <span class="time-date"> 11:01 AM | Today</span>
                 </div>
               </div>
-              <div class="outgoing_msg">
-                <div class="sent_msg">
+              <div class="outgoing-msg">
+                <div class="sent-msg">
                   <p>Apollo University, Delhi, India Test</p>
-                  <span class="time_date"> 11:01 AM | Today</span>
+                  <span class="time-date"> 11:01 AM | Today</span>
                 </div>
               </div>
-              <div class="outgoing_msg">
-                <div class="sent_msg">
+              <div class="outgoing-msg">
+                <div class="sent-msg">
                   <p>Apollo University, Delhi, India Test</p>
-                  <span class="time_date"> 11:01 AM | Today</span>
+                  <span class="time-date"> 11:01 AM | Today</span>
                 </div>
               </div>
-              <div class="outgoing_msg">
-                <div class="sent_msg">
+              <div class="outgoing-msg">
+                <div class="sent-msg">
                   <p>Apollo University, Delhi, India Test</p>
-                  <span class="time_date"> 11:01 AM | Today</span>
+                  <span class="time-date"> 11:01 AM | Today</span>
                 </div>
               </div>
-              <div class="outgoing_msg">
-                <div class="sent_msg">
+              <div class="outgoing-msg">
+                <div class="sent-msg">
                   <p>Apollo University, Delhi, India Test</p>
-                  <span class="time_date"> 11:01 AM | Today</span>
+                  <span class="time-date"> 11:01 AM | Today</span>
                 </div>
               </div>
-              <div class="outgoing_msg">
-                <div class="sent_msg">
+              <div class="outgoing-msg">
+                <div class="sent-msg">
                   <p>Apollo University, Delhi, India Test</p>
-                  <span class="time_date"> 11:01 AM | Today</span>
+                  <span class="time-date"> 11:01 AM | Today</span>
                 </div>
               </div>
-              <div class="outgoing_msg">
-                <div class="sent_msg">
+              <div class="outgoing-msg">
+                <div class="sent-msg">
                   <p>Apollo University, Delhi, India Test</p>
-                  <span class="time_date"> 11:01 AM | Today</span>
+                  <span class="time-date"> 11:01 AM | Today</span>
                 </div>
               </div>
             </div>
-            <div class="type_msg">
-              <div class="input_msg_write">
+            <div class="type-msg">
+              <div class="input-msg-write">
                 <input
                   type="text"
-                  class="write_msg"
+                  class="write-msg"
                   placeholder="Type a message"
                 />
-                <button class="msg_send_btn" type="button">
+                <button class="msg-send-btn" type="button">
                   <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
                 </button>
               </div>
@@ -125,7 +114,8 @@ export default {
       messages: [],
       socket: io('localhost:3000'),
       conversationId: 0,
-      conversationName: '',
+      conversationNames: [],
+      conversations: [],
     };
   },
   methods: {
@@ -137,6 +127,15 @@ export default {
         this.conversationName = event.data.name;
         this.conversationId = event.data.id;
       });
+    },
+    async setConversationNames() {
+      const accessToken = await this.$auth.getTokenSilently();
+
+      for (let i = 0; i < this.conversations.length; i += 1) {
+        Conversation.get(this.conversations[i], accessToken).then((event) => // eslint-disable-line
+          this.conversationNames.push(event.data.name), // eslint-disable-line
+        ); // eslint-disable-line
+      }
     },
     sendMessage(e) {
       e.preventDefault();
@@ -162,12 +161,13 @@ export default {
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
       if (!this.$auth.loading) {
-        const conversations = JSON.parse(
+        this.conversations = JSON.parse(
           this.$store.state.currentUser.conversations,
         );
-        this.setMessages(conversations[0]);
+        this.setMessages(this.conversations[0]);
+        this.setConversationNames();
 
-        this.socket.emit('initalConnection', conversations);
+        this.socket.emit('initalConnection', this.conversations);
         this.socket.on('newMessage', (conversationId) => {
           // If the conversation that is currently being viewed was just updated
           if (this.conversationId === conversationId) {
@@ -183,124 +183,125 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 95vw;
+  max-width: 100vw;
   max-height: 100vh;
   margin: auto;
-  padding-left: 3vw;
+  padding-left: 50px;
   padding-right: 0vw;
-  padding-top: 5vh;
 }
 img {
   max-width: 100%;
 }
-.inbox_people {
+.conversations-inbox {
   background: #f8f8f8 none repeat scroll 1 1;
   float: left;
   overflow: hidden;
   width: 40%;
   border-right: 1px solid #c4c4c4;
 }
-.inbox_msg {
+.inbox-msg {
   border: 1px solid #c4c4c4;
   clear: both;
   overflow: hidden;
-  height: 92vh;
+  height: 100vh;
 }
-.top_spac {
-  margin: 20px 0 0;
+.top-spac {
+  margin: 2vh 0 0;
 }
 
-.recent_heading {
+.recent-heading {
   float: left;
   width: 40%;
 }
-.srch_bar {
+.srch-bar {
   display: inline-block;
   text-align: right;
   padding-left: 40vh;
 }
-.heading_srch {
-  padding: 10px 29px 10px 20px;
+.heading-srch {
+  padding: 1vh 2.9vh 1vh 2vh;
   overflow: hidden;
   border-bottom: 1px solid #c4c4c4;
 }
 
-.recent_heading h4 {
+.recent-heading h4 {
   color: #05728f;
-  font-size: 21px;
+  font-size: 2vh;
   margin: auto;
 }
-.srch_bar input {
+.srch-bar input {
   border: 1px solid #cdcdcd;
   border-width: 0 0 1px 0;
   width: 80%;
   padding: 2px 0 4px 6px;
   background: none;
 }
-.srch_bar .input-group-addon button {
+.srch-bar .input-group-addon button {
   background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
   border: medium none;
   padding: 0;
   color: #707070;
-  font-size: 18px;
+  font-size: 1.8vh;
 }
-.srch_bar .input-group-addon {
-  margin: 0 0 0 -27px;
+.srch-bar .input-group-addon {
+  margin: 0 0 0 -2.7vh;
 }
 
-.chat_ib h5 {
-  font-size: 15px;
+.chat-ib h5 {
+  font-size: 1.5vh;
   color: #464646;
-  margin: 0 0 8px 0;
+  margin: 0 0 .8vh 0;
 }
-.chat_ib h5 span {
-  font-size: 13px;
+.chat-ib h5 span {
+  font-size: 1.3vh;
   float: right;
 }
-.chat_ib p {
-  font-size: 14px;
+.chat-ib p {
+  font-size: 1.4vh;
   color: #989898;
   margin: auto;
 }
-.chat_img {
+.chat-img {
   float: left;
   width: 11%;
 }
-.chat_ib {
+.chat-ib {
   float: left;
-  padding: 0 0 0 15px;
+  padding: 0 0 0 4vw;
   width: 88%;
 }
 
-.chat_people {
+.chat-people {
   overflow: hidden;
   clear: both;
+  margin: auto;
 }
-.chat_list {
+.chat-list {
   border-bottom: 1px solid #c4c4c4;
   margin: 0;
-  padding: 18px 16px 10px;
+  padding-top: 2.5vh;
+  padding-left: 2.4vw;
 }
-.inbox_chat {
-  height: 83vh;
-  overflow-y: scroll;
+.conversations {
+  height: 85vh;
+  /* overflow-y: scroll; */
 }
 
-.active_chat {
+.active-chat {
   background: #ebebeb;
 }
 
-.incoming_msg_img {
+.incoming-msg-img {
   display: inline-block;
   width: 6%;
 }
-.received_msg {
+.received-msg {
   display: inline-block;
   padding: 0 0 0 10px;
   vertical-align: top;
   width: 92%;
 }
-.received_withd_msg p {
+.received-withd-msg p {
   background: #ebebeb none repeat scroll 0 0;
   border-radius: 3px;
   color: #646464;
@@ -309,13 +310,13 @@ img {
   padding: 5px 10px 5px 12px;
   width: 100%;
 }
-.time_date {
+.time-date {
   color: #747474;
   display: block;
   font-size: 12px;
   margin: 8px 0 0;
 }
-.received_withd_msg {
+.received-withd-msg {
   width: 57%;
 }
 .mesgs {
@@ -325,7 +326,7 @@ img {
   height: 80vh;
 }
 
-.sent_msg p {
+.sent-msg p {
   background: #05728f none repeat scroll 0 0;
   border-radius: 3px;
   font-size: 14px;
@@ -334,15 +335,15 @@ img {
   padding: 5px 10px 5px 12px;
   width: 100%;
 }
-.outgoing_msg {
+.outgoing-msg {
   overflow: hidden;
   margin: 26px 0 26px;
 }
-.sent_msg {
+.sent-msg {
   float: right;
   width: 46%;
 }
-.input_msg_write input {
+.input-msg-write input {
   background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
   border: medium none;
   color: #4c4c4c;
@@ -351,11 +352,11 @@ img {
   width: 100%;
 }
 
-.type_msg {
+.type-msg {
   border-top: 1px solid #c4c4c4;
   position: relative;
 }
-.msg_send_btn {
+.msg-send-btn {
   background: #05728f none repeat scroll 0 0;
   border: medium none;
   border-radius: 50%;
@@ -371,7 +372,7 @@ img {
 .messaging {
   padding: 0 0 0 0;
 }
-.msg_history {
+.msg-history {
   height: 80vh;
   overflow-y: auto;
 }
