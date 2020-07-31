@@ -29,10 +29,11 @@ export default {
   data() {
     return {
       isNavBarOpen: false,
-      collapsed: {
-        type: Boolean,
-        default: true,
-      },
+      // collapsed: {
+      //   type: Boolean,
+      //   default: true,
+      // },
+      collapsed: true,
       menu: [
         {
           header: true,

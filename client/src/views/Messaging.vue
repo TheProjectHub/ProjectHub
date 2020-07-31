@@ -8,7 +8,9 @@
       <div>
         <div class="messages" v-for="msg in this.messages" :key="msg">
           <p>
-            <span class="font-weight-bold">{{ msg.text }} </span>
+            <span class="font-weight-bold"
+              >{{ msg.name }}: {{ msg.text }}
+            </span>
           </p>
         </div>
       </div>
@@ -40,9 +42,7 @@ export default {
   },
   methods: {
     async setMessages(id) {
-      // Get the access token from the auth wrapper
       const accessToken = await this.$auth.getTokenSilently();
-      // console.log(accessToken);
 
       Conversation.get(id, accessToken).then((event) => {
         this.$set(this, 'messages', JSON.parse(event.data.messages));
@@ -53,15 +53,22 @@ export default {
     sendMessage(e) {
       e.preventDefault();
 
-      this.socket.emit('SEND_MESSAGE', {
+      this.socket.emit('sendMessage', {
         message: {
           userId: this.$store.state.currentUser.id,
           text: this.message,
           timestamp: new Date(),
+          name: `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`,
         },
         conversationId: this.conversationId,
       });
       this.message = '';
+    },
+    isMyMessage(msg) {
+      return (
+        msg.name === // eslint-disable-line
+        `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`
+      );
     },
   },
   mounted() {
@@ -71,7 +78,10 @@ export default {
           this.$store.state.currentUser.conversations,
         );
         this.setMessages(conversations[0]);
-        this.socket.on('broadcast', (conversationId) => {
+
+        this.socket.emit('initalConnection', conversations);
+        this.socket.on('newMessage', (conversationId) => {
+          // If the conversation that is currently being viewed was just updated
           if (this.conversationId === conversationId) {
             this.setMessages(conversationId);
           }

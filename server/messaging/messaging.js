@@ -1,23 +1,24 @@
+var users = {};
+const Conversation = require('../models/conversation.model');
+
 module.exports = (server) => {
-  const Conversation = require('../models/conversation.model');
-
   const io = require('socket.io')(server);
-
-  var m = {
-    userId: 1,
-    text: 'lmao',
-    timeStamp: new Date(),
-  };
-
+  
   io.on('connection', function (socket) {
-    socket.on('SEND_MESSAGE', (data) => {
+    socket.on('initalConnection', (conversations) => {
+      addUser(socket.id, conversations);
+    });
+    socket.on('sendMessage', (data) => {
       // update conversation object with new message
       Conversation.findById(data.conversationId, (err, res) => {
         updatedConversation = res;
+
+        // convert messages arr to JSON string representation
         var messages = JSON.parse(updatedConversation.messages);
         messages.push(data.message);
         messages = JSON.stringify(messages);
         updatedConversation.messages = messages;
+
         Conversation.updateById(
           data.conversationId,
           updatedConversation,
@@ -27,9 +28,29 @@ module.exports = (server) => {
         );
       });
 
-      // broadcast to all currently connected sockets that there has been
-      // a new message to the conversation id thats passed
-      io.emit('broadcast', data.conversationId);
+      notifyClientsAboutNewMessage(io, data.conversationId);
+    });
+    socket.on('disconnect', () => {
+      removeUser(socket.id);
     });
   });
 };
+
+function notifyClientsAboutNewMessage(io, conversationId) {
+  if (!users) {
+    return
+  }
+  for (const [socketId, conversations] of Object.entries(users)) {
+    if (conversations.includes(conversationId)) {
+      io.to(socketId).emit('newMessage', conversationId);
+    }
+  }
+}
+
+function addUser(socketId, conversations) {
+  users[socketId] = conversations;
+}
+
+function removeUser(socketId) {
+  delete users[socketId];
+}
