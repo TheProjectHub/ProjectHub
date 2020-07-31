@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import About from '../views/About.vue';
 import NewProject from '../views/NewProject.vue';
+import Project from '../views/Project.vue'
 
 import { authGuard } from '../auth/authGuard';
 
@@ -24,6 +25,12 @@ const routes = [
     path: '/new-project',
     name: 'NewProject',
     component: NewProject,
+    beforeEnter: authGuard,
+  },
+  {
+    path: '/project',
+    name: 'Project',
+    component: Project,
     beforeEnter: authGuard,
   },
 ];
