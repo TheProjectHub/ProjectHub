@@ -29,10 +29,6 @@ export default {
   data() {
     return {
       isNavBarOpen: false,
-      // collapsed: {
-      //   type: Boolean,
-      //   default: true,
-      // },
       collapsed: true,
       menu: [
         {
@@ -128,7 +124,7 @@ export default {
 #fade-to-black {
   background: rgba(0, 0, 0, 0.5);
   display: none;
-  height: 135vh;
+  height: 100vh;
   left: 0;
   position: absolute;
   top: 0;
