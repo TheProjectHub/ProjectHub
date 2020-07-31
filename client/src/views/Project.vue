@@ -2,23 +2,29 @@
   <html>
     <div class="main">
       <div class="row personal-info" style="padding-top: 20px">
-        <!-- <div class="col profile-picture">
-          <img alt="Vue logo" src="../assets/logo.png" />
-        </div> -->
         <div class="col text-info1">
-          <div class="row first-name">
-            <p>First name: {{ this.project }}</p>
+          <div class="row">
+            <p>Project name: {{ this.project.name }}</p>
           </div>
-          <div class="row age">
-            <p>Age: {{  }}</p>
+          <div class="row">
+            <p>Description: {{ this.project.description }}</p>
+          </div>
+          <div class="row">
+            <p>Tags: {{ this.project.search_filters }}</p>
+          </div>
+          <div class="row">
+            <p>Links: {{ this.project.links }}</p>
           </div>
         </div>
         <div class="col text-info2">
-          <div class="row last-name">
-            <p>Last name: {{  }}</p>
+          <div class="row">
+            <p>Members: {{ this.project.members }}</p>
           </div>
-          <div class="row location">
-            <p>Location: {{  }}</p>
+          <div class="row">
+            <p>Open For Applicants: {{ this.project.looking_for_new_members }}</p>
+          </div>
+          <div class="row">
+            <p>Applicants: {{ this.project.applicants }}</p>
           </div>
         </div>
       </div>
@@ -43,18 +49,14 @@ export default {
         // Get the access token from the auth wrapper
       const accessToken = await this.$auth.getTokenSilently();
 
-      console.log(accessToken);
-
       Projects.get(id, accessToken).then((event) => {
-        console.log('what in the fuck')
         console.log(event.data);
-        this.project = event.data
-
+        this.project = event.data;
       });
     },
   },
   mounted() {
-    this.getUser(1);
+    this.getProject(1); // <- this will be dynamically set in later updates
   },
 };
 </script>
