@@ -87,12 +87,11 @@ export default {
       const projectIds = JSON.parse(
         this.$store.state.currentUser.project_affiliation,
       );
-      for (let index = 0; index < projectIds; index += 1) {
-        const pid = projectIds[index];
+      projectIds.forEach((pid) => {
         Projects.get(pid, accessToken).then((event) => {
           this.projects.push(event.data);
         });
-      }
+      });
     },
   },
   mounted() {
