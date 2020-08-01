@@ -177,7 +177,7 @@ export default {
   },
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
-      if (!this.$auth.loading) {
+      if (this.$store.state.currentUser.conversations) {
         this.conversations = JSON.parse(
           this.$store.state.currentUser.conversations,
         );

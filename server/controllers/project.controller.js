@@ -18,7 +18,7 @@ exports.create = (req, res) => {
     links: req.body.links,
     looking_for_new_members: req.body.looking_for_new_members,
     search_filters: req.body.search_filters,
-    applicants: req.body.search_filters,
+    applicants: req.body.applicants,
   });
 
   // Save project in the database
