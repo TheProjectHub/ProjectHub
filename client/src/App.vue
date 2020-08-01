@@ -21,11 +21,11 @@
 </template>
 
 <script>
-import User from "./services/Users";
+import User from './services/Users';
 
 export default {
   // profile (via a profile picture), MyProjects, Search, conversations. Try to use icons for each.
-  name: "App",
+  name: 'App',
   components: {},
   data() {
     return {
@@ -34,37 +34,37 @@ export default {
       menu: [
         {
           header: true,
-          title: "Projectly",
+          title: 'Projectly',
           hiddenOnCollapse: true,
         },
         {
-          href: "/profile",
-          title: "Profile",
-          icon: "fa fa-user",
+          href: '/profile',
+          title: 'Profile',
+          icon: 'fa fa-user',
         },
         {
-          href: "/myprojects",
-          title: "My Projects",
-          icon: "fa fa-chart-area",
+          href: '/myprojects',
+          title: 'My Projects',
+          icon: 'fa fa-chart-area',
         },
         {
-          href: "/search",
-          title: "Search for Projects",
-          icon: "fa fa-search",
+          href: '/search',
+          title: 'Search for Projects',
+          icon: 'fa fa-search',
         },
         {
-          href: "/conversations",
-          title: "Conversations",
-          icon: "fa fa-comment",
+          href: '/conversations',
+          title: 'Conversations',
+          icon: 'fa fa-comment',
         },
         {
-          href: "/new-project",
-          title: "Create New Project",
-          icon: "fa fa-plus",
+          href: '/new-project',
+          title: 'Create New Project',
+          icon: 'fa fa-plus',
         },
         {
-          title: "Logout",
-          icon: "fa fa-user-times",
+          title: 'Logout',
+          icon: 'fa fa-user-times',
         },
       ],
     };
@@ -73,17 +73,17 @@ export default {
     async setUser() {
       const accessToken = await this.$auth.getTokenSilently();
       User.get(this.$auth.user.email, accessToken).then((event) => {
-        this.$store.commit("updateCurrentUser", event.data);
+        this.$store.commit('updateCurrentUser', event.data);
       });
     },
     onToggleCollapse() {
       this.isNavBarOpen = !this.isNavBarOpen;
-      document.getElementById("fade-to-black").style.display = this.isNavBarOpen
-        ? "block"
-        : "none";
+      document.getElementById('fade-to-black').style.display = this.isNavBarOpen
+        ? 'block'
+        : 'none';
     },
     onItemClick(event, item) {
-      if (item.title === "Logout") {
+      if (item.title === 'Logout') {
         this.$auth.logout();
       }
     },

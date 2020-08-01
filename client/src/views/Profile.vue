@@ -35,7 +35,7 @@
             <h3>I have skills in:</h3>
             <ul
               style="list-style:none"
-              v-for="skill in JSON.parse(this.$store.state.currentUser.skills)"
+              v-for="skill in userSkills"
               :key="skill"
             >
               {{
@@ -47,7 +47,7 @@
             <h3>I am affiliated with these projects:</h3>
             <ul
               style="list-style:none"
-              v-for="project in this.$store.state.currentUser.projects"
+              v-for="project in projects"
               :key="project"
             >
               {{
@@ -62,51 +62,42 @@
 </template>
 
 <script>
-/* eslint-disable */
-import User from "../services/Users";
-import Projects from "../services/Projects";
+import Projects from '../services/Projects';
+
 export default {
-  name: "Profile",
+  name: 'Profile',
   data() {
     return {
-      user: {},
       projects: [],
+      userSkills: [],
     };
   },
   methods: {
-    async getUser(id) {
-      // Get the access token from the auth wrapper
+    async setProjects() {
+      this.userSkills = JSON.parse(this.$store.state.currentUser.skills);
+      // this.userSkills = ['lmao'];
+
       const accessToken = await this.$auth.getTokenSilently();
-      const newProjects = [];
-      // Use the eventService to call the getEventSingle method
-      User.get(id, accessToken).then((event) => {
-        this.$set(this, "user", event.data);
-        // Convert string representation of skills to array object
-        const skills = event.data.skills;
-        this.$store.state.currentUser.skills = skills
-          .substring(1, skills.indexOf("]"))
-          .split(", ");
-        // Convert string representation of project_affiliations to array object
-        const project_affiliation = event.data.project_affiliation;
-        this.$store.state.currentUser.project_affiliation = project_affiliation
-          .substring(1, project_affiliation.indexOf("]"))
-          .split(", ");
-        // Loop through project affiliations and get objects by id
-        for (
-          let index = 0;
-          index < this.$store.state.currentUser.project_affiliation.length;
-          index += 1
-        ) {
-          const pid = this.$store.state.currentUser.project_affiliation[index];
-          Projects.get(pid, accessToken).then((newEvent) => {
-            newProjects.push(newEvent.data);
-          });
-        }
-      });
-      this.$set(this, "projects", newProjects);
+      const projectIds = JSON.parse(
+        this.$store.state.currentUser.project_affiliation,
+      );
+      console.log(projectIds);
+      for (let index = 0; index < projectIds; index += 1) {
+        const pid = projectIds[index];
+        Projects.get(pid, accessToken).then((event) => {
+          this.projects.push(event.data);
+        });
+      }
     },
   },
-  mounted() {},
+  mounted() {
+    const checkIsAuthLoaded = setInterval(() => {
+      if (!this.$auth.loading) {
+        this.setProjects();
+        clearInterval(checkIsAuthLoaded);
+      }
+    }, 100);
+  },
 };
 </script>
 
@@ -117,7 +108,6 @@ export default {
   padding: 3px;
   margin-right: auto;
   margin-left: auto;
-  margin-top: 3%;
 }
 .toprow {
   height: 40%;
@@ -180,4 +170,3 @@ h3 {
   color: white;
 }
 </style>
-<<<<<<< HEAD ======= >>>>>>> d786990243c2253d1422ac80ab6ede045cf3953d
