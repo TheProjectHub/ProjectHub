@@ -5,9 +5,7 @@ const User = function(user) {
   this.id = user.id;
   this.first_name = user.first_name;
   this.last_name = user.last_name;
-  this.project_affiliation = user.project_affiliation;
   this.email = user.email;
-  this.password_hash = user.password_hash;
   this.search_filters = user.search_filters;
   this.looking_for_project = user.looking_for_project;
   this.skills = user.skills;
@@ -70,7 +68,7 @@ User.findByEmail = (email, result) => {
 User.updateById = (id, user, result) => {
   sql.query(
     'UPDATE users SET \
-    first_name = ?, last_name = ?, project_affiliation = ?, email = ?, password_hash = ?, \
+    first_name = ?, last_name = ?, project_affiliation = ?, email = ?, \
     search_filters = ?, looking_for_project = ?, skills = ?, bio = ?, conversations = ?, \
     unread_conversations = ?, age = ?, location = ?\
     WHERE id = ?',
@@ -79,7 +77,6 @@ User.updateById = (id, user, result) => {
       user.last_name,
       user.project_affiliation,
       user.email,
-      user.password_hash,
       user.search_filters,
       user.looking_for_project,
       user.skills,

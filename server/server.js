@@ -32,6 +32,9 @@ require('./routes/project.routes')(app);
 require('./routes/user.routes')(app);
 
 // set port, listen for requests
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
   console.log('Server is running on port 3000.');
 });
+
+// WebSocketing for messaging interface
+require('./messaging/messaging')(server)
