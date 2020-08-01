@@ -104,17 +104,27 @@ export default {
     getDate(date) {
       const time = new Date(date);
       const now = new Date();
+
+      // Message sent today
       if (time.getDate() === now.getDate() && time.getDay() === now.getDay()) {
-        return time.toLocaleTimeString();
+        return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       }
+
+      // Message sent yesterday
       if (
         time.getDate() === now.getDate() - 1 && // eslint-disable-line
         time.getDay() === now.getDay() - 1
       ) {
-        return 'Yesterday | ' + time.toLocaleTimeString(); // eslint-disable-line
+        return 'Yesterday | ' + time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // eslint-disable-line
       }
+
       const dateWithYear = time.toLocaleDateString();
-      return dateWithYear.substring(0, dateWithYear.lastIndexOf('/')) + ' | ' + time.toLocaleTimeString(); // eslint-disable-line
+      // return MM/DD | time
+      return (
+        dateWithYear.substring(0, dateWithYear.lastIndexOf('/')) + // eslint-disable-line
+        ' | ' + // eslint-disable-line
+        time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      );
     },
     scrollToBottom() {
       setTimeout(() => {
@@ -138,9 +148,9 @@ export default {
       for (let i = 0; i < this.conversations.length; i += 1) {
         Conversation.get(this.conversations[i], accessToken).then(
           (
-            event, // eslint-disable-line
-          ) => this.conversationNames.push(event.data.name), // eslint-disable-line
-        ); // eslint-disable-line
+            event,
+          ) => this.conversationNames.push(event.data.name),
+        );
       }
     },
     sendMessage(e) {
