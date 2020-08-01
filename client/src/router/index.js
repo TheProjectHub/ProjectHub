@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+
 import Home from '../views/Home.vue';
 import About from '../views/About.vue';
+import Messaging from '../views/Messaging.vue';
 import NewProject from '../views/NewProject.vue';
 
 import { authGuard } from '../auth/authGuard';
@@ -18,6 +20,12 @@ const routes = [
     path: '/about',
     name: 'About',
     component: About,
+    beforeEnter: authGuard,
+  },
+  {
+    path: '/messaging',
+    name: 'Messaging',
+    component: Messaging,
     beforeEnter: authGuard,
   },
   {

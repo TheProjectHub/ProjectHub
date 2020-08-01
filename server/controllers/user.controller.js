@@ -39,6 +39,7 @@ exports.create = (req, res) => {
 
 // Find a single user with a userId
 exports.getUser = (req, res) => {
+  console.log(req.params.identifier)
   if (req.params.identifier.includes('@')) {
     User.findByEmail(req.params.identifier, (err, data) => {
       if (err) {
