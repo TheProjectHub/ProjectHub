@@ -35,8 +35,8 @@
             <h3>I have skills in:</h3>
             <ul
               style="list-style:none"
-              v-for="skill in userSkills"
-              :key="skill"
+              v-for="(skill, index) in userSkills"
+              :key="index"
             >
               {{
                 skill
@@ -47,8 +47,8 @@
             <h3>I am affiliated with these projects:</h3>
             <ul
               style="list-style:none"
-              v-for="project in projects"
-              :key="project"
+              v-for="(project, index) in projects"
+              :key="index"
             >
               {{
                 project.name
@@ -74,14 +74,19 @@ export default {
   },
   methods: {
     async setProjects() {
-      this.userSkills = JSON.parse(this.$store.state.currentUser.skills);
-      // this.userSkills = ['lmao'];
+      const userSkills = this.$store.state.currentUser.skills;
+      try {
+        this.userSkills = JSON.parse(userSkills);
+      } catch (error) {
+        this.userSkills = userSkills
+          .substring(1, userSkills.indexOf(']'))
+          .split(', ');
+      }
 
       const accessToken = await this.$auth.getTokenSilently();
       const projectIds = JSON.parse(
         this.$store.state.currentUser.project_affiliation,
       );
-      console.log(projectIds);
       for (let index = 0; index < projectIds; index += 1) {
         const pid = projectIds[index];
         Projects.get(pid, accessToken).then((event) => {
@@ -92,7 +97,10 @@ export default {
   },
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
-      if (!this.$auth.loading) {
+      if (
+        this.$store.state.currentUser.project_affiliation && // eslint-disable-line
+        this.$store.state.currentUser.skills
+      ) {
         this.setProjects();
         clearInterval(checkIsAuthLoaded);
       }
