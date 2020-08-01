@@ -74,10 +74,9 @@ export default {
     },
     async submitProject() {
       if (this.isNameTaken(this.form.projectName) && this.form.name) {
-        alert(`The name: ${this.form.projectName} is taken!`);
+        alert(`The name: ${this.form.projectName} is taken!`); // eslint-disable-line
       } else {
         const accessToken = await this.$auth.getTokenSilently();
-        console.log(accessToken);
 
         const project = {
           members: JSON.stringify([this.$store.state.currentUser.id]),

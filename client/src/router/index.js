@@ -6,6 +6,8 @@ import About from '../views/About.vue';
 import Messaging from '../views/Messaging.vue';
 import NewProject from '../views/NewProject.vue';
 import Profile from '../views/Profile.vue';
+import Signup from '../views/Signup.vue';
+import LoginCallback from '../views/LoginCallback.vue';
 
 import { authGuard } from '../auth/authGuard';
 
@@ -24,6 +26,11 @@ const routes = [
     beforeEnter: authGuard,
   },
   {
+    path: '/logincallback',
+    name: 'LoginCallback',
+    component: LoginCallback,
+  },
+  {
     path: '/messaging',
     name: 'Messaging',
     component: Messaging,
@@ -39,6 +46,11 @@ const routes = [
     name: 'Profile',
     component: Profile,
     beforeEnter: authGuard,
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: Signup,
   },
 ];
 
