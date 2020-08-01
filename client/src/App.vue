@@ -110,6 +110,7 @@ export default {
 
 #nav {
   padding: 30px;
+  display: none;
 }
 
 #nav a {
