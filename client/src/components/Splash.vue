@@ -79,7 +79,7 @@ export default {
   components: {},
   methods: {
     login() {
-      this.$auth.loginWithRedirect();
+      this.$auth.loginWithRedirect('/logincallback');
     },
     logout() {
       this.$auth.logout({
