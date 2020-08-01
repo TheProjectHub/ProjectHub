@@ -2,10 +2,6 @@
   <html>
     <head>
       <title>Welcome to Projectly</title>
-      <!-- <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap"
-        rel="stylesheet"
-      /> -->
       <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Comfortaa:wght@700&family=Lato&family=Patrick+Hand&display=swap"
         rel="stylesheet"
@@ -19,7 +15,9 @@
             style="background-color: rgba(255, 255, 255, 0.5);
             color: transparent; border-radius: 25px; padding-bottom: 10px"
           >
-            <span style="font-family: Comfortaa, cursive; padding: 10px" class="gradient"
+            <span
+              style="font-family: Comfortaa, cursive; padding: 10px"
+              class="gradient"
               >Projectly</span
             >
           </span>
@@ -46,7 +44,6 @@
       </div>
     </div>
     <div class="login-button text-center">
-      <!-- <p v-if="$auth.isAuthenticated">What's up, {{ $auth.user.name }}!</p> -->
       <div v-if="!$auth.loading">
         <!-- show login when not authenticated -->
         <button
@@ -73,21 +70,14 @@
 </template>
 
 <script>
-import User from '../services/Users';
 
 export default {
-  name: 'Brandname',
+  name: 'Splash',
   props: {
-    currentUser: { first_name: '' },
     msg: String,
   },
   components: {},
   methods: {
-    getName(id) {
-      User.get(id).then((res) => {
-        this.currentUser = res.data;
-      });
-    },
     login() {
       this.$auth.loginWithRedirect();
     },
@@ -96,9 +86,6 @@ export default {
         returnTo: window.location.origin,
       });
     },
-  },
-  mounted() {
-    this.getName(1);
   },
 };
 </script>

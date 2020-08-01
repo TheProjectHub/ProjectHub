@@ -13,18 +13,31 @@
 
 <script>
 import Splash from '../components/Splash.vue';
+import User from '../services/Users';
 
 export default {
   name: 'Home',
   components: {
     Splash,
   },
+  methods: {
+    async setCurrentUser() {
+      const accessToken = await this.$auth.getTokenSilently();
+      // Use the eventService to call the getEventSingle method
+      User.get(this.$auth.user.email, accessToken).then((event) => {
+        this.$store.commit('updateCurrentUser', event.data);
+      });
+    },
+  },
+  mounted() {
+    setTimeout(() => this.setCurrentUser(), 2000);
+  },
 };
 </script>
 
 <style>
 body {
-  background: linear-gradient(-45deg, #fbff21, #23a6d5, #500000) fixed;
+  background: linear-gradient(-45deg, #239472, #23a6d5, #6d1919) fixed;
   background-size: 400% 400%;
   animation: gradient 45s ease infinite;
 }
