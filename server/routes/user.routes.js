@@ -5,6 +5,20 @@ module.exports = (app) => {
   // Create a new user
   app.post('/users', auth.checkJwt, users.create);
 
+  // Invite user to new conversation
+  app.post(
+    '/users/invitetoconversation',
+    auth.checkJwt,
+    users.inviteToConversation,
+  );
+
+  // Add conversation to user's conversation list
+  app.post(
+    '/users/addconversationtouser',
+    auth.checkJwt,
+    users.addConversationToUser,
+  );
+
   // Retrieve a single user with userId
   app.get('/users/:identifier', auth.checkJwt, users.getUser);
 

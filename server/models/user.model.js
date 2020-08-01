@@ -1,7 +1,7 @@
 const sql = require('./db');
 
 // constructor
-const User = function(user) {
+const User = function (user) {
   this.id = user.id;
   this.first_name = user.first_name;
   this.last_name = user.last_name;
@@ -104,6 +104,82 @@ User.updateById = (id, user, result) => {
 
       console.log('updated user: ', { id: id, ...user });
       result(null, { id: id, ...user });
+    },
+  );
+};
+
+User.inviteToConversation = (email, convId, result) => {
+  sql.query(
+    `select requested_conversations from users where email = \'${email}\'`,
+    (err, res) => {
+      if (err) {
+        console.log('error: ', err);
+        result(null, err);
+        return;
+      }
+
+      if (res.length) {
+        let reqConvos = JSON.parse(res[0].requested_conversations);
+        if (reqConvos.includes(convId)) {
+          result(null, email);
+          return
+        }
+        reqConvos.push(convId);
+        sql.query(
+          'update users set requested_conversations = ? where email = ?',
+          [JSON.stringify(reqConvos), email],
+          (err, res) => {
+            if (err) {
+              console.log('error: ', err);
+              result(null, err);
+              return;
+            }
+
+            console.log('updated user: ', email);
+            result(null, email);
+          },
+        );
+      } else {
+        result({ kind: 'not_found' }, null);
+      }
+    },
+  );
+};
+
+User.addConversationToUser = (id, convId, result) => {
+  sql.query(
+    `select conversations from users where id = \'${id}\'`,
+    (err, res) => {
+      if (err) {
+        console.log('error: ', err);
+        result(null, err);
+        return;
+      }
+
+      if (res.length) {
+        let convos = JSON.parse(res[0].conversations);
+        if (convos.includes(convId)) {
+          result(null, id);
+          return;
+        }
+        convos.push(convId);
+        sql.query(
+          `update users set conversations = ? where id = ${id}`,
+          [JSON.stringify(convos)],
+          (err, res) => {
+            if (err) {
+              console.log('error: ', err);
+              result(null, err);
+              return;
+            }
+
+            console.log('updated user: ', id);
+            result(null, res[0]);
+          },
+        );
+      } else {
+        result({ kind: 'not_found' }, null);
+      }
     },
   );
 };

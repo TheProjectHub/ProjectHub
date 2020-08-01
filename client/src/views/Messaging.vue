@@ -32,6 +32,40 @@
                   </div>
                 </div>
               </div>
+              <button
+                v-if="!isCreatingNewConversation"
+                @click="collectEmails"
+                type="button"
+                class="btn btn-primary"
+                style="padding-bottom: 5vh;
+                position: absolute; bottom: 0px;
+                width: 39vw; text-align: center;"
+              >
+                Create new Conversation
+              </button>
+              <form @submit.prevent="setName" v-if="isCollectingEmails">
+                <input
+                  class="form-control"
+                  placeholder="Enter email(s)"
+                  style="padding-bottom: 2vh;
+                  position: absolute; bottom: 0px;
+                  height: 12vh; font-size: 2vh"
+                  v-model="invitees"
+                />
+              </form>
+              <form
+                @submit.prevent="createNewConversation"
+                v-if="isSettingName"
+              >
+                <input
+                  class="form-control"
+                  placeholder="Enter new conversation name"
+                  style="padding-bottom: 2vh;
+                  position: absolute; bottom: 0px;
+                  height: 12vh; font-size: 2vh"
+                  v-model="newConversationName"
+                />
+              </form>
             </div>
           </div>
           <div class="mesgs">
@@ -95,6 +129,7 @@
 /* eslint-disable */
 import io from 'socket.io-client';
 import Conversation from '../services/Conversations';
+import User from '../services/Users';
 
 export default {
   data() {
@@ -105,9 +140,50 @@ export default {
       conversationId: 0,
       conversationNames: [],
       conversations: [],
+      isCreatingNewConversation: false,
+      isCollectingEmails: false,
+      isSettingName: false,
+      invitees: '',
+      newConversationName: '',
     };
   },
   methods: {
+    collectEmails() {
+      this.isCollectingEmails = true;
+    },
+    setName() {
+      this.isSettingName = true;
+    },
+    async createNewConversation() {
+      const accessToken = await this.$auth.getTokenSilently();
+
+      Conversation.create(
+        {
+          users: JSON.stringify([this.$store.state.currentUser.id]),
+          name: this.newConversationName,
+        },
+        accessToken,
+      ).then((event) => {
+        this.conversations.push(event.data.id);
+        console.log(event.data);
+        console.log(`new convo id: ${event.data.id}`);
+        User.addConversationToUser(
+          this.$store.state.currentUser.id,
+          event.data.id,
+          accessToken,
+        ).then((event) => {
+          this.setConversationNames();
+        });
+
+        const emails = this.invitees.split(', ');
+        emails.forEach((email) => {
+          User.inviteUserToConversation(email, event.data.id, accessToken);
+        });
+        this.isCollectingEmails = false;
+        this.isCreatingNewConversation = false;
+        this.isSettingName = false;
+      });
+    },
     getDate(date) {
       const time = new Date(date);
       const now = new Date();
@@ -156,6 +232,7 @@ export default {
       });
     },
     async setConversationNames() {
+      this.conversationNames = [];
       const accessToken = await this.$auth.getTokenSilently();
 
       for (let i = 0; i < this.conversations.length; i += 1) {
@@ -310,6 +387,7 @@ img {
 }
 .conversations {
   height: 100vh;
+  position: relative;
   /* overflow-y: scroll; */
 }
 

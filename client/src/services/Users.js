@@ -9,7 +9,31 @@ class Users {
       },
     });
   }
-  
+
+  inviteUserToConversation(email, convId, token) {
+    return http.post(
+      '/users/invitetoconversation',
+      { email: email, convId: convId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+  }
+
+  addConversationToUser(id, convId, token) {
+    return http.post(
+      '/users/addconversationtouser',
+      { id: id, convId: convId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+  }
+
   create(data, token) {
     return http.post('/users', data, {
       headers: {
