@@ -355,7 +355,6 @@ img {
 }
 .outgoing-msg {
   overflow: hidden;
-  height: 9vh;
 }
 .sent-msg {
   float: right;
@@ -397,8 +396,9 @@ img {
 }
 
 .messages {
-  height: 10vh;
   font-size: 2.5vh;
+  padding-bottom: 1vh;
+  padding-right: 1vw;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
