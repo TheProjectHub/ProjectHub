@@ -10,7 +10,19 @@
                 v-bind:key="index"
               >
                 <div
+                  v-if="conversationId == conversations[index]"
                   class="chat-list active-chat conversation-preview"
+                  @click="setMessages(conversations[index])"
+                >
+                  <div class="chat-people">
+                    <div class="chat-ib">
+                      <h5>{{ name }}</h5>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  v-else
+                  class="chat-list conversation-preview"
                   @click="setMessages(conversations[index])"
                 >
                   <div class="chat-people">
@@ -24,19 +36,25 @@
           </div>
           <div class="mesgs">
             <div class="msg-history custom-scrollbar" id="messages">
-              <div class="messages" v-for="msg in this.messages" :key="msg">
+              <div
+                class="messages"
+                v-for="(msg, index) in this.messages"
+                v-bind:key="index"
+              >
                 <div class="incoming-msg" v-if="!isMyMessage(msg)">
                   <div class="received-msg">
                     <div class="received-withd-msg">
                       <p>{{ msg.text }}</p>
-                      <span class="time-date"> {{ msg.timestamp }}</span>
+                      <span class="time-date">
+                        {{ getDate(msg.timestamp) }}</span
+                      >
                     </div>
                   </div>
                 </div>
                 <div class="outgoing-msg" v-else>
                   <div class="sent-msg">
                     <p>{{ msg.text }}</p>
-                    <span class="time-date"> {{ msg.timestamp }}</span>
+                    <span class="time-date"> {{ getDate(msg.timestamp) }}</span>
                   </div>
                 </div>
               </div>
@@ -83,11 +101,26 @@ export default {
     };
   },
   methods: {
+    getDate(date) {
+      const time = new Date(date);
+      const now = new Date();
+      if (time.getDate() === now.getDate() && time.getDay() === now.getDay()) {
+        return time.toLocaleTimeString();
+      }
+      if (
+        time.getDate() === now.getDate() - 1 && // eslint-disable-line
+        time.getDay() === now.getDay() - 1
+      ) {
+        return 'Yesterday | ' + time.toLocaleTimeString(); // eslint-disable-line
+      }
+      const dateWithYear = time.toLocaleDateString();
+      return dateWithYear.substring(0, dateWithYear.lastIndexOf('/')) + ' | ' + time.toLocaleTimeString(); // eslint-disable-line
+    },
     scrollToBottom() {
       setTimeout(() => {
         var objDiv = document.getElementById('messages'); // eslint-disable-line
         objDiv.scrollTop = objDiv.scrollHeight;
-      }, 10);
+      }, 1);
     },
     async setMessages(id) {
       const accessToken = await this.$auth.getTokenSilently();
@@ -152,16 +185,10 @@ export default {
       }
     }, 100);
   },
-  updated() {
-    // var objDiv = document.getElementById('messages'); // eslint-disable-line
-    // objDiv.scrollTop = objDiv.scrollHeight;
-  },
 };
 </script>
 
 <style scoped>
-.body {
-}
 .container {
   background-color: white;
   max-width: 100vw;
@@ -257,12 +284,19 @@ img {
   padding-top: 1.6vh;
   padding-left: 2.4vw;
 }
+.chat-list:hover {
+  background: #f3f3f3;
+}
 .conversations {
   height: 100vh;
   /* overflow-y: scroll; */
 }
 
 .active-chat {
+  background: #ebebeb;
+}
+
+.active-chat:hover {
   background: #ebebeb;
 }
 
