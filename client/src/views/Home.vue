@@ -36,7 +36,7 @@ export default {
 </script>
 
 <style>
-/* body {
+body {
   background: linear-gradient(-45deg, #239472, #23a6d5, #6d1919) fixed;
   background-size: 400% 400%;
   animation: gradient 45s ease infinite;
@@ -52,5 +52,5 @@ export default {
   100% {
     background-position: 0% 50%;
   }
-} */
+}
 </style>

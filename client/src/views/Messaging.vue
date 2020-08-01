@@ -6,17 +6,14 @@
           <div class="conversations-inbox">
             <div class="conversations">
               <div
-                v-for="name in this.conversationNames"
-                v-bind:key="name"
+                v-for="(name, index) in conversationNames"
+                v-bind:key="index"
               >
-                <div class="chat-list active-chat conversation-preview">
+                <div
+                  class="chat-list active-chat conversation-preview"
+                  @click="setMessages(conversations[index])"
+                >
                   <div class="chat-people">
-                    <div class="chat-img">
-                      <img
-                        src="https://ptetutorials.com/images/user-profile.png"
-                        alt="sunil"
-                      />
-                    </div>
                     <div class="chat-ib">
                       <h5>{{ name }}</h5>
                     </div>
@@ -26,74 +23,41 @@
             </div>
           </div>
           <div class="mesgs">
-            <div class="msg-history">
-              <div class="incoming-msg">
-                <div class="incoming-msg-img">
-                  <img
-                    src="https://ptetutorials.com/images/user-profile.png"
-                    alt="sunil"
-                  />
-                </div>
-                <div class="received-msg">
-                  <div class="received-withd-msg">
-                    <p>Test, which is a new approach to have</p>
-                    <span class="time-date"> 11:01 AM | Yesterday</span>
+            <div class="msg-history custom-scrollbar" id="messages">
+              <div class="messages" v-for="msg in this.messages" :key="msg">
+                <div class="incoming-msg" v-if="!isMyMessage(msg)">
+                  <div class="received-msg">
+                    <div class="received-withd-msg">
+                      <p>{{ msg.text }}</p>
+                      <span class="time-date"> {{ msg.timestamp }}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="outgoing-msg">
-                <div class="sent-msg">
-                  <p>Apollo University, Delhi, India Test</p>
-                  <span class="time-date"> 11:01 AM | Today</span>
-                </div>
-              </div>
-              <div class="outgoing-msg">
-                <div class="sent-msg">
-                  <p>Apollo University, Delhi, India Test</p>
-                  <span class="time-date"> 11:01 AM | Today</span>
-                </div>
-              </div>
-              <div class="outgoing-msg">
-                <div class="sent-msg">
-                  <p>Apollo University, Delhi, India Test</p>
-                  <span class="time-date"> 11:01 AM | Today</span>
-                </div>
-              </div>
-              <div class="outgoing-msg">
-                <div class="sent-msg">
-                  <p>Apollo University, Delhi, India Test</p>
-                  <span class="time-date"> 11:01 AM | Today</span>
-                </div>
-              </div>
-              <div class="outgoing-msg">
-                <div class="sent-msg">
-                  <p>Apollo University, Delhi, India Test</p>
-                  <span class="time-date"> 11:01 AM | Today</span>
-                </div>
-              </div>
-              <div class="outgoing-msg">
-                <div class="sent-msg">
-                  <p>Apollo University, Delhi, India Test</p>
-                  <span class="time-date"> 11:01 AM | Today</span>
-                </div>
-              </div>
-              <div class="outgoing-msg">
-                <div class="sent-msg">
-                  <p>Apollo University, Delhi, India Test</p>
-                  <span class="time-date"> 11:01 AM | Today</span>
+                <div class="outgoing-msg" v-else>
+                  <div class="sent-msg">
+                    <p>{{ msg.text }}</p>
+                    <span class="time-date"> {{ msg.timestamp }}</span>
+                  </div>
                 </div>
               </div>
             </div>
             <div class="type-msg">
               <div class="input-msg-write">
-                <input
-                  type="text"
-                  class="write-msg"
-                  placeholder="Type a message"
-                />
-                <button class="msg-send-btn" type="button">
-                  <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
-                </button>
+                <form @submit.prevent="sendMessage">
+                  <input
+                    type="text"
+                    v-model="message"
+                    class="write-msg"
+                    placeholder="Type a message"
+                  />
+                  <button
+                    class="msg-send-btn"
+                    type="button"
+                    @click="sendMessage"
+                  >
+                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -119,6 +83,12 @@ export default {
     };
   },
   methods: {
+    scrollToBottom() {
+      setTimeout(() => {
+        var objDiv = document.getElementById('messages'); // eslint-disable-line
+        objDiv.scrollTop = objDiv.scrollHeight;
+      }, 10);
+    },
     async setMessages(id) {
       const accessToken = await this.$auth.getTokenSilently();
 
@@ -126,14 +96,17 @@ export default {
         this.$set(this, 'messages', JSON.parse(event.data.messages));
         this.conversationName = event.data.name;
         this.conversationId = event.data.id;
+        this.scrollToBottom();
       });
     },
     async setConversationNames() {
       const accessToken = await this.$auth.getTokenSilently();
 
       for (let i = 0; i < this.conversations.length; i += 1) {
-        Conversation.get(this.conversations[i], accessToken).then((event) => // eslint-disable-line
-          this.conversationNames.push(event.data.name), // eslint-disable-line
+        Conversation.get(this.conversations[i], accessToken).then(
+          (
+            event, // eslint-disable-line
+          ) => this.conversationNames.push(event.data.name), // eslint-disable-line
         ); // eslint-disable-line
       }
     },
@@ -150,6 +123,7 @@ export default {
         conversationId: this.conversationId,
       });
       this.message = '';
+      this.scrollToBottom();
     },
     isMyMessage(msg) {
       return (
@@ -178,11 +152,18 @@ export default {
       }
     }, 100);
   },
+  updated() {
+    // var objDiv = document.getElementById('messages'); // eslint-disable-line
+    // objDiv.scrollTop = objDiv.scrollHeight;
+  },
 };
 </script>
 
 <style scoped>
+.body {
+}
 .container {
+  background-color: white;
   max-width: 100vw;
   max-height: 100vh;
   margin: auto;
@@ -248,12 +229,11 @@ img {
 }
 
 .chat-ib h5 {
-  font-size: 1.5vh;
+  font-size: 3vh;
   color: #464646;
-  margin: 0 0 .8vh 0;
 }
 .chat-ib h5 span {
-  font-size: 1.3vh;
+  font-size: 2vh;
   float: right;
 }
 .chat-ib p {
@@ -261,13 +241,8 @@ img {
   color: #989898;
   margin: auto;
 }
-.chat-img {
-  float: left;
-  width: 11%;
-}
 .chat-ib {
   float: left;
-  padding: 0 0 0 4vw;
   width: 88%;
 }
 
@@ -279,11 +254,11 @@ img {
 .chat-list {
   border-bottom: 1px solid #c4c4c4;
   margin: 0;
-  padding-top: 2.5vh;
+  padding-top: 1.6vh;
   padding-left: 2.4vw;
 }
 .conversations {
-  height: 85vh;
+  height: 100vh;
   /* overflow-y: scroll; */
 }
 
@@ -293,6 +268,7 @@ img {
 
 .incoming-msg-img {
   display: inline-block;
+  height: 7vh;
   width: 6%;
 }
 .received-msg {
@@ -305,7 +281,6 @@ img {
   background: #ebebeb none repeat scroll 0 0;
   border-radius: 3px;
   color: #646464;
-  font-size: 14px;
   margin: 0;
   padding: 5px 10px 5px 12px;
   width: 100%;
@@ -313,8 +288,8 @@ img {
 .time-date {
   color: #747474;
   display: block;
-  font-size: 12px;
-  margin: 8px 0 0;
+  font-size: 2vh;
+  margin: 4px 0 0 4px;
 }
 .received-withd-msg {
   width: 57%;
@@ -329,7 +304,6 @@ img {
 .sent-msg p {
   background: #05728f none repeat scroll 0 0;
   border-radius: 3px;
-  font-size: 14px;
   margin: 0;
   color: #fff;
   padding: 5px 10px 5px 12px;
@@ -337,7 +311,7 @@ img {
 }
 .outgoing-msg {
   overflow: hidden;
-  margin: 26px 0 26px;
+  height: 9vh;
 }
 .sent-msg {
   float: right;
@@ -347,7 +321,7 @@ img {
   background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
   border: medium none;
   color: #4c4c4c;
-  font-size: 15px;
+  font-size: 2.5vh;
   min-height: 48px;
   width: 100%;
 }
@@ -372,8 +346,34 @@ img {
 .messaging {
   padding: 0 0 0 0;
 }
+
 .msg-history {
-  height: 80vh;
+  height: 84vh;
   overflow-y: auto;
+}
+
+.messages {
+  height: 10vh;
+  font-size: 2.5vh;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  /* visibility: hidden; */
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  /* visibility: hidden; */
+  width: 12px;
+  background-color: #f5f5f5;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  /* visibility: hidden; */
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #555;
 }
 </style>
