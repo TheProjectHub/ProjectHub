@@ -29,9 +29,10 @@ Vue.use(Auth0Plugin, {
     router.push(
       appState && appState.targetUrl
         ? appState.targetUrl
-        : window.location.pathname // eslint-disable-line
+        : window.location.pathname, // eslint-disable-line
     );
   },
+  redirectUri: 'http://localhost:8080/logincallback',
 });
 
 Vue.config.productionTip = false;
