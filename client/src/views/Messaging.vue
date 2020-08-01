@@ -41,6 +41,12 @@
                 v-for="(msg, index) in this.messages"
                 v-bind:key="index"
               >
+                <p
+                  v-if="!isMyMessage(msg)"
+                  style="padding-left: 1.2vw; margin-bottom: 2px;"
+                >
+                  {{ msg.name }}
+                </p>
                 <div class="incoming-msg" v-if="!isMyMessage(msg)">
                   <div class="received-msg">
                     <div class="received-withd-msg">
@@ -86,6 +92,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import io from 'socket.io-client';
 import Conversation from '../services/Conversations';
 
@@ -107,28 +114,34 @@ export default {
 
       // Message sent today
       if (time.getDate() === now.getDate() && time.getDay() === now.getDay()) {
-        return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return time.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        });
       }
 
       // Message sent yesterday
       if (
-        time.getDate() === now.getDate() - 1 && // eslint-disable-line
+        time.getDate() === now.getDate() - 1 &&
         time.getDay() === now.getDay() - 1
       ) {
-        return 'Yesterday | ' + time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // eslint-disable-line
+        return (
+          'Yesterday | ' +
+          time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        );
       }
 
       const dateWithYear = time.toLocaleDateString();
       // return MM/DD | time
       return (
-        dateWithYear.substring(0, dateWithYear.lastIndexOf('/')) + // eslint-disable-line
-        ' | ' + // eslint-disable-line
+        dateWithYear.substring(0, dateWithYear.lastIndexOf('/')) +
+        ' | ' +
         time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       );
     },
     scrollToBottom() {
       setTimeout(() => {
-        var objDiv = document.getElementById('messages'); // eslint-disable-line
+        var objDiv = document.getElementById('messages');
         objDiv.scrollTop = objDiv.scrollHeight;
       }, 1);
     },
@@ -146,10 +159,8 @@ export default {
       const accessToken = await this.$auth.getTokenSilently();
 
       for (let i = 0; i < this.conversations.length; i += 1) {
-        Conversation.get(this.conversations[i], accessToken).then(
-          (
-            event,
-          ) => this.conversationNames.push(event.data.name),
+        Conversation.get(this.conversations[i], accessToken).then((event) =>
+          this.conversationNames.push(event.data.name),
         );
       }
     },
@@ -170,7 +181,7 @@ export default {
     },
     isMyMessage(msg) {
       return (
-        msg.name === // eslint-disable-line
+        msg.name ===
         `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`
       );
     },
@@ -326,7 +337,7 @@ img {
   border-radius: 3px;
   color: #646464;
   margin: 0;
-  padding: 5px 10px 5px 12px;
+  padding: 5px 10px 5px 1vw;
   width: 100%;
 }
 .time-date {
