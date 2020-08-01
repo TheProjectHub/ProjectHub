@@ -25,6 +25,7 @@ exports.create = (req, res) => {
     unread_conversations: req.body.unread_conversations,
     age: req.body.age,
     location: req.body.location,
+    requested_conversations: req.body.requested_conversations,
   });
 
   // Save user in the database

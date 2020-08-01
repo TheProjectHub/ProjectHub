@@ -16,6 +16,7 @@ const User = function(user) {
   this.unread_conversations = user.unread_conversations;
   this.age = user.age;
   this.location = user.location;
+  this.requested_conversations = user.requested_conversations;
 };
 
 User.create = (user, result) => {
@@ -72,7 +73,7 @@ User.updateById = (id, user, result) => {
     'UPDATE users SET \
     first_name = ?, last_name = ?, project_affiliation = ?, email = ?, password_hash = ?, \
     search_filters = ?, looking_for_project = ?, skills = ?, bio = ?, conversations = ?, \
-    unread_conversations = ?, age = ?, location = ?\
+    unread_conversations = ?, age = ?, location = ?, requested_conversations = ?\
     WHERE id = ?',
     [
       user.first_name,
@@ -89,6 +90,7 @@ User.updateById = (id, user, result) => {
       user.age,
       user.location,
       user.id,
+      user.requested_conversations,
     ],
     (err, res) => {
       if (err) {
@@ -105,7 +107,7 @@ User.updateById = (id, user, result) => {
 
       console.log('updated user: ', { id: id, ...user });
       result(null, { id: id, ...user });
-    }
+    },
   );
 };
 
