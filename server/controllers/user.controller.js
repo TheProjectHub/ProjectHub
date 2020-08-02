@@ -39,7 +39,6 @@ exports.create = (req, res) => {
 
 // Find a single user with a userId
 exports.getUser = (req, res) => {
-  console.log(req.params.identifier);
   if (req.params.identifier.includes('@')) {
     User.findByEmail(req.params.identifier, (err, data) => {
       if (err) {
@@ -107,7 +106,6 @@ exports.inviteToConversation = (req, res) => {
   User.inviteToConversation(req.body.email, req.body.convId, (err, data) => {
     if (err) {
       if (err.kind === 'not_found') {
-        console.log(req.params);
         res.status(404).send({
           message: `No found User with email ${req.body.email}.`,
         });
@@ -134,7 +132,6 @@ exports.rejectConversationRequest = (req, res) => {
     (err, data) => {
       if (err) {
         if (err.kind === 'not_found') {
-          console.log(req.params);
           res.status(404).send({
             message: `No found User with id ${req.body.id}.`,
           });
@@ -159,7 +156,6 @@ exports.addConversationToUser = (req, res) => {
   User.addConversationToUser(req.body.id, req.body.convId, (err, data) => {
     if (err) {
       if (err.kind === 'not_found') {
-        console.log(req.params);
         res.status(404).send({
           message: `No found User with id ${req.body.id}.`,
         });
