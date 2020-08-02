@@ -1,33 +1,54 @@
 <template>
   <html>
+    <!-- this needs some serious styling -->
     <div class="main">
       <div class="row" style="padding-top: 20px">
         <div class="col text-info1">
+          <h1>{{ this.project.name }}</h1>
+          <p v-if="this.project.looking_for_new_members">
+            is looking for applicants!
+          </p>
           <div class="row">
-            <h2>Project name: {{ this.project.name }}</h2>
-          </div>
-          <div class="row">
-            <p>Description: {{ this.project.description }}</p>
-          </div>
-          <div class="row">
-            <p>Tags:</p>
-            <p v-for="f in this.project.search_filters" :key="f">
+            <p
+              v-for="(f, i) in JSON.parse(this.project.search_filters)"
+              :key="i"
+              class="tag-label"
+            >
               {{ f }}
             </p>
           </div>
           <div class="row">
-            <p>Links: {{ this.project.links }}</p>
+            <p>Description: {{ this.project.description }}</p>
+          </div>
+          <div>
+            <p>Applicants:</p>
+            <p v-for="(applicant, i) in this.projectApplicants" :key="i">
+              {{ applicant.user.first_name }} {{ applicant.user.last_name }}
+              <br />
+              Votes: {{ applicant.appObj.votes }}
+              <br />
+            </p>
           </div>
         </div>
-        <div class="col text-info2">
-          <div class="row">
-            <p>Members: {{ this.project.members }}</p>
+        <div class="col">
+          <div>
+            <p>Members:</p>
+            <p v-for="(m, i) in projectMembers" :key="i">
+              {{ m.first_name }} {{ m.last_name }}
+              <br />
+            </p>
           </div>
-          <div class="row">
-            <p>Applicants: {{ this.project.applicants }}</p>
-          </div>
-          <div v-if="this.project.looking_for_new_members" class="row">
-            <p>Applications are open!</p>
+          <br />
+          <div>
+            <p>Links:</p>
+            <a
+              v-for="(link, i) in JSON.parse(this.project.links)"
+              :key="i"
+              :href="goodLink(link)"
+            >
+              {{ link }}
+              <br />
+            </a>
           </div>
         </div>
       </div>
@@ -37,7 +58,7 @@
 
 <script>
 /* eslint-disable */
-import User from '../services/Users';
+import Users from '../services/Users';
 import Projects from '../services/Projects';
 
 export default {
@@ -45,17 +66,35 @@ export default {
   data() {
     return {
       project: {},
+      projectMembers: [],
+      projectApplicants: [],
     };
   },
   methods: {
     async getProject(id) {
-        // Get the access token from the auth wrapper
+      // Get the access token from the auth wrapper
       const accessToken = await this.$auth.getTokenSilently();
 
-      Projects.get(id, accessToken).then((event) => {
-        console.log(event.data);
-        this.project = event.data;
+      var event = await Projects.get(id, accessToken);
+      this.project = event.data;
+
+      JSON.parse(this.project.members).forEach(async (m) => {
+        var response = await Users.get(m, accessToken);
+        this.projectMembers.push(response.data);
       });
+
+      JSON.parse(this.project.applicants).forEach(async (applicantObject) => {
+        var response = await Users.get(applicantObject['user-id'], accessToken);
+        this.projectApplicants.push({
+          user: response.data,
+          appObj: applicantObject,
+        });
+      });
+    },
+    goodLink(url) {
+      return !(url.startsWith('http://') || url.startsWith('https://'))
+        ? `http://${url}`
+        : url;
     },
   },
   mounted() {
@@ -75,7 +114,16 @@ ul {
   max-width: 83vw;
   margin: auto;
 }
-
+.tag-label {
+  font-size: 15px;
+  font-weight: bold;
+  border-radius: 5px;
+  background-color: rgba(76, 76, 76, 0.3);
+  color: #fff;
+  padding: 5px 8px;
+  border: none;
+  margin: 5px 5px;
+}
 h3 {
   margin: 40px 0 0;
 }
