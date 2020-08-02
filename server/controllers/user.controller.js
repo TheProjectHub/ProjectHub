@@ -39,6 +39,7 @@ exports.create = (req, res) => {
 
 // Find a single user with a userId
 exports.getUser = (req, res) => {
+  // if a email is passed in the request
   if (req.params.identifier.includes('@')) {
     User.findByEmail(req.params.identifier, (err, data) => {
       if (err) {
@@ -54,6 +55,8 @@ exports.getUser = (req, res) => {
         }
       } else res.send(data);
     });
+
+  // if an id is passed in the request
   } else {
     User.findById(req.params.identifier, (err, data) => {
       if (err) {
@@ -80,6 +83,7 @@ exports.update = (req, res) => {
     });
   }
 
+  // Update user in database
   User.updateById(req.params.userId, new User(req.body), (err, data) => {
     if (err) {
       if (err.kind === 'not_found') {
@@ -95,6 +99,7 @@ exports.update = (req, res) => {
   });
 };
 
+// Add a conversation id to a user's requested_conversations arr
 exports.inviteToConversation = (req, res) => {
   // Validate Request
   if (!req.body) {
@@ -103,6 +108,7 @@ exports.inviteToConversation = (req, res) => {
     });
   }
 
+  // Update user with new requested conversation
   User.inviteToConversation(req.body.email, req.body.convId, (err, data) => {
     if (err) {
       if (err.kind === 'not_found') {
@@ -118,6 +124,7 @@ exports.inviteToConversation = (req, res) => {
   });
 };
 
+// Remove a conversation id from a user's requested_conversations arr
 exports.rejectConversationRequest = (req, res) => {
   // Validate Request
   if (!req.body) {
@@ -126,6 +133,7 @@ exports.rejectConversationRequest = (req, res) => {
     });
   }
 
+  // Updated user without requested conversation
   User.rejectConversationRequest(
     req.body.id,
     req.body.convId,
@@ -145,6 +153,7 @@ exports.rejectConversationRequest = (req, res) => {
   );
 };
 
+// Add a conversation id to a user's conversations arr
 exports.addConversationToUser = (req, res) => {
   // Validate Request
   if (!req.body) {
@@ -153,6 +162,7 @@ exports.addConversationToUser = (req, res) => {
     });
   }
 
+  // Update user with new conversation id
   User.addConversationToUser(req.body.id, req.body.convId, (err, data) => {
     if (err) {
       if (err.kind === 'not_found') {

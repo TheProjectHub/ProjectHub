@@ -156,12 +156,12 @@ export default {
       socket: io('localhost:3000'),
       conversationId: 0,
       conversations: [],
+      requestedConversations: [],
       isCreatingNewConversation: false,
       isCollectingEmails: false,
-      isSettingName: false,
       invitees: '',
+      isSettingName: false,
       newConversationName: '',
-      requestedConversations: [],
     };
   },
   methods: {
@@ -228,7 +228,7 @@ export default {
           this.$store.state.currentUser.id,
           event.data.id,
           accessToken,
-        ).then((event) => {
+        ).then(() => {
           this.setCurrentUser();
         });
 
@@ -288,11 +288,9 @@ export default {
         this.scrollToBottom();
       });
     },
-    async setConversations(convos) {
+    async setConversations() {
       this.conversations = [];
-      const convoIds = convos
-        ? JSON.parse(convos)
-        : JSON.parse(this.$store.state.currentUser.conversations);
+      const convoIds = JSON.parse(this.$store.state.currentUser.conversations);
       const accessToken = await this.$auth.getTokenSilently();
 
       convoIds.forEach((id) => {
@@ -304,9 +302,7 @@ export default {
     async setRequestedConversations(reqConvos) {
       this.requestedConversations = [];
       const accessToken = await this.$auth.getTokenSilently();
-      const reqConvoIds = reqConvos
-        ? JSON.parse(reqConvos)
-        : JSON.parse(this.$store.state.currentUser.requested_conversations);
+      const reqConvoIds = JSON.parse(this.$store.state.currentUser.requested_conversations);
 
       reqConvoIds.forEach((id) => {
         Conversation.get(id, accessToken).then((event) => {

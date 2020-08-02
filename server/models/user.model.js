@@ -120,6 +120,8 @@ User.inviteToConversation = (email, convId, result) => {
 
       if (res.length) {
         let reqConvos = JSON.parse(res[0].requested_conversations);
+
+        // if inviting user to a conversation they are already a part of
         if (reqConvos.includes(convId)) {
           result(null, email);
           return;
@@ -136,7 +138,7 @@ User.inviteToConversation = (email, convId, result) => {
             }
 
             console.log('updated user: ', email);
-            result(null, email);
+            result(null, res[0]);
           },
         );
       } else {
@@ -159,6 +161,8 @@ User.addConversationToUser = (id, convId, result) => {
       if (res.length) {
         let convos = JSON.parse(res[0].conversations);
         let reqConvos = JSON.parse(res[0].requested_conversations);
+
+        // find and remove conversation from requested_conversations
         for (var i = 0; i < reqConvos.length; i++) {
           if (reqConvos[i] == convId) {
             reqConvos.splice(i, 1);
@@ -200,6 +204,8 @@ User.rejectConversationRequest = (id, convId, result) => {
 
       if (res.length) {
         let reqConvos = JSON.parse(res[0].requested_conversations);
+
+        // find and remove conversation from requested_conversations
         for (var i = 0; i < reqConvos.length; i++) {
           if (reqConvos[i] == convId) {
             reqConvos.splice(i, 1);
