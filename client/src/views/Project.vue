@@ -1,16 +1,19 @@
 <template>
   <html>
     <div class="main">
-      <div class="row personal-info" style="padding-top: 20px">
+      <div class="row" style="padding-top: 20px">
         <div class="col text-info1">
           <div class="row">
-            <p>Project name: {{ this.project.name }}</p>
+            <h2>Project name: {{ this.project.name }}</h2>
           </div>
           <div class="row">
             <p>Description: {{ this.project.description }}</p>
           </div>
           <div class="row">
-            <p>Tags: {{ this.project.search_filters }}</p>
+            <p>Tags:</p>
+            <p v-for="f in this.project.search_filters" :key="f">
+              {{ f }}
+            </p>
           </div>
           <div class="row">
             <p>Links: {{ this.project.links }}</p>
@@ -21,10 +24,10 @@
             <p>Members: {{ this.project.members }}</p>
           </div>
           <div class="row">
-            <p>Open For Applicants: {{ this.project.looking_for_new_members }}</p>
-          </div>
-          <div class="row">
             <p>Applicants: {{ this.project.applicants }}</p>
+          </div>
+          <div v-if="this.project.looking_for_new_members" class="row">
+            <p>Applications are open!</p>
           </div>
         </div>
       </div>
@@ -56,7 +59,7 @@ export default {
     },
   },
   mounted() {
-    this.getProject(1); // <- this will be dynamically set in later updates
+    this.getProject(2); // <- this will be dynamically set in later updates
   },
 };
 </script>

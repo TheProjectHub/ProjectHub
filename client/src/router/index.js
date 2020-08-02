@@ -5,7 +5,7 @@ import Home from '../views/Home.vue';
 import About from '../views/About.vue';
 import Messaging from '../views/Messaging.vue';
 import NewProject from '../views/NewProject.vue';
-import Project from '../views/Project.vue'
+import Project from '../views/Project.vue';
 import Profile from '../views/Profile.vue';
 import Signup from '../views/Signup.vue';
 import LoginCallback from '../views/LoginCallback.vue';
