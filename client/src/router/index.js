@@ -8,6 +8,7 @@ import NewProject from '../views/NewProject.vue';
 import Profile from '../views/Profile.vue';
 import Signup from '../views/Signup.vue';
 import LoginCallback from '../views/LoginCallback.vue';
+import Search from '../views/Search.vue';
 
 import { authGuard } from '../auth/authGuard';
 
@@ -51,6 +52,11 @@ const routes = [
     path: '/signup',
     name: 'Signup',
     component: Signup,
+  },
+  {
+    path: '/search',
+    name: 'Search',
+    component: Search,
   },
 ];
 
