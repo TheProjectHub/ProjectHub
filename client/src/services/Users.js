@@ -34,6 +34,18 @@ class Users {
     );
   }
 
+  rejectConversationRequest(id, convId, token) {
+    return http.post(
+      '/users/rejectconversationrequest',
+      { id: id, convId: convId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+  }
+
   create(data, token) {
     return http.post('/users', data, {
       headers: {

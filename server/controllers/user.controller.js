@@ -113,11 +113,39 @@ exports.inviteToConversation = (req, res) => {
         });
       } else {
         res.status(500).send({
-          message: 'Error updating User with id ' + req.body.email,
+          message: 'Error updating User with id ' + req.body.id,
         });
       }
     } else res.send(data);
   });
+};
+
+exports.rejectConversationRequest = (req, res) => {
+  // Validate Request
+  if (!req.body) {
+    res.status(400).send({
+      message: 'Content can not be empty!',
+    });
+  }
+
+  User.rejectConversationRequest(
+    req.body.id,
+    req.body.convId,
+    (err, data) => {
+      if (err) {
+        if (err.kind === 'not_found') {
+          console.log(req.params);
+          res.status(404).send({
+            message: `No found User with id ${req.body.id}.`,
+          });
+        } else {
+          res.status(500).send({
+            message: 'Error updating User with id ' + req.body.id,
+          });
+        }
+      } else res.send(data);
+    },
+  );
 };
 
 exports.addConversationToUser = (req, res) => {

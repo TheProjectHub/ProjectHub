@@ -122,7 +122,7 @@ User.inviteToConversation = (email, convId, result) => {
         let reqConvos = JSON.parse(res[0].requested_conversations);
         if (reqConvos.includes(convId)) {
           result(null, email);
-          return
+          return;
         }
         reqConvos.push(convId);
         sql.query(
@@ -148,7 +148,7 @@ User.inviteToConversation = (email, convId, result) => {
 
 User.addConversationToUser = (id, convId, result) => {
   sql.query(
-    `select conversations from users where id = \'${id}\'`,
+    `select conversations, requested_conversations from users where id = \'${id}\'`,
     (err, res) => {
       if (err) {
         console.log('error: ', err);
@@ -158,14 +158,58 @@ User.addConversationToUser = (id, convId, result) => {
 
       if (res.length) {
         let convos = JSON.parse(res[0].conversations);
-        if (convos.includes(convId)) {
-          result(null, id);
-          return;
+        let reqConvos = JSON.parse(res[0].requested_conversations);
+        for (var i = 0; i < reqConvos.length; i++) {
+          if (reqConvos[i] == convId) {
+            reqConvos.splice(i, 1);
+            break;
+          }
         }
         convos.push(convId);
+
         sql.query(
-          `update users set conversations = ? where id = ${id}`,
-          [JSON.stringify(convos)],
+          `update users set conversations = ?, requested_conversations = ? where id = ${id}`,
+          [JSON.stringify(convos), JSON.stringify(reqConvos)],
+          (err, res) => {
+            if (err) {
+              console.log('error: ', err);
+              result(null, err);
+              return;
+            }
+
+            console.log('updated user: ', id);
+            result(null, res[0]);
+          },
+        );
+      } else {
+        result({ kind: 'not_found' }, null);
+      }
+    },
+  );
+};
+
+User.rejectConversationRequest = (id, convId, result) => {
+  sql.query(
+    `select requested_conversations from users where id = ${id}`,
+    (err, res) => {
+      if (err) {
+        console.log('error: ', err);
+        result(null, err);
+        return;
+      }
+
+      if (res.length) {
+        let reqConvos = JSON.parse(res[0].requested_conversations);
+        for (var i = 0; i < reqConvos.length; i++) {
+          if (reqConvos[i] == convId) {
+            reqConvos.splice(i, 1);
+            break;
+          }
+        }
+        console.log(reqConvos);
+        sql.query(
+          'update users set requested_conversations = ? where id = ?',
+          [JSON.stringify(reqConvos), id],
           (err, res) => {
             if (err) {
               console.log('error: ', err);

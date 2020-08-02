@@ -5,68 +5,85 @@
         <div class="inbox-msg">
           <div class="conversations-inbox">
             <div class="conversations">
-              <div
-                v-for="(name, index) in conversationNames"
-                v-bind:key="index"
-              >
+              <div v-for="(conv, index) in conversations" v-bind:key="index">
                 <div
-                  v-if="conversationId == conversations[index]"
+                  v-if="conversationId == conv.id"
                   class="chat-list active-chat conversation-preview"
-                  @click="setMessages(conversations[index])"
+                  @click="setMessages(conv.id)"
                 >
                   <div class="chat-people">
                     <div class="chat-ib">
-                      <h5>{{ name }}</h5>
+                      <h5>{{ conv.name }}</h5>
                     </div>
                   </div>
                 </div>
                 <div
                   v-else
                   class="chat-list conversation-preview"
-                  @click="setMessages(conversations[index])"
+                  @click="setMessages(conv.id)"
                 >
                   <div class="chat-people">
                     <div class="chat-ib">
-                      <h5>{{ name }}</h5>
+                      <h5>{{ conv.name }}</h5>
                     </div>
                   </div>
                 </div>
               </div>
-              <button
-                v-if="!isCreatingNewConversation"
-                @click="collectEmails"
-                type="button"
-                class="btn btn-primary"
-                style="padding-bottom: 5vh;
-                position: absolute; bottom: 0px;
-                width: 39vw; text-align: center;"
-              >
-                Create new Conversation
-              </button>
-              <form @submit.prevent="setName" v-if="isCollectingEmails">
-                <input
-                  class="form-control"
-                  placeholder="Enter email(s)"
-                  style="padding-bottom: 2vh;
-                  position: absolute; bottom: 0px;
-                  height: 12vh; font-size: 2vh"
-                  v-model="invitees"
-                />
-              </form>
-              <form
-                @submit.prevent="createNewConversation"
-                v-if="isSettingName"
-              >
-                <input
-                  class="form-control"
-                  placeholder="Enter new conversation name"
-                  style="padding-bottom: 2vh;
-                  position: absolute; bottom: 0px;
-                  height: 12vh; font-size: 2vh"
-                  v-model="newConversationName"
-                />
-              </form>
+              <div v-for="conv in requestedConversations" :key="conv.name">
+                <div
+                  class="chat-list conversation-preview requested-conversation"
+                >
+                  <div class="chat-people">
+                    <div class="chat-ib">
+                      <h5>
+                        You have been requested to join: "{{ conv.name }}"?
+                      </h5>
+                    </div>
+                  </div>
+                  <i
+                    class="fas fa-check"
+                    style="cursor: pointer;"
+                    @click="acceptInvitation(conv.id)"
+                  ></i>
+                  <i
+                    class="fas fa-window-close"
+                    style="margin-left: 2vw; cursor: pointer;"
+                    @click="rejectInvitation(conv.id)"
+                  ></i>
+                </div>
+              </div>
             </div>
+            <button
+              v-if="!isCreatingNewConversation"
+              @click="collectEmails"
+              type="button"
+              class="btn btn-primary"
+              style="padding-bottom: 5vh;
+                position: absolute; bottom: 0px;
+                width: 38vw; text-align: center;"
+            >
+              Create new Conversation
+            </button>
+            <form @submit.prevent="setName" v-if="isCollectingEmails">
+              <input
+                class="form-control"
+                placeholder="Enter email(s)"
+                style="padding-bottom: 2vh;
+                  position: absolute; bottom: 0px;
+                  height: 12vh; font-size: 2vh; width: 38vw;"
+                v-model="invitees"
+              />
+            </form>
+            <form @submit.prevent="createNewConversation" v-if="isSettingName">
+              <input
+                class="form-control"
+                placeholder="Enter new conversation name"
+                style="padding-bottom: 2vh;
+                  position: absolute; bottom: 0px;
+                  height: 12vh; font-size: 2vh; width: 38vw;"
+                v-model="newConversationName"
+              />
+            </form>
           </div>
           <div class="mesgs">
             <div class="msg-history custom-scrollbar" id="messages">
@@ -138,23 +155,66 @@ export default {
       messages: [],
       socket: io('localhost:3000'),
       conversationId: 0,
-      conversationNames: [],
       conversations: [],
       isCreatingNewConversation: false,
       isCollectingEmails: false,
       isSettingName: false,
       invitees: '',
       newConversationName: '',
+      requestedConversations: [],
     };
   },
   methods: {
+    async setCurrentUser() {
+      const accessToken = await this.$auth.getTokenSilently();
+
+      User.get(this.$auth.user.email, accessToken).then((event) => {
+        this.$store.commit('updateCurrentUser', event.data);
+        this.setConversations();
+        this.setRequestedConversations();
+      });
+    },
+    async acceptInvitation(id) {
+      const accessToken = await this.$auth.getTokenSilently();
+
+      User.addConversationToUser(
+        this.$store.state.currentUser.id,
+        id,
+        accessToken,
+      ).then(() => {
+        this.setCurrentUser();
+      });
+    },
+    async rejectInvitation(id) {
+      const accessToken = await this.$auth.getTokenSilently();
+
+      User.rejectConversationRequest(
+        this.$store.state.currentUser.id,
+        id,
+        accessToken,
+      ).then(() => {
+        this.setCurrentUser();
+      });
+    },
     collectEmails() {
       this.isCollectingEmails = true;
     },
     setName() {
+      if (!this.invitees) {
+        alert('You need to add at least one other user!');
+        return;
+      }
+      if (!this.invitees.includes('@')) {
+        alert('Please add a valid email(s)!');
+        return;
+      }
       this.isSettingName = true;
     },
     async createNewConversation() {
+      if (!this.newConversationName) {
+        alert('You need to set a name!');
+        return;
+      }
       const accessToken = await this.$auth.getTokenSilently();
 
       Conversation.create(
@@ -164,15 +224,12 @@ export default {
         },
         accessToken,
       ).then((event) => {
-        this.conversations.push(event.data.id);
-        console.log(event.data);
-        console.log(`new convo id: ${event.data.id}`);
         User.addConversationToUser(
           this.$store.state.currentUser.id,
           event.data.id,
           accessToken,
         ).then((event) => {
-          this.setConversationNames();
+          this.setCurrentUser();
         });
 
         const emails = this.invitees.split(', ');
@@ -231,17 +288,34 @@ export default {
         this.scrollToBottom();
       });
     },
-    async setConversationNames() {
-      this.conversationNames = [];
+    async setConversations(convos) {
+      this.conversations = [];
+      const convoIds = convos
+        ? JSON.parse(convos)
+        : JSON.parse(this.$store.state.currentUser.conversations);
       const accessToken = await this.$auth.getTokenSilently();
 
-      for (let i = 0; i < this.conversations.length; i += 1) {
-        Conversation.get(this.conversations[i], accessToken).then((event) =>
-          this.conversationNames.push(event.data.name),
+      convoIds.forEach((id) => {
+        Conversation.get(id, accessToken).then((event) =>
+          this.conversations.push({ id: event.data.id, name: event.data.name }),
         );
-      }
+      });
+    },
+    async setRequestedConversations(reqConvos) {
+      this.requestedConversations = [];
+      const accessToken = await this.$auth.getTokenSilently();
+      const reqConvoIds = reqConvos
+        ? JSON.parse(reqConvos)
+        : JSON.parse(this.$store.state.currentUser.requested_conversations);
+
+      reqConvoIds.forEach((id) => {
+        Conversation.get(id, accessToken).then((event) => {
+          this.requestedConversations.push({ id: id, name: event.data.name });
+        });
+      });
     },
     sendMessage(e) {
+      if (!this.message) return;
       e.preventDefault();
 
       this.socket.emit('sendMessage', {
@@ -270,9 +344,13 @@ export default {
           this.$store.state.currentUser.conversations,
         );
         this.setMessages(this.conversations[0]);
-        this.setConversationNames();
+        this.setConversations();
+        this.setRequestedConversations();
 
-        this.socket.emit('initalConnection', this.conversations);
+        this.socket.emit(
+          'initalConnection',
+          JSON.parse(this.$store.state.currentUser.conversations),
+        );
         this.socket.on('newMessage', (conversationId) => {
           // If the conversation that is currently being viewed was just updated
           if (this.conversationId === conversationId) {
@@ -385,10 +463,13 @@ img {
 .chat-list:hover {
   background: #f3f3f3;
 }
+.requested-conversation:hover {
+  background: white;
+}
 .conversations {
-  height: 100vh;
+  height: 89vh;
   position: relative;
-  /* overflow-y: scroll; */
+  overflow-y: scroll;
 }
 
 .active-chat {

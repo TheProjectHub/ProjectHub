@@ -12,6 +12,13 @@ module.exports = (app) => {
     users.inviteToConversation,
   );
 
+  // Reject conversation invite
+  app.post(
+    '/users/rejectconversationrequest',
+    auth.checkJwt,
+    users.rejectConversationRequest,
+  );
+  
   // Add conversation to user's conversation list
   app.post(
     '/users/addconversationtouser',

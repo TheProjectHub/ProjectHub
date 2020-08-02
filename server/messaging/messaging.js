@@ -14,7 +14,10 @@ module.exports = (server) => {
         updatedConversation = res;
 
         // convert messages arr to JSON string representation
-        var messages = JSON.parse(updatedConversation.messages);
+        if (updatedConversation.messages)
+          var messages = JSON.parse(updatedConversation.messages);
+        else
+          var messages = [];
         messages.push(data.message);
         messages = JSON.stringify(messages);
         updatedConversation.messages = messages;
