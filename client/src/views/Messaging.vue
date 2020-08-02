@@ -5,7 +5,7 @@
         <div class="inbox-msg">
           <div class="conversations-inbox">
             <div class="conversations">
-              <div v-for="(conv, index) in conversations" v-bind:key="index">
+              <div v-for="conv in conversations" v-bind:key="conv.name">
                 <div
                   v-if="conversationId == conv.id"
                   class="chat-list active-chat conversation-preview"
@@ -89,8 +89,8 @@
             <div class="msg-history custom-scrollbar" id="messages">
               <div
                 class="messages"
-                v-for="(msg, index) in this.messages"
-                v-bind:key="index"
+                v-for="msg in this.messages"
+                v-bind:key="msg.timestamp"
               >
                 <p
                   v-if="!isMyMessage(msg)"
