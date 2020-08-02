@@ -206,7 +206,6 @@ User.rejectConversationRequest = (id, convId, result) => {
             break;
           }
         }
-        console.log(reqConvos);
         sql.query(
           'update users set requested_conversations = ? where id = ?',
           [JSON.stringify(reqConvos), id],
