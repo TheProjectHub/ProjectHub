@@ -52,7 +52,7 @@
           <div v-for="(skill, index) in skills" :key="index">{{ skill }}</div>
         </div>
         <input
-          class="button is-primary margin-bottom"
+          class="button is-primary margin-bottom: 2vh;"
           type="submit"
           @click="createUser"
         />

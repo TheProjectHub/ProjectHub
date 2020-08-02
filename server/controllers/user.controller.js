@@ -24,6 +24,7 @@ exports.create = (req, res) => {
     unread_conversations: req.body.unread_conversations,
     age: req.body.age,
     location: req.body.location,
+    requested_conversations: req.body.requested_conversations,
   });
 
   // Save user in the database
@@ -38,7 +39,7 @@ exports.create = (req, res) => {
 
 // Find a single user with a userId
 exports.getUser = (req, res) => {
-  console.log(req.params.identifier)
+  // if a email is passed in the request
   if (req.params.identifier.includes('@')) {
     User.findByEmail(req.params.identifier, (err, data) => {
       if (err) {
@@ -54,6 +55,8 @@ exports.getUser = (req, res) => {
         }
       } else res.send(data);
     });
+
+  // if an id is passed in the request
   } else {
     User.findById(req.params.identifier, (err, data) => {
       if (err) {
@@ -80,6 +83,7 @@ exports.update = (req, res) => {
     });
   }
 
+  // Update user in database
   User.updateById(req.params.userId, new User(req.body), (err, data) => {
     if (err) {
       if (err.kind === 'not_found') {
@@ -89,6 +93,85 @@ exports.update = (req, res) => {
       } else {
         res.status(500).send({
           message: 'Error updating User with id ' + req.params.userId,
+        });
+      }
+    } else res.send(data);
+  });
+};
+
+// Add a conversation id to a user's requested_conversations arr
+exports.inviteToConversation = (req, res) => {
+  // Validate Request
+  if (!req.body) {
+    res.status(400).send({
+      message: 'Content can not be empty!',
+    });
+  }
+
+  // Update user with new requested conversation
+  User.inviteToConversation(req.body.email, req.body.convId, (err, data) => {
+    if (err) {
+      if (err.kind === 'not_found') {
+        res.status(404).send({
+          message: `No found User with email ${req.body.email}.`,
+        });
+      } else {
+        res.status(500).send({
+          message: 'Error updating User with id ' + req.body.id,
+        });
+      }
+    } else res.send(data);
+  });
+};
+
+// Remove a conversation id from a user's requested_conversations arr
+exports.rejectConversationRequest = (req, res) => {
+  // Validate Request
+  if (!req.body) {
+    res.status(400).send({
+      message: 'Content can not be empty!',
+    });
+  }
+
+  // Updated user without requested conversation
+  User.rejectConversationRequest(
+    req.body.id,
+    req.body.convId,
+    (err, data) => {
+      if (err) {
+        if (err.kind === 'not_found') {
+          res.status(404).send({
+            message: `No found User with id ${req.body.id}.`,
+          });
+        } else {
+          res.status(500).send({
+            message: 'Error updating User with id ' + req.body.id,
+          });
+        }
+      } else res.send(data);
+    },
+  );
+};
+
+// Add a conversation id to a user's conversations arr
+exports.addConversationToUser = (req, res) => {
+  // Validate Request
+  if (!req.body) {
+    res.status(400).send({
+      message: 'Content can not be empty!',
+    });
+  }
+
+  // Update user with new conversation id
+  User.addConversationToUser(req.body.id, req.body.convId, (err, data) => {
+    if (err) {
+      if (err.kind === 'not_found') {
+        res.status(404).send({
+          message: `No found User with id ${req.body.id}.`,
+        });
+      } else {
+        res.status(500).send({
+          message: 'Error updating User with id ' + req.body.id,
         });
       }
     } else res.send(data);
