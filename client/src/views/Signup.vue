@@ -75,7 +75,7 @@ export default {
       skills: [],
       bio: "",
       age: "",
-      location: "",
+      location: ""
     };
   },
   methods: {
@@ -115,7 +115,7 @@ export default {
         clearInterval(checkIsAuthLoaded);
       }
     }, 100);
-  },
+  }
 };
 </script>
 
