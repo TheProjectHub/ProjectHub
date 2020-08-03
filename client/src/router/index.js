@@ -8,6 +8,7 @@ import Profile from "../views/Profile.vue";
 import Signup from "../views/Signup.vue";
 import LoginCallback from "../views/LoginCallback.vue";
 import Project from "../views/Project.vue";
+import MyProjects from "../views/MyProjects";
 
 import { authGuard } from "../auth/authGuard";
 
@@ -51,6 +52,12 @@ const routes = [
     path: "/signup",
     name: "Signup",
     component: Signup
+  },
+  {
+    path: "/my-projects",
+    name: "MyProjects",
+    component: MyProjects,
+    beforeEnter: authGuard
   }
 ];
 
