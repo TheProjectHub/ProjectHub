@@ -7,6 +7,7 @@ import NewProject from "../views/NewProject.vue";
 import Profile from "../views/Profile.vue";
 import Signup from "../views/Signup.vue";
 import LoginCallback from "../views/LoginCallback.vue";
+import Project from '../views/Project.vue';
 
 import { authGuard } from "../auth/authGuard";
 
@@ -41,10 +42,16 @@ const routes = [
     beforeEnter: authGuard
   },
   {
-    path: "/signup",
-    name: "Signup",
-    component: Signup
-  }
+    path: '/project',
+    name: 'Project',
+    component: Project,
+    beforeEnter: authGuard,
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: Signup,
+  },
 ];
 
 const router = new VueRouter({
