@@ -62,20 +62,20 @@
 </template>
 
 <script>
-import User from '../services/Users';
+import { createUser } from "../services/Users";
 
 export default {
-  name: 'Signup',
+  name: "Signup",
   data() {
     return {
       first_name: this.$auth.user.given_name,
       last_name: this.$auth.user.family_name,
       email: this.$auth.user.email,
-      skill: '',
+      skill: "",
       skills: [],
-      bio: '',
-      age: '',
-      location: '',
+      bio: "",
+      age: "",
+      location: ""
     };
   },
   methods: {
@@ -84,29 +84,29 @@ export default {
       const user = {
         first_name: this.first_name,
         last_name: this.last_name,
-        project_affiliation: '[]',
+        project_affiliation: "[]",
         email: this.email,
-        search_filters: '[]',
+        search_filters: "[]",
         looking_for_project: 1,
         skills: JSON.stringify(this.skills),
         bio: this.bio,
-        conversations: '[]',
-        unread_conversations: '[]',
+        conversations: "[]",
+        unread_conversations: "[]",
         age: this.age,
-        location: this.location,
+        location: this.location
       };
-      User.create(user, accessToken);
-      this.$router.push('/');
+      createUser(user, accessToken);
+      this.$router.push("/");
     },
     addSkill() {
       this.skills.push(this.skill);
-      this.skill = '';
+      this.skill = "";
     },
     displayUserOAuthData() {
       this.first_name = this.$auth.user.given_name;
       this.last_name = this.$auth.user.family_name;
       this.email = this.$auth.user.email;
-    },
+    }
   },
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
@@ -115,11 +115,10 @@ export default {
         clearInterval(checkIsAuthLoaded);
       }
     }, 100);
-  },
+  }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 p,
 h2,

@@ -34,7 +34,7 @@
         <input
           class="button is-primary margin-bottom"
           type="submit"
-          @click.prevent="toSubmit"
+          @click.prevent="submitProject"
           @click="submitProject"
         />
       </form>
@@ -43,28 +43,28 @@
 </template>
 
 <script>
-import Projects from '../services/Projects';
+import { getAllProjectNames, createProject } from "../services/Projects";
 
 export default {
-  name: 'NewProject',
+  name: "NewProject",
   data() {
     return {
       takenProjectNames: [],
       form: {
-        projectName: '',
-        description: '',
-        links: '',
-        look: [],
-      },
+        projectName: "",
+        description: "",
+        links: "",
+        look: []
+      }
     };
   },
   methods: {
     async getTakenProjectNames() {
       const accessToken = await this.$auth.getTokenSilently();
 
-      Projects.getAllProjectNames(accessToken).then((event) => {
+      getAllProjectNames(accessToken).then(event => {
         const takenNames = event.data;
-        takenNames.forEach((project) => {
+        takenNames.forEach(project => {
           this.takenProjectNames.push(project.name);
         });
       });
@@ -74,24 +74,24 @@ export default {
     },
     async submitProject() {
       if (this.isNameTaken(this.form.projectName) && this.form.name) {
-        alert(`The name: ${this.form.projectName} is taken!`); // eslint-disable-line
+        alert(`The name: ${this.form.projectName} is taken!`);
       } else {
         const accessToken = await this.$auth.getTokenSilently();
 
         const project = {
           members: JSON.stringify([this.$store.state.currentUser.id]),
           name: this.form.projectName,
-          links: this.form.links,
+          links: JSON.stringify(this.form.links.split(", ")),
           description: this.form.description,
           looking_for_new_members: this.form.look.length,
-          search_filters: '[]',
-          applicants: '[]',
+          search_filters: "[]",
+          applicants: "[]"
         };
-        Projects.create(project, accessToken).then(() => {
-          this.$router.push('/');
+        createProject(project, accessToken).then(() => {
+          this.$router.push("/");
         });
       }
-    },
+    }
   },
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
@@ -100,11 +100,10 @@ export default {
         clearInterval(checkIsAuthLoaded);
       }
     }, 100);
-  },
+  }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 p,
 h2,
