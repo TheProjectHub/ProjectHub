@@ -51,7 +51,12 @@ const routes = [
   {
     path: "/signup",
     name: "Signup",
-    component: Signup
+    component: Signup,
+    beforeEnter: (to, from, next) => {
+      if (from.name != "Callback") {
+        next({ name: "Home" });
+      } else next();
+    }
   },
   {
     path: "/my-projects",

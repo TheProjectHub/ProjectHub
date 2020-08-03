@@ -75,7 +75,8 @@ export default {
       skills: [],
       bio: "",
       age: "",
-      location: ""
+      location: "",
+      completedSignup: false
     };
   },
   methods: {
@@ -96,6 +97,7 @@ export default {
         location: this.location
       };
       createUser(user, accessToken);
+      completedSignup = true;
       this.$router.push("/");
     },
     addSkill() {
@@ -115,7 +117,7 @@ export default {
         clearInterval(checkIsAuthLoaded);
       }
     }, 100);
-  }
+  },
 };
 </script>
 
