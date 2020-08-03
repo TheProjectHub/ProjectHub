@@ -9,11 +9,7 @@
             is looking for applicants!
           </p>
           <div class="row">
-            <p
-              v-for="(f, i) in JSON.parse(this.project.search_filters)"
-              :key="i"
-              class="tag-label"
-            >
+            <p v-for="(f, i) in this.projectTags" :key="i" class="tag-label">
               {{ f }}
             </p>
           </div>
@@ -42,7 +38,7 @@
           <div>
             <p>Links:</p>
             <a
-              v-for="(link, i) in JSON.parse(this.project.links)"
+              v-for="(link, i) in this.projectLinks"
               :key="i"
               :href="goodLink(link)"
             >
@@ -67,6 +63,8 @@ export default {
     return {
       project: {},
       projectMembers: [],
+      projectTags: [],
+      projectLinks: [],
       projectApplicants: [],
     };
   },
@@ -83,8 +81,14 @@ export default {
         this.projectMembers.push(response.data);
       });
 
+      this.projectTags = JSON.parse(this.project.search_filters);
+      this.projectLinks = JSON.parse(this.project.links);
+
       JSON.parse(this.project.applicants).forEach(async (applicantObject) => {
-        var response = await Users.get(applicantObject['user-id'], accessToken);
+        var response = await Users.get(
+          applicantObject['user-id'],
+          accessToken,
+        );
         this.projectApplicants.push({
           user: response.data,
           appObj: applicantObject,
