@@ -53,10 +53,7 @@ export default {
       });
     },
     navigateToProject(id) {
-      this.$router.push({
-        path: "/projects",
-        params: { projectId: id }
-      });
+      this.$router.push(`/projects/${id}`);
     },
     isUser(name) {
       return (

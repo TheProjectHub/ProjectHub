@@ -53,19 +53,19 @@
 </template>
 
 <script>
-/* eslint-disable */
-import { getUser } from '../services/Users';
-import { getProject } from '../services/Projects';
+import { getUser } from "../services/Users";
+import { getProject } from "../services/Projects";
 
 export default {
-  name: 'Project',
+  name: "Project",
   data() {
     return {
+      projectId: this.$route.params.projectId,
       project: {},
       projectMembers: [],
       projectTags: [],
       projectLinks: [],
-      projectApplicants: [],
+      projectApplicants: []
     };
   },
   methods: {
@@ -85,26 +85,25 @@ export default {
       this.projectLinks = JSON.parse(this.project.links);
 
       JSON.parse(this.project.applicants).forEach(async (applicantObject) => {
-        var response = await getUser(applicantObject['user-id'], accessToken);
+        var response = await getUser(applicantObject["user-id"], accessToken);
         this.projectApplicants.push({
           user: response.data,
-          appObj: applicantObject,
+          appObj: applicantObject
         });
       });
     },
     goodLink(url) {
-      return !(url.startsWith('http://') || url.startsWith('https://'))
+      return !(url.startsWith("http://") || url.startsWith("https://"))
         ? `http://${url}`
         : url;
-    },
+    }
   },
   mounted() {
-    this.getProject(2); // <- this will be dynamically set in later updates
-  },
+    this.getProject(this.projectId);
+  }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 p,
 h2,
