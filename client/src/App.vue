@@ -47,7 +47,7 @@ export default {
           icon: 'fa fa-chart-area',
         },
         {
-          href: '/about',
+          href: '/search',
           title: 'Search for Projects',
           icon: 'fa fa-search',
         },
