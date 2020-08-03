@@ -64,17 +64,17 @@
 
 <script>
 export default {
-  name: "Splash",
+  name: 'Splash',
   methods: {
     login() {
-      this.$auth.loginWithRedirect("/logincallback");
+      this.$auth.loginWithRedirect('/logincallback');
     },
     logout() {
       this.$auth.logout({
-        returnTo: window.location.origin
+        returnTo: window.location.origin,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -82,7 +82,7 @@ export default {
 h1 {
   font-size: 90px;
   color: white;
-  font-family: "Lato", sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 .column {
   float: left;
@@ -92,7 +92,7 @@ h1 {
   text-align: center;
 }
 .row:after {
-  content: "";
+  content: '';
   display: table;
   clear: both;
 }
@@ -109,11 +109,11 @@ h1 {
 }
 h2 {
   color: white;
-  font-family: "Lato", sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 p {
   color: white;
-  font-family: "Lato", sans-serif;
+  font-family: 'Lato', sans-serif;
   text-align: center;
 }
 

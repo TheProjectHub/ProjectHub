@@ -43,28 +43,28 @@
 </template>
 
 <script>
-import { getAllProjectNames, createProject } from "../services/Projects";
+import { getAllProjectNames, createProject } from '../services/Projects';
 
 export default {
-  name: "NewProject",
+  name: 'NewProject',
   data() {
     return {
       takenProjectNames: [],
       form: {
-        projectName: "",
-        description: "",
-        links: "",
-        look: []
-      }
+        projectName: '',
+        description: '',
+        links: '',
+        look: [],
+      },
     };
   },
   methods: {
     async getTakenProjectNames() {
       const accessToken = await this.$auth.getTokenSilently();
 
-      getAllProjectNames(accessToken).then(event => {
+      getAllProjectNames(accessToken).then((event) => {
         const takenNames = event.data;
-        takenNames.forEach(project => {
+        takenNames.forEach((project) => {
           this.takenProjectNames.push(project.name);
         });
       });
@@ -84,14 +84,14 @@ export default {
           links: JSON.stringify(this.form.links.split(', ')),
           description: this.form.description,
           looking_for_new_members: this.form.look.length,
-          search_filters: "[]",
-          applicants: "[]"
+          search_filters: '[]',
+          applicants: '[]',
         };
         createProject(project, accessToken).then(() => {
-          this.$router.push("/");
+          this.$router.push('/');
         });
       }
-    }
+    },
   },
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
@@ -100,7 +100,7 @@ export default {
         clearInterval(checkIsAuthLoaded);
       }
     }, 100);
-  }
+  },
 };
 </script>
 

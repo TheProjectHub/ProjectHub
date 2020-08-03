@@ -18,7 +18,7 @@ module.exports = (app) => {
     auth.checkJwt,
     users.rejectConversationRequest,
   );
-  
+
   // Add conversation to user's conversation list
   app.post(
     '/users/addconversationtouser',

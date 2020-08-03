@@ -346,7 +346,7 @@ export default {
         this.conversations = JSON.parse(
           this.$store.state.currentUser.conversations,
         );
-        
+
         this.setMessages(this.conversations[0]);
         this.setConversations();
         this.setRequestedConversations();
