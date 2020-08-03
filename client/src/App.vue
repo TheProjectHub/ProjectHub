@@ -21,10 +21,10 @@
 </template>
 
 <script>
-import { getUser } from './services/Users';
+import { getUser } from "./services/Users";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {},
   data() {
     return {
@@ -33,60 +33,60 @@ export default {
       menu: [
         {
           header: true,
-          title: 'Projectly',
-          hiddenOnCollapse: true,
+          title: "Projectly",
+          hiddenOnCollapse: true
         },
         {
-          href: '/profile',
-          title: 'Profile',
-          icon: 'fa fa-user',
+          href: "/profile",
+          title: "Profile",
+          icon: "fa fa-user"
         },
         {
-          href: '/myprojects',
-          title: 'My Projects',
-          icon: 'fa fa-chart-area',
+          href: "/myprojects",
+          title: "My Projects",
+          icon: "fa fa-chart-area"
         },
         {
-          href: '/about',
-          title: 'Search for Projects',
-          icon: 'fa fa-search',
+          href: "/about",
+          title: "Search for Projects",
+          icon: "fa fa-search"
         },
         {
-          href: '/messaging',
-          title: 'Conversations',
-          icon: 'fa fa-comment',
+          href: "/messaging",
+          title: "Conversations",
+          icon: "fa fa-comment"
         },
         {
-          href: '/new-project',
-          title: 'Create New Project',
-          icon: 'fa fa-plus',
+          href: "/new-project",
+          title: "Create New Project",
+          icon: "fa fa-plus"
         },
         {
-          title: 'Logout',
-          icon: 'fa fa-user-times',
-        },
-      ],
+          title: "Logout",
+          icon: "fa fa-user-times"
+        }
+      ]
     };
   },
   methods: {
     onToggleCollapse() {
       this.isNavBarOpen = !this.isNavBarOpen;
-      document.getElementById('fade-to-black').style.display = this.isNavBarOpen
-        ? 'block'
-        : 'none';
+      document.getElementById("fade-to-black").style.display = this.isNavBarOpen
+        ? "block"
+        : "none";
     },
     onItemClick(event, item) {
-      if (item.title === 'Logout') {
+      if (item.title === "Logout") {
         this.$auth.logout();
       }
     },
     async setCurrentUser() {
       const accessToken = await this.$auth.getTokenSilently();
 
-      getUser(this.$auth.user.email, accessToken).then((event) => {
-        this.$store.commit('updateCurrentUser', event.data);
+      getUser(this.$auth.user.email, accessToken).then(event => {
+        this.$store.commit("updateCurrentUser", event.data);
       });
-    },
+    }
   },
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
@@ -95,8 +95,8 @@ export default {
         clearInterval(checkIsAuthLoaded);
       }
     }, 100);
-    document.title = 'Projectly';
-  },
+    document.title = "Projectly";
+  }
 };
 </script>
 

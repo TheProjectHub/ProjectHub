@@ -62,14 +62,14 @@
 </template>
 
 <script>
-import { getProject } from '../services/Projects';
+import { getProject } from "../services/Projects";
 
 export default {
-  name: 'Profile',
+  name: "Profile",
   data() {
     return {
       projects: [],
-      userSkills: [],
+      userSkills: []
     };
   },
   methods: {
@@ -79,20 +79,20 @@ export default {
         this.userSkills = JSON.parse(userSkills);
       } catch (error) {
         this.userSkills = userSkills
-          .substring(1, userSkills.indexOf(']'))
-          .split(', ');
+          .substring(1, userSkills.indexOf("]"))
+          .split(", ");
       }
 
       const accessToken = await this.$auth.getTokenSilently();
       const projectIds = JSON.parse(
-        this.$store.state.currentUser.project_affiliation,
+        this.$store.state.currentUser.project_affiliation
       );
-      projectIds.forEach((pid) => {
-        getProject(pid, accessToken).then((event) => {
+      projectIds.forEach(pid => {
+        getProject(pid, accessToken).then(event => {
           this.projects.push(event.data);
         });
       });
-    },
+    }
   },
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
@@ -104,7 +104,7 @@ export default {
         clearInterval(checkIsAuthLoaded);
       }
     }, 100);
-  },
+  }
 };
 </script>
 

@@ -54,8 +54,8 @@
 
 <script>
 /* eslint-disable */
-import Users from '../services/Users';
-import Projects from '../services/Projects';
+import { getUser } from '../services/Users';
+import { getProject } from '../services/Projects';
 
 export default {
   name: 'Project',
@@ -73,11 +73,11 @@ export default {
       // Get the access token from the auth wrapper
       const accessToken = await this.$auth.getTokenSilently();
 
-      var event = await Projects.get(id, accessToken);
+      var event = await getProject(id, accessToken);
       this.project = event.data;
 
       JSON.parse(this.project.members).forEach(async (m) => {
-        var response = await Users.get(m, accessToken);
+        var response = await getUser(m, accessToken);
         this.projectMembers.push(response.data);
       });
 
@@ -85,10 +85,7 @@ export default {
       this.projectLinks = JSON.parse(this.project.links);
 
       JSON.parse(this.project.applicants).forEach(async (applicantObject) => {
-        var response = await Users.get(
-          applicantObject['user-id'],
-          accessToken,
-        );
+        var response = await getUser(applicantObject['user-id'], accessToken);
         this.projectApplicants.push({
           user: response.data,
           appObj: applicantObject,

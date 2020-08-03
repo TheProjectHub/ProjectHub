@@ -143,37 +143,37 @@
 </template>
 
 <script>
-import io from 'socket.io-client';
-import { createConversation, getConversation } from '../services/Conversations';
+import io from "socket.io-client";
+import { createConversation, getConversation } from "../services/Conversations";
 import {
   getUser,
   addConversationToUser,
   rejectConversationRequest,
-  inviteUserToConversation,
-} from '../services/Users';
+  inviteUserToConversation
+} from "../services/Users";
 
 export default {
   data() {
     return {
-      message: '',
+      message: "",
       messages: [],
-      socket: io('localhost:3000'),
+      socket: io("localhost:3000"),
       conversationId: 0,
       conversations: [],
       requestedConversations: [],
       isCreatingNewConversation: false,
       isCollectingEmails: false,
-      invitees: '',
+      invitees: "",
       isSettingName: false,
-      newConversationName: '',
+      newConversationName: ""
     };
   },
   methods: {
     async setCurrentUser() {
       const accessToken = await this.$auth.getTokenSilently();
 
-      getUser(this.$auth.user.email, accessToken).then((event) => {
-        this.$store.commit('updateCurrentUser', event.data);
+      getUser(this.$auth.user.email, accessToken).then(event => {
+        this.$store.commit("updateCurrentUser", event.data);
 
         this.setConversations();
         this.setRequestedConversations();
@@ -185,7 +185,7 @@ export default {
       addConversationToUser(
         this.$store.state.currentUser.id,
         id,
-        accessToken,
+        accessToken
       ).then(() => {
         this.setCurrentUser();
       });
@@ -196,7 +196,7 @@ export default {
       rejectConversationRequest(
         this.$store.state.currentUser.id,
         id,
-        accessToken,
+        accessToken
       ).then(() => {
         this.setCurrentUser();
       });
@@ -206,18 +206,18 @@ export default {
     },
     setName() {
       if (!this.invitees) {
-        alert('You need to add at least one other user!');
+        alert("You need to add at least one other user!");
         return;
       }
-      if (!this.invitees.includes('@')) {
-        alert('Please add a valid email(s)!');
+      if (!this.invitees.includes("@")) {
+        alert("Please add a valid email(s)!");
         return;
       }
       this.isSettingName = true;
     },
     async createNewConversation() {
       if (!this.newConversationName) {
-        alert('You need to set a name!');
+        alert("You need to set a name!");
         return;
       }
       const accessToken = await this.$auth.getTokenSilently();
@@ -225,20 +225,20 @@ export default {
       createConversation(
         {
           users: JSON.stringify([this.$store.state.currentUser.id]),
-          name: this.newConversationName,
+          name: this.newConversationName
         },
-        accessToken,
-      ).then((event) => {
+        accessToken
+      ).then(event => {
         addConversationToUser(
           this.$store.state.currentUser.id,
           event.data.id,
-          accessToken,
+          accessToken
         ).then(() => {
           this.setCurrentUser();
         });
 
-        const emails = this.invitees.split(', ');
-        emails.forEach((email) => {
+        const emails = this.invitees.split(", ");
+        emails.forEach(email => {
           inviteUserToConversation(email, event.data.id, accessToken);
         });
         this.isCollectingEmails = false;
@@ -253,8 +253,8 @@ export default {
       // Message sent today -> return just time
       if (time.getDate() === now.getDate() && time.getDay() === now.getDay()) {
         return time.toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
+          hour: "2-digit",
+          minute: "2-digit"
         });
       }
 
@@ -264,30 +264,30 @@ export default {
         time.getDay() === now.getDay() - 1
       ) {
         return (
-          'Yesterday | ' +
-          time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          "Yesterday | " +
+          time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
         );
       }
 
       const dateWithYear = time.toLocaleDateString();
       // return MM/DD | time
       return (
-        dateWithYear.substring(0, dateWithYear.lastIndexOf('/')) +
-        ' | ' +
-        time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        dateWithYear.substring(0, dateWithYear.lastIndexOf("/")) +
+        " | " +
+        time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       );
     },
     scrollToBottom() {
       setTimeout(() => {
-        var messagesList = document.getElementById('messages');
+        var messagesList = document.getElementById("messages");
         messagesList.scrollTop = messagesList.scrollHeight;
       }, 1);
     },
     async setMessages(id) {
       const accessToken = await this.$auth.getTokenSilently();
 
-      getConversation(id, accessToken).then((event) => {
-        this.$set(this, 'messages', JSON.parse(event.data.messages));
+      getConversation(id, accessToken).then(event => {
+        this.$set(this, "messages", JSON.parse(event.data.messages));
         this.conversationName = event.data.name;
         this.conversationId = event.data.id;
         this.scrollToBottom();
@@ -298,9 +298,9 @@ export default {
       const convoIds = JSON.parse(this.$store.state.currentUser.conversations);
       const accessToken = await this.$auth.getTokenSilently();
 
-      convoIds.forEach((id) => {
-        getConversation(id, accessToken).then((event) =>
-          this.conversations.push({ id: event.data.id, name: event.data.name }),
+      convoIds.forEach(id => {
+        getConversation(id, accessToken).then(event =>
+          this.conversations.push({ id: event.data.id, name: event.data.name })
         );
       });
     },
@@ -308,11 +308,11 @@ export default {
       this.requestedConversations = [];
       const accessToken = await this.$auth.getTokenSilently();
       const reqConvoIds = JSON.parse(
-        this.$store.state.currentUser.requested_conversations,
+        this.$store.state.currentUser.requested_conversations
       );
 
-      reqConvoIds.forEach((id) => {
-        getConversation(id, accessToken).then((event) => {
+      reqConvoIds.forEach(id => {
+        getConversation(id, accessToken).then(event => {
           this.requestedConversations.push({ id: id, name: event.data.name });
         });
       });
@@ -321,16 +321,16 @@ export default {
       if (!this.message) return;
       e.preventDefault();
 
-      this.socket.emit('sendMessage', {
+      this.socket.emit("sendMessage", {
         message: {
           userId: this.$store.state.currentUser.id,
           text: this.message,
           timestamp: new Date(),
-          name: `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`,
+          name: `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`
         },
-        conversationId: this.conversationId,
+        conversationId: this.conversationId
       });
-      this.message = '';
+      this.message = "";
       this.scrollToBottom();
     },
     isMyMessage(msg) {
@@ -338,13 +338,13 @@ export default {
         msg.name ===
         `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`
       );
-    },
+    }
   },
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
       if (this.$store.state.currentUser.conversations) {
         this.conversations = JSON.parse(
-          this.$store.state.currentUser.conversations,
+          this.$store.state.currentUser.conversations
         );
 
         this.setMessages(this.conversations[0]);
@@ -352,10 +352,10 @@ export default {
         this.setRequestedConversations();
 
         this.socket.emit(
-          'initalConnection',
-          JSON.parse(this.$store.state.currentUser.conversations),
+          "initalConnection",
+          JSON.parse(this.$store.state.currentUser.conversations)
         );
-        this.socket.on('newMessage', (conversationId) => {
+        this.socket.on("newMessage", conversationId => {
           // If the conversation that is currently being viewed was just updated
           if (this.conversationId === conversationId) {
             this.setMessages(conversationId);
@@ -364,7 +364,7 @@ export default {
         clearInterval(checkIsAuthLoaded);
       }
     }, 100);
-  },
+  }
 };
 </script>
 
