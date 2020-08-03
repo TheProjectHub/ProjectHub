@@ -77,7 +77,7 @@ export default {
     },
     async submitProject() {
       if (this.isNameTaken(this.form.projectName) && this.form.name) {
-        alert(`The name: ${this.form.projectName} is taken!`);
+        alert(`The name: ${this.form.projectName} is taken!`); // eslint-disable-line
       } else {
         const accessToken = await this.$auth.getTokenSilently();
         const project = {

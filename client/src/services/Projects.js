@@ -1,5 +1,5 @@
 /* eslint-disable */
-import http from '../http-common';
+import http from "../http-common";
 
 class Projects {
   get(id, token) {
@@ -19,7 +19,7 @@ class Projects {
   }
 
   create(data, token) {
-    return http.post('/projects', data, {
+    return http.post("/projects", data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

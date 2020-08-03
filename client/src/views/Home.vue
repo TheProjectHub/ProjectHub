@@ -24,7 +24,7 @@ export default {
 
 <style>
 body {
-  background: linear-gradient(-45deg, #fbff21, #23a6d5, #500000) fixed;
+  background: linear-gradient(-45deg, #239472, #23a6d5, #6d1919) fixed;
   background-size: 400% 400%;
   animation: gradient 45s ease infinite;
 }

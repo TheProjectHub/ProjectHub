@@ -24,16 +24,12 @@
 import User from './services/Users';
 
 export default {
-  // profile (via a profile picture), MyProjects, Search, conversations. Try to use icons for each.
   name: 'App',
   components: {},
   data() {
     return {
       isNavBarOpen: false,
-      collapsed: {
-        type: Boolean,
-        default: true,
-      },
+      collapsed: true,
       menu: [
         {
           header: true,
@@ -51,12 +47,12 @@ export default {
           icon: 'fa fa-chart-area',
         },
         {
-          href: '/search',
+          href: '/about',
           title: 'Search for Projects',
           icon: 'fa fa-search',
         },
         {
-          href: '/conversations',
+          href: '/messaging',
           title: 'Conversations',
           icon: 'fa fa-comment',
         },
@@ -73,12 +69,6 @@ export default {
     };
   },
   methods: {
-    async setUser() {
-      const accessToken = await this.$auth.getTokenSilently();
-      User.get(this.$auth.user.email, accessToken).then((event) => {
-        this.$store.commit('updateCurrentUser', event.data);
-      });
-    },
     onToggleCollapse() {
       this.isNavBarOpen = !this.isNavBarOpen;
       document.getElementById('fade-to-black').style.display = this.isNavBarOpen
@@ -90,11 +80,18 @@ export default {
         this.$auth.logout();
       }
     },
+    async setCurrentUser() {
+      const accessToken = await this.$auth.getTokenSilently();
+      // Use the eventService to call the getEventSingle method
+      User.get(this.$auth.user.email, accessToken).then((event) => {
+        this.$store.commit('updateCurrentUser', event.data);
+      });
+    },
   },
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
       if (!this.$auth.loading) {
-        this.setUser();
+        this.setCurrentUser();
         clearInterval(checkIsAuthLoaded);
       }
     }, 100);
@@ -113,6 +110,7 @@ export default {
 
 #nav {
   padding: 30px;
+  display: none;
 }
 
 #nav a {
@@ -127,7 +125,7 @@ export default {
 #fade-to-black {
   background: rgba(0, 0, 0, 0.5);
   display: none;
-  height: 135vh;
+  height: 100vh;
   left: 0;
   position: absolute;
   top: 0;
