@@ -3,25 +3,25 @@
 </template>
 
 <script>
-import User from '../services/Users';
+import { getUser } from "../services/Users";
 
 export default {
-  name: 'callback',
+  name: "callback",
   methods: {
     async checkIfUserExists() {
       const accessToken = await this.$auth.getTokenSilently();
+
       try {
-        User.get(this.$auth.user.email, accessToken).then((event) => {
+        getUser(this.$auth.user.email, accessToken).then(event => {
           if (event.data.email) {
-            this.$router.push('/');
+            this.$router.push("/");
           }
         });
       } catch (error) {
-        console.log('User not found in db, sending to login page.');
-      } finally {
-        this.$router.push('/signup');
+        console.log("User not found in db, sending to login page.");
+        this.$router.push("/signup");
       }
-    },
+    }
   },
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
@@ -30,6 +30,12 @@ export default {
         clearInterval(checkIsAuthLoaded);
       }
     }, 10);
-  },
+  }
 };
 </script>
+
+<style scoped>
+.v-sidebar-menu {
+  display: none;
+}
+</style>

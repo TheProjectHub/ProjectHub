@@ -143,10 +143,14 @@
 </template>
 
 <script>
-/* eslint-disable */
 import io from 'socket.io-client';
-import Conversation from '../services/Conversations';
-import User from '../services/Users';
+import { createConversation, getConversation } from '../services/Conversations';
+import {
+  getUser,
+  addConversationToUser,
+  rejectConversationRequest,
+  inviteUserToConversation,
+} from '../services/Users';
 
 export default {
   data() {
@@ -168,8 +172,9 @@ export default {
     async setCurrentUser() {
       const accessToken = await this.$auth.getTokenSilently();
 
-      User.get(this.$auth.user.email, accessToken).then((event) => {
+      getUser(this.$auth.user.email, accessToken).then((event) => {
         this.$store.commit('updateCurrentUser', event.data);
+
         this.setConversations();
         this.setRequestedConversations();
       });
@@ -177,7 +182,7 @@ export default {
     async acceptInvitation(id) {
       const accessToken = await this.$auth.getTokenSilently();
 
-      User.addConversationToUser(
+      addConversationToUser(
         this.$store.state.currentUser.id,
         id,
         accessToken,
@@ -188,7 +193,7 @@ export default {
     async rejectInvitation(id) {
       const accessToken = await this.$auth.getTokenSilently();
 
-      User.rejectConversationRequest(
+      rejectConversationRequest(
         this.$store.state.currentUser.id,
         id,
         accessToken,
@@ -217,14 +222,14 @@ export default {
       }
       const accessToken = await this.$auth.getTokenSilently();
 
-      Conversation.create(
+      createConversation(
         {
           users: JSON.stringify([this.$store.state.currentUser.id]),
           name: this.newConversationName,
         },
         accessToken,
       ).then((event) => {
-        User.addConversationToUser(
+        addConversationToUser(
           this.$store.state.currentUser.id,
           event.data.id,
           accessToken,
@@ -234,7 +239,7 @@ export default {
 
         const emails = this.invitees.split(', ');
         emails.forEach((email) => {
-          User.inviteUserToConversation(email, event.data.id, accessToken);
+          inviteUserToConversation(email, event.data.id, accessToken);
         });
         this.isCollectingEmails = false;
         this.isCreatingNewConversation = false;
@@ -245,7 +250,7 @@ export default {
       const time = new Date(date);
       const now = new Date();
 
-      // Message sent today
+      // Message sent today -> return just time
       if (time.getDate() === now.getDate() && time.getDay() === now.getDay()) {
         return time.toLocaleTimeString([], {
           hour: '2-digit',
@@ -253,7 +258,7 @@ export default {
         });
       }
 
-      // Message sent yesterday
+      // Message sent yesterday -> return Yesterday | time
       if (
         time.getDate() === now.getDate() - 1 &&
         time.getDay() === now.getDay() - 1
@@ -274,14 +279,14 @@ export default {
     },
     scrollToBottom() {
       setTimeout(() => {
-        var objDiv = document.getElementById('messages');
-        objDiv.scrollTop = objDiv.scrollHeight;
+        var messagesList = document.getElementById('messages');
+        messagesList.scrollTop = messagesList.scrollHeight;
       }, 1);
     },
     async setMessages(id) {
       const accessToken = await this.$auth.getTokenSilently();
 
-      Conversation.get(id, accessToken).then((event) => {
+      getConversation(id, accessToken).then((event) => {
         this.$set(this, 'messages', JSON.parse(event.data.messages));
         this.conversationName = event.data.name;
         this.conversationId = event.data.id;
@@ -294,18 +299,20 @@ export default {
       const accessToken = await this.$auth.getTokenSilently();
 
       convoIds.forEach((id) => {
-        Conversation.get(id, accessToken).then((event) =>
+        getConversation(id, accessToken).then((event) =>
           this.conversations.push({ id: event.data.id, name: event.data.name }),
         );
       });
     },
-    async setRequestedConversations(reqConvos) {
+    async setRequestedConversations() {
       this.requestedConversations = [];
       const accessToken = await this.$auth.getTokenSilently();
-      const reqConvoIds = JSON.parse(this.$store.state.currentUser.requested_conversations);
+      const reqConvoIds = JSON.parse(
+        this.$store.state.currentUser.requested_conversations,
+      );
 
       reqConvoIds.forEach((id) => {
-        Conversation.get(id, accessToken).then((event) => {
+        getConversation(id, accessToken).then((event) => {
           this.requestedConversations.push({ id: id, name: event.data.name });
         });
       });
@@ -339,6 +346,7 @@ export default {
         this.conversations = JSON.parse(
           this.$store.state.currentUser.conversations,
         );
+        
         this.setMessages(this.conversations[0]);
         this.setConversations();
         this.setRequestedConversations();
