@@ -76,7 +76,6 @@ export default {
       bio: "",
       age: "",
       location: "",
-      completedSignup: false
     };
   },
   methods: {
@@ -97,7 +96,6 @@ export default {
         location: this.location
       };
       createUser(user, accessToken);
-      completedSignup = true;
       this.$router.push("/");
     },
     addSkill() {
