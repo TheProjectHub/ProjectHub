@@ -7,6 +7,7 @@ import NewProject from '../views/NewProject.vue';
 import Profile from '../views/Profile.vue';
 import Signup from '../views/Signup.vue';
 import LoginCallback from '../views/LoginCallback.vue';
+import Project from '../views/Project.vue';
 
 import { authGuard } from '../auth/authGuard';
 
@@ -38,6 +39,12 @@ const routes = [
     path: '/profile',
     name: 'Profile',
     component: Profile,
+    beforeEnter: authGuard,
+  },
+  {
+    path: '/project',
+    name: 'Project',
+    component: Project,
     beforeEnter: authGuard,
   },
   {
