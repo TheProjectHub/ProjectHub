@@ -1,6 +1,12 @@
 <template>
   <html>
-    <section id="new" class="main">
+    <head>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Comfortaa:wght@700&family=Lato&family=Patrick+Hand&display=swap"
+        rel="stylesheet"
+      />
+    </head>
+    <section class="main">
       <form>
         <h1 class="title is-1">
           New Project
@@ -8,33 +14,30 @@
         <div class="field">
           <label class="label">Project Name:</label>
           <div class="control">
-            <input class="input" type="text" v-model="form.projectName" />
+            <input class="input" type="text" size = "40" v-model="form.projectName" />
           </div>
         </div>
         <div class="field">
           <label class="label">Description:</label>
           <div class="control">
-            <input class="input" type="text" v-model="form.description" />
+            <textarea rows="4" cols="50" v-model="form.description"></textarea>
           </div>
         </div>
         <div class="field">
           <label class="label">Links:</label>
           <div class="control">
-            <input class="input" type="text" v-model="form.links" />
+            <input class="input" type="text" size = "75" v-model="form.links" />
           </div>
         </div>
         <div class="field">
-          <div class="control">
-            <label>
-              <input type="checkbox" value="yes" v-model="form.look" />
-              Looking for New Members?
-            </label>
-          </div>
+          <label>
+            <input type="checkbox" value="yes" v-model="form.lookingForNewMembers" />
+            Looking for New Members?
+          </label>
         </div>
         <input
-          class="button is-primary margin-bottom"
+          class="btn btn-primary margin-bottom"
           type="submit"
-          @click.prevent="toSubmit"
           @click="submitProject"
         />
       </form>
@@ -54,7 +57,7 @@ export default {
         projectName: '',
         description: '',
         links: '',
-        look: [],
+        lookingForNewMembers: ['yes'],
       },
     };
   },
@@ -77,14 +80,12 @@ export default {
         alert(`The name: ${this.form.projectName} is taken!`);
       } else {
         const accessToken = await this.$auth.getTokenSilently();
-        console.log(accessToken);
-
         const project = {
           members: JSON.stringify([this.$store.state.currentUser.id]),
           name: this.form.projectName,
           links: this.form.links,
           description: this.form.description,
-          looking_for_new_members: this.form.look.length,
+          looking_for_new_members: this.form.lookingForNewMembers.length,
           search_filters: '[]',
           applicants: '[]',
         };
@@ -105,16 +106,21 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 p,
 h2,
 ul {
   color: white;
 }
+.margin-bottom {
+  margin-bottom: 15px;
+}
 .row {
   max-width: 83vw;
   margin: auto;
+}
+h1{
+  font-size: 50px;
 }
 h3 {
   margin: 40px 0 0;
@@ -127,24 +133,16 @@ li {
   display: inline-block;
   margin: 0 10px;
 }
+.label {
+  font-size: 30px;
+}
 a {
   color: #42b983;
 }
 html {
-  background: linear-gradient(-45deg, #b721ff, #23a6d5, #500000) fixed;
+  background: white;
   background-size: 400% 400%;
-  animation: gradient 45s ease infinite;
   height: 100vh;
-}
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  align-items: left;
 }
 </style>
