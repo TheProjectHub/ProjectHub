@@ -1,64 +1,28 @@
 <template>
-  <html>
-    <section id="new" class="main">
-      <form>
-        <h1 class="title is-1">
-          Tell us about yourself!
-        </h1>
-        <div class="field">
-          <label class="label">First Name:</label>
-          <div class="control">
-            <input class="input" type="text" v-model="first_name" />
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Last Name:</label>
-          <div class="control">
-            <input class="input" type="text" v-model="last_name" />
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Email:</label>
-          <div class="control">
-            <input class="input" type="text" v-model="email" disabled />
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Bio:</label>
-          <div class="control">
-            <input class="input" type="text" v-model="bio" />
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Age:</label>
-          <div class="control">
-            <input class="input" type="text" v-model="age" />
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Location:</label>
-          <div class="control">
-            <input class="input" type="text" v-model="location" />
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Skills:</label>
-          <div class="control">
-            <input class="input" type="text" v-model="skill" />
-          </div>
-          <button @click="addSkill" type="button" class="btn btn-info">
-            Add skill
-          </button>
-          <div v-for="(skill, index) in skills" :key="index">{{ skill }}</div>
-        </div>
-        <input
-          class="button is-primary margin-bottom: 2vh;"
-          type="submit"
-          @click="createUser"
-        />
-      </form>
-    </section>
-  </html>
+<html>
+  <h1>Let's get started!</h1>
+  <div class="container">
+    <form>
+      <input type="text" placeholder="Enter First Name" v-model="firstn" id="a" required />
+
+      <input type="text" placeholder="Enter Last Name" v-model="lastn" id="a" required />
+
+      <input type="text" placeholder="Enter Email" v-model="mail" id="b" required />
+      <br />
+      <input type="text" placeholder="Enter Age" v-model="age" id="c" required />
+
+      <input type="text" placeholder="Location" v-model="location" id="d" required />
+      <br />
+      <input type="text" placeholder="bio" v-model="bio" id="d" required />
+      <br />
+      <button @click="addSkill" type="button" class="btn btn-info">Add skill</button>
+      <div v-for="(skill, index) in skills" :key="index">{{ skill }}</div>
+      <br />
+      <br />
+      <input id="e" class="button is-primary margin-bottom: 2vh;" type="submit" @click="createUser" />
+    </form>
+  </div>
+</html>
 </template>
 
 <script>
@@ -75,7 +39,7 @@ export default {
       skills: [],
       bio: "",
       age: "",
-      location: "",
+      location: ""
     };
   },
   methods: {
@@ -93,7 +57,7 @@ export default {
         conversations: "[]",
         unread_conversations: "[]",
         age: this.age,
-        location: this.location,
+        location: this.location
       };
       createUser(user, accessToken);
       this.$router.push("/");
@@ -106,7 +70,7 @@ export default {
       this.first_name = this.$auth.user.given_name;
       this.last_name = this.$auth.user.family_name;
       this.email = this.$auth.user.email;
-    },
+    }
   },
   mounted() {
     const checkIsAuthLoaded = setInterval(() => {
@@ -115,49 +79,43 @@ export default {
         clearInterval(checkIsAuthLoaded);
       }
     }, 100);
-  },
+  }
 };
 </script>
 
 <style scoped>
-p,
-h2,
-ul {
+h1 {
+  margin-top: 2%;
   color: white;
 }
-.row {
-  max-width: 83vw;
-  margin: auto;
-}
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
+input[type="text"] {
+  width: 40%;
+  padding: 12px 20px;
+  margin-top: 8px;
+  margin-bottom: 8px;
   display: inline-block;
-  margin: 0 10px;
+  border: none;
+  box-sizing: border-box;
+  border-radius: 15px;
+  background-color: #d3d3d3;
 }
-a {
-  color: #42b983;
+input[id="a"] {
+  width: 30%;
 }
-html {
-  background: linear-gradient(-45deg, #b721ff, #23a6d5, #500000) fixed;
-  background-size: 400% 400%;
-  animation: gradient 45s ease infinite;
-  height: 100vh;
+
+input[id="b"] {
+  width: 50%;
 }
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+
+input[id="c"] {
+  width: 10%;
+}
+
+input[id="d"] {
+  width: 30%;
+}
+input[id="e"] {
+  width: 50%;
+  background: rgb(48, 216, 48);
 }
 </style>
