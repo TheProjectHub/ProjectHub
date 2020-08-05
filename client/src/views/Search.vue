@@ -1,16 +1,31 @@
 <template>
   <v-app>
-    <v-content class="gradint-background">
+    <v-main class="gradient-background">
       <v-container fluid fill-height>
         <v-layout align-center justify-center>
           <v-flex xs12 sm8 md5>
-            <v-card class="elevation-12" max-width="344" outlined>
-              ok
+            <v-card class="mx-auto" max-width="700" outlined>
+              <v-card-actions class="justify-center">
+                <v-text-field
+                  label="Find Project By Name"
+                  placeholder="ex: Pornhub, Java, Blockchain"
+                ></v-text-field>
+              </v-card-actions>
+              <v-card-actions class="justify-right">
+                <v-btn
+                  depressed
+                  @click="login"
+                  class="info white--text"
+                  :loading="loggingIn"
+                >
+                  <span>Search</span>
+                </v-btn>
+              </v-card-actions>
             </v-card>
           </v-flex>
         </v-layout>
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
@@ -24,23 +39,3 @@ export default {
   mounted() {}
 };
 </script>
-
-<style scoped>
-.gradint-background {
-  background: linear-gradient(-45deg, #239472, #23a6d5, #6d1919) fixed;
-  background-size: 400% 400%;
-  animation: gradient 45s ease infinite;
-}
-
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-</style>
