@@ -9,11 +9,7 @@
             is looking for applicants!
           </p>
           <div class="row">
-            <p
-              v-for="(f, i) in JSON.parse(this.project.search_filters)"
-              :key="i"
-              class="tag-label"
-            >
+            <p v-for="(f, i) in this.projectTags" :key="i" class="tag-label">
               {{ f }}
             </p>
           </div>
@@ -42,7 +38,7 @@
           <div>
             <p>Links:</p>
             <a
-              v-for="(link, i) in JSON.parse(this.project.links)"
+              v-for="(link, i) in this.projectLinks"
               :key="i"
               :href="goodLink(link)"
             >
@@ -57,17 +53,19 @@
 </template>
 
 <script>
-/* eslint-disable */
-import Users from '../services/Users';
-import Projects from '../services/Projects';
+import { getUser } from "../services/Users";
+import { getProject } from "../services/Projects";
 
 export default {
-  name: 'Project',
+  name: "Project",
   data() {
     return {
+      projectId: this.$route.params.projectId,
       project: {},
       projectMembers: [],
-      projectApplicants: [],
+      projectTags: [],
+      projectLinks: [],
+      projectApplicants: []
     };
   },
   methods: {
@@ -75,35 +73,37 @@ export default {
       // Get the access token from the auth wrapper
       const accessToken = await this.$auth.getTokenSilently();
 
-      var event = await Projects.get(id, accessToken);
+      var event = await getProject(id, accessToken);
       this.project = event.data;
 
       JSON.parse(this.project.members).forEach(async (m) => {
-        var response = await Users.get(m, accessToken);
+        var response = await getUser(m, accessToken);
         this.projectMembers.push(response.data);
       });
 
+      this.projectTags = JSON.parse(this.project.search_filters);
+      this.projectLinks = JSON.parse(this.project.links);
+
       JSON.parse(this.project.applicants).forEach(async (applicantObject) => {
-        var response = await Users.get(applicantObject['user-id'], accessToken);
+        var response = await getUser(applicantObject["user-id"], accessToken);
         this.projectApplicants.push({
           user: response.data,
-          appObj: applicantObject,
+          appObj: applicantObject
         });
       });
     },
     goodLink(url) {
-      return !(url.startsWith('http://') || url.startsWith('https://'))
+      return !(url.startsWith("http://") || url.startsWith("https://"))
         ? `http://${url}`
         : url;
-    },
+    }
   },
   mounted() {
-    this.getProject(2); // <- this will be dynamically set in later updates
-  },
+    this.getProject(this.projectId);
+  }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 p,
 h2,
