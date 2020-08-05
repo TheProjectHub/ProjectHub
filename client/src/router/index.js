@@ -60,9 +60,9 @@ const routes = [
     }
   },
   {
-    path: '/search',
-    name: 'Search',
-    component: Search,
+    path: "/search",
+    name: "Search",
+    component: Search
   },
   {
     path: "/my-projects",

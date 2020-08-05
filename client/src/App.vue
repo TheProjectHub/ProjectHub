@@ -14,7 +14,9 @@
         :collapsed="collapsed"
         @item-click="onItemClick"
       />
-      <router-view />
+      <v-app>
+        <router-view />
+      </v-app>
       <div id="fade-to-black"></div>
     </div>
   </html>

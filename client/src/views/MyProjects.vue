@@ -35,16 +35,16 @@ export default {
     async setProjects(projectIds) {
       const accessToken = await this.$auth.getTokenSilently();
 
-      projectIds.forEach(async (id) => {
+      projectIds.forEach(async id => {
         const res = await getProject(id, accessToken);
         let userNames = [];
         let members = JSON.parse(res.data.members);
 
-        members.forEach(async (id) => {
+        members.forEach(async id => {
           const res = await getUser(id, accessToken);
           userNames.push(`${res.data.first_name} ${res.data.last_name}`);
         });
-        
+
         this.projects.push({
           id: res.data.id,
           name: res.data.name,

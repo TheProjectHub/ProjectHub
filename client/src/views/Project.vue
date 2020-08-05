@@ -76,7 +76,7 @@ export default {
       var event = await getProject(id, accessToken);
       this.project = event.data;
 
-      JSON.parse(this.project.members).forEach(async (m) => {
+      JSON.parse(this.project.members).forEach(async m => {
         var response = await getUser(m, accessToken);
         this.projectMembers.push(response.data);
       });
@@ -84,7 +84,7 @@ export default {
       this.projectTags = JSON.parse(this.project.search_filters);
       this.projectLinks = JSON.parse(this.project.links);
 
-      JSON.parse(this.project.applicants).forEach(async (applicantObject) => {
+      JSON.parse(this.project.applicants).forEach(async applicantObject => {
         var response = await getUser(applicantObject["user-id"], accessToken);
         this.projectApplicants.push({
           user: response.data,
