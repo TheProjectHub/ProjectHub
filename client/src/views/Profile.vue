@@ -64,46 +64,37 @@
 <script>
 import { getProject } from "../services/Projects";
 
+import { onceAuthIsLoaded } from "../utilities/auth/auth.utility";
+import { onceCurrentUserIsSet } from "../utilities/vuex/vuex.utility";
+
 export default {
   name: "Profile",
   data() {
     return {
       projects: [],
-      userSkills: []
+      userSkills: [],
+      accessToken: ""
     };
   },
   methods: {
     async setProjects() {
-      const userSkills = this.$store.state.currentUser.skills;
-      try {
-        this.userSkills = JSON.parse(userSkills);
-      } catch (error) {
-        this.userSkills = userSkills
-          .substring(1, userSkills.indexOf("]"))
-          .split(", ");
-      }
+      this.userSkills = JSON.parse(this.$store.state.currentUser.skills);
 
-      const accessToken = await this.$auth.getTokenSilently();
       const projectIds = JSON.parse(
         this.$store.state.currentUser.project_affiliation
       );
       projectIds.forEach(pid => {
-        getProject(pid, accessToken).then(event => {
+        getProject(pid, this.accessToken).then(event => {
           this.projects.push(event.data);
         });
       });
     }
   },
   mounted() {
-    const checkIsAuthLoaded = setInterval(() => {
-      if (
-        this.$store.state.currentUser.project_affiliation &&
-        this.$store.state.currentUser.skills
-      ) {
-        this.setProjects();
-        clearInterval(checkIsAuthLoaded);
-      }
-    }, 100);
+    onceAuthIsLoaded(this.$auth, async () => {
+      this.accessToken = await this.$auth.getTokenSilently();
+      onceCurrentUserIsSet(this.$store, this.setProjects);
+    });
   }
 };
 </script>

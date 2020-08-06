@@ -45,6 +45,9 @@
 <script>
 import { getAllProjectNames, createProject } from "../services/Projects";
 
+import { onceAuthIsLoaded } from "../utilities/auth/auth.utility";
+import { onceCurrentUserIsSet } from "../utilities/vuex/vuex.utility";
+
 export default {
   name: "NewProject",
   data() {
@@ -55,14 +58,13 @@ export default {
         description: "",
         links: "",
         look: []
-      }
+      },
+      accessToken: ""
     };
   },
   methods: {
     async getTakenProjectNames() {
-      const accessToken = await this.$auth.getTokenSilently();
-
-      getAllProjectNames(accessToken).then(event => {
+      getAllProjectNames(this.accessToken).then(event => {
         const takenNames = event.data;
         takenNames.forEach(project => {
           this.takenProjectNames.push(project.name);
@@ -76,8 +78,6 @@ export default {
       if (this.isNameTaken(this.form.projectName) && this.form.name) {
         alert(`The name: ${this.form.projectName} is taken!`);
       } else {
-        const accessToken = await this.$auth.getTokenSilently();
-
         const project = {
           members: JSON.stringify([this.$store.state.currentUser.id]),
           name: this.form.projectName,
@@ -87,19 +87,17 @@ export default {
           search_filters: "[]",
           applicants: "[]"
         };
-        createProject(project, accessToken).then(() => {
+        createProject(project, this.accessToken).then(() => {
           this.$router.push("/");
         });
       }
     }
   },
   mounted() {
-    const checkIsAuthLoaded = setInterval(() => {
-      if (!this.$auth.loading) {
-        this.getTakenProjectNames();
-        clearInterval(checkIsAuthLoaded);
-      }
-    }, 100);
+    onceAuthIsLoaded(this.$auth, async () => {
+      this.accessToken = await this.$auth.getTokenSilently();
+      onceCurrentUserIsSet(this.$store, this.getTakenProjectNames);
+    });
   }
 };
 </script>
