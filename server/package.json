@@ -23,5 +23,8 @@
     "jwks-rsa": "^1.8.1",
     "mysql": "^2.18.1",
     "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "mocha": "^8.1.1"
   }
 }
