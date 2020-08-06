@@ -8,16 +8,12 @@
               <v-card-actions class="justify-center">
                 <v-text-field
                   label="Find Project By Name"
-                  placeholder="ex: Pornhub, Java, Blockchain"
+                  placeholder="ex: Java, ML, Blockchain, AI, [buzzword]"
+                  v-model="searchString"
                 ></v-text-field>
               </v-card-actions>
               <v-card-actions class="justify-right">
-                <v-btn
-                  depressed
-                  @click="login"
-                  class="info white--text"
-                  :loading="loggingIn"
-                >
+                <v-btn depressed @click="redirect" class="info white--text">
                   <span>Search</span>
                 </v-btn>
               </v-card-actions>
@@ -33,9 +29,30 @@
 export default {
   name: "Search",
   data() {
-    return {};
+    return {
+      searchString: "",
+      searchTags: ["hm", "ok"]
+    };
   },
-  methods: {},
+  methods: {
+    showResults() {
+      if (!this.searchString && !this.searchTags) {
+        return;
+      }
+
+      this.$router
+        .replace({
+          path: "search",
+          query: {
+            keyword: this.searchString,
+            tags: JSON.stringify(this.searchTags)
+          }
+        })
+        .catch(err => {
+          console.log(`error while making search query ${err}`);
+        });
+    }
+  },
   mounted() {}
 };
 </script>

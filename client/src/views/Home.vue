@@ -20,7 +20,8 @@ export default {
 </script>
 
 <style>
-body, .gradient-background {
+body,
+.gradient-background {
   background: linear-gradient(-45deg, #239472, #23a6d5, #6d1919) fixed;
   background-size: 400% 400%;
   animation: gradient 45s ease infinite;
