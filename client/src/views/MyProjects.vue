@@ -26,28 +26,33 @@
 import { getProject } from "../services/Projects";
 import { getUser } from "../services/Users";
 
+import { onceAuthIsLoaded } from "../utilities/auth/auth.utility";
+import { onceCurrentUserIsSet } from "../utilities/vuex/vuex.utility";
+
 export default {
   name: "MyProjects",
   data() {
-    return { projects: [] };
+    return { projects: [], accessToken: "" };
   },
   methods: {
-    async setProjects(projectIds) {
-      const accessToken = await this.$auth.getTokenSilently();
+    async setProjects() {
+      const projectIds = JSON.parse(
+        this.$store.state.currentUser.project_affiliation
+      );
 
-      projectIds.forEach(async (id) => {
-        const res = await getProject(id, accessToken);
+      projectIds.forEach(async id => {
+        const project = await getProject(id, this.accessToken);
         let userNames = [];
-        let members = JSON.parse(res.data.members);
+        let members = JSON.parse(project.data.members);
 
-        members.forEach(async (id) => {
-          const res = await getUser(id, accessToken);
-          userNames.push(`${res.data.first_name} ${res.data.last_name}`);
+        members.forEach(async id => {
+          const user = await getUser(id, this.accessToken);
+          userNames.push(`${user.data.first_name} ${user.data.last_name}`);
         });
-        
+
         this.projects.push({
-          id: res.data.id,
-          name: res.data.name,
+          id: project.data.id,
+          name: project.data.name,
           members: userNames
         });
       });
@@ -63,16 +68,13 @@ export default {
     }
   },
   mounted() {
-    const checkIsUserLoaded = setInterval(() => {
-      if (this.$store.state.currentUser.project_affiliation) {
-        const projectIds = JSON.parse(
-          this.$store.state.currentUser.project_affiliation
-        );
-        this.setProjects(projectIds);
+    onceAuthIsLoaded(this.$auth, async () => {
+      this.accessToken = await this.$auth.getTokenSilently();
 
-        clearInterval(checkIsUserLoaded);
-      }
-    }, 100);
+      onceCurrentUserIsSet(this.$store, async () => {
+        this.setProjects();
+      });
+    });
   }
 };
 </script>
