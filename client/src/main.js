@@ -19,6 +19,8 @@ import { Auth0Plugin } from "./auth";
 
 import vuetify from "./plugins/vuetify";
 
+import "material-design-icons-iconfont/dist/material-design-icons.css";
+
 // Plugin Navbar
 Vue.use(VueSidebarMenu);
 

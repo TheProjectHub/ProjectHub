@@ -5,22 +5,25 @@
         <v-layout align-center justify-center>
           <v-flex xs12 sm8 md5>
             <v-card class="mx-auto" max-width="700" outlined>
-              <v-card-actions class="justify-center">
+              <v-toolbar dense flat class="mx-auto">
+                <v-app-bar-nav-icon></v-app-bar-nav-icon>
+
                 <v-text-field
-                  label="Find Project By Name"
-                  placeholder="ex: Java, ML, Blockchain, AI, [buzzword]"
+                  hide-details
+                  placeholder="search projects"
                   v-model="searchString"
+                  single-line
                 ></v-text-field>
-              </v-card-actions>
-              <v-card-actions class="justify-right">
-                <v-btn depressed @click="showResults" class="info white--text">
-                  <span>Search</span>
+
+                <v-btn icon @click="showResults">
+                  <v-icon>search</v-icon>
                 </v-btn>
-              </v-card-actions>
+              </v-toolbar>
             </v-card>
+
             search string
             {{ searchString }}
-            <br>
+            <br />
             search tags
             {{ searchTags }}
           </v-flex>
