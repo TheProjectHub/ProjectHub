@@ -13,11 +13,16 @@
                 ></v-text-field>
               </v-card-actions>
               <v-card-actions class="justify-right">
-                <v-btn depressed @click="redirect" class="info white--text">
+                <v-btn depressed @click="showResults" class="info white--text">
                   <span>Search</span>
                 </v-btn>
               </v-card-actions>
             </v-card>
+            search string
+            {{ searchString }}
+            <br>
+            search tags
+            {{ searchTags }}
           </v-flex>
         </v-layout>
       </v-container>
@@ -31,28 +36,33 @@ export default {
   data() {
     return {
       searchString: "",
-      searchTags: ["hm", "ok"]
+      searchTags: []
     };
   },
   methods: {
-    showResults() {
+    async showResults() {
       if (!this.searchString && !this.searchTags) {
         return;
       }
-
-      this.$router
-        .replace({
+      try {
+        await this.$router.replace({
           path: "search",
           query: {
             keyword: this.searchString,
             tags: JSON.stringify(this.searchTags)
           }
-        })
-        .catch(err => {
-          console.log(`error while making search query ${err}`);
         });
+      } catch (err) {
+        console.log(err);
+      }
     }
   },
-  mounted() {}
+  async mounted() {
+    if (this.$route.query) {
+      this.searchString = this.$route.query.keyword;
+      this.searchTags = JSON.parse(this.$route.query.tags);
+      await this.showResults();
+    }
+  }
 };
 </script>
