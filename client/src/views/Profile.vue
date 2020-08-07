@@ -62,53 +62,43 @@
 </template>
 
 <script>
-import Projects from '../services/Projects';
+import { getProject } from "../services/Projects";
+
+import { onceAuthIsLoaded } from "../utilities/auth/auth.utility";
+import { onceCurrentUserIsSet } from "../utilities/vuex/vuex.utility";
 
 export default {
-  name: 'Profile',
+  name: "Profile",
   data() {
     return {
       projects: [],
       userSkills: [],
+      accessToken: ""
     };
   },
   methods: {
     async setProjects() {
-      const userSkills = this.$store.state.currentUser.skills;
-      try {
-        this.userSkills = JSON.parse(userSkills);
-      } catch (error) {
-        this.userSkills = userSkills
-          .substring(1, userSkills.indexOf(']'))
-          .split(', ');
-      }
+      this.userSkills = JSON.parse(this.$store.state.currentUser.skills);
 
-      const accessToken = await this.$auth.getTokenSilently();
       const projectIds = JSON.parse(
-        this.$store.state.currentUser.project_affiliation,
+        this.$store.state.currentUser.project_affiliation
       );
-      projectIds.forEach((pid) => {
-        Projects.get(pid, accessToken).then((event) => {
+      projectIds.forEach(pid => {
+        getProject(pid, this.accessToken).then(event => {
           this.projects.push(event.data);
         });
       });
-    },
+    }
   },
   mounted() {
-    const checkIsAuthLoaded = setInterval(() => {
-      if (
-        this.$store.state.currentUser.project_affiliation && // eslint-disable-line
-        this.$store.state.currentUser.skills
-      ) {
-        this.setProjects();
-        clearInterval(checkIsAuthLoaded);
-      }
-    }, 100);
-  },
+    onceAuthIsLoaded(this.$auth, async () => {
+      this.accessToken = await this.$auth.getTokenSilently();
+      onceCurrentUserIsSet(this.$store, this.setProjects);
+    });
+  }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .profile {
   width: 80%;

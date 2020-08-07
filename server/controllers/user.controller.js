@@ -56,7 +56,7 @@ exports.getUser = (req, res) => {
       } else res.send(data);
     });
 
-  // if an id is passed in the request
+    // if an id is passed in the request
   } else {
     User.findById(req.params.identifier, (err, data) => {
       if (err) {
@@ -134,23 +134,19 @@ exports.rejectConversationRequest = (req, res) => {
   }
 
   // Updated user without requested conversation
-  User.rejectConversationRequest(
-    req.body.id,
-    req.body.convId,
-    (err, data) => {
-      if (err) {
-        if (err.kind === 'not_found') {
-          res.status(404).send({
-            message: `No found User with id ${req.body.id}.`,
-          });
-        } else {
-          res.status(500).send({
-            message: 'Error updating User with id ' + req.body.id,
-          });
-        }
-      } else res.send(data);
-    },
-  );
+  User.rejectConversationRequest(req.body.id, req.body.convId, (err, data) => {
+    if (err) {
+      if (err.kind === 'not_found') {
+        res.status(404).send({
+          message: `No found User with id ${req.body.id}.`,
+        });
+      } else {
+        res.status(500).send({
+          message: 'Error updating User with id ' + req.body.id,
+        });
+      }
+    } else res.send(data);
+  });
 };
 
 // Add a conversation id to a user's conversations arr

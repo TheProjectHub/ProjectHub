@@ -1,11 +1,11 @@
-const Conversation = require("../models/conversation.model");
+const Conversation = require('../models/conversation.model');
 
-// Create and Save a new conversation
+// Create and save a new conversation
 exports.create = (req, res) => {
   // Validate request
   if (!req.body) {
     res.status(400).send({
-      message: "Content can not be empty!",
+      message: 'Content can not be empty!',
     });
   }
 
@@ -21,7 +21,9 @@ exports.create = (req, res) => {
   Conversation.create(conversation, (err, data) => {
     if (err)
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the Conversation.",
+        message: `Error creating conversation with values: ${Object.values(
+          conversation,
+        )}`,
       });
     else res.send(data);
   });
@@ -29,15 +31,25 @@ exports.create = (req, res) => {
 
 // Find a single conversation with a conversationId
 exports.getConversationByID = (req, res) => {
-    Conversation.findById(req.params.conversationId, (err, data) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      message: 'Content can not be empty!',
+    });
+  }
+
+  // Find conversation in database
+  Conversation.findById(req.params.conversationId, (err, data) => {
     if (err) {
-      if (err.kind === "not_found") {
+      if (err.kind === 'not_found') {
         res.status(404).send({
           message: `Not found Conversation with id ${req.params.conversationId}.`,
         });
       } else {
         res.status(500).send({
-          message: "Error retrieving Conversation with id " + req.params.conversationId,
+          message:
+            'Error retrieving Conversation with id ' +
+            req.params.conversationId,
         });
       }
     } else res.send(data);
@@ -49,21 +61,27 @@ exports.update = (req, res) => {
   // Validate Request
   if (!req.body) {
     res.status(400).send({
-      message: "Content can not be empty!",
+      message: 'Content can not be empty!',
     });
   }
 
-  Conversation.updateById(req.params.conversationId, new Conversation(req.body), (err, data) => {
-    if (err) {
-      if (err.kind === "not_found") {
-        res.status(404).send({
-          message: `Not found Conversation with id ${req.params.conversationId}.`,
-        });
-      } else {
-        res.status(500).send({
-          message: "Error updating Conversation with id " + req.params.conversationId,
-        });
-      }
-    } else res.send(data);
-  });
+  Conversation.updateById(
+    req.params.conversationId,
+    new Conversation(req.body),
+    (err, data) => {
+      if (err) {
+        if (err.kind === 'not_found') {
+          res.status(404).send({
+            message: `Not found Conversation with id ${req.params.conversationId}.`,
+          });
+        } else {
+          res.status(500).send({
+            message:
+              'Error updating Conversation with id ' +
+              req.params.conversationId,
+          });
+        }
+      } else res.send(data);
+    },
+  );
 };

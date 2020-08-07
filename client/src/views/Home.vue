@@ -1,8 +1,5 @@
 <template>
   <html>
-    <head>
-      <title>Welcome to Projectly</title>
-    </head>
     <body>
       <div class="home">
         <Splash />
@@ -12,18 +9,19 @@
 </template>
 
 <script>
-import Splash from '../components/Splash.vue';
+import Splash from "../components/Splash.vue";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    Splash,
-  },
+    Splash
+  }
 };
 </script>
 
 <style>
-body {
+body,
+.gradient-background {
   background: linear-gradient(-45deg, #239472, #23a6d5, #6d1919) fixed;
   background-size: 400% 400%;
   animation: gradient 45s ease infinite;

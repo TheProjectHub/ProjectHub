@@ -47,10 +47,13 @@
 </template>
 
 <script>
-import Projects from '../services/Projects';
+import { getAllProjectNames, createProject } from "../services/Projects";
+
+import { onceAuthIsLoaded } from "../utilities/auth/auth.utility";
+import { onceCurrentUserIsSet } from "../utilities/vuex/vuex.utility";
 
 export default {
-  name: 'NewProject',
+  name: "NewProject",
   data() {
     return {
       takenProjectNames: [],
@@ -60,15 +63,14 @@ export default {
         links: '',
         lookingForNewMembers: ['true'],
       },
+      accessToken: ""
     };
   },
   methods: {
     async getTakenProjectNames() {
-      const accessToken = await this.$auth.getTokenSilently();
-
-      Projects.getAllProjectNames(accessToken).then((event) => {
+      getAllProjectNames(this.accessToken).then(event => {
         const takenNames = event.data;
-        takenNames.forEach((project) => {
+        takenNames.forEach(project => {
           this.takenProjectNames.push(project.name);
         });
       });
@@ -86,32 +88,29 @@ export default {
     },
     async submitProject() {
       if (this.isNameTaken(this.form.projectName) && this.form.name) {
-        alert(`The name: ${this.form.projectName} is taken!`); // eslint-disable-line
+        alert(`The name: ${this.form.projectName} is taken!`);
       } else {
-        const accessToken = await this.$auth.getTokenSilently();
         const project = {
           members: JSON.stringify([this.$store.state.currentUser.id]),
           name: this.form.projectName,
-          links: JSON.stringify(this.form.links.split(' ')),
+          links: JSON.stringify(this.form.links.split(", ")),
           description: this.form.description,
           looking_for_new_members: this.form.lookingForNewMembers.length,
-          search_filters: '[]',
-          applicants: '[]',
+          search_filters: "[]",
+          applicants: "[]"
         };
-        Projects.create(project, accessToken).then(() => {
-          this.$router.push('/');
+        createProject(project, this.accessToken).then(() => {
+          this.$router.push("/");
         });
       }
-    },
+    }
   },
   mounted() {
-    const checkIsAuthLoaded = setInterval(() => {
-      if (!this.$auth.loading) {
-        this.getTakenProjectNames();
-        clearInterval(checkIsAuthLoaded);
-      }
-    }, 100);
-  },
+    onceAuthIsLoaded(this.$auth, async () => {
+      this.accessToken = await this.$auth.getTokenSilently();
+      onceCurrentUserIsSet(this.$store, this.getTakenProjectNames);
+    });
+  }
 };
 </script>
 
