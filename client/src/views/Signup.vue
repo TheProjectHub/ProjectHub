@@ -64,6 +64,8 @@
 <script>
 import { createUser } from "../services/Users";
 
+import { onceAuthIsLoaded } from "../utilities/auth/auth.utility";
+
 export default {
   name: "Signup",
   data() {
@@ -109,12 +111,7 @@ export default {
     }
   },
   mounted() {
-    const checkIsAuthLoaded = setInterval(() => {
-      if (!this.$auth.loading) {
-        this.displayUserOAuthData();
-        clearInterval(checkIsAuthLoaded);
-      }
-    }, 100);
+    onceAuthIsLoaded(this.$auth, this.displayUserOAuthData);
   }
 };
 </script>

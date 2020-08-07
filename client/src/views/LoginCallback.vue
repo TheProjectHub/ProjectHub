@@ -4,6 +4,7 @@
 
 <script>
 import { getUser } from "../services/Users";
+import { onceAuthIsLoaded } from "../utilities/auth/auth.utility";
 
 export default {
   name: "callback",
@@ -24,12 +25,7 @@ export default {
     }
   },
   mounted() {
-    const checkIsAuthLoaded = setInterval(() => {
-      if (!this.$auth.loading) {
-        this.checkIfUserExists();
-        clearInterval(checkIsAuthLoaded);
-      }
-    }, 10);
+    onceAuthIsLoaded(this.$auth, this.checkIfUserExists);
   }
 };
 </script>
