@@ -41,7 +41,8 @@ export default {
   data() {
     return {
       searchString: "",
-      searchTags: []
+      searchTags: [],
+      searchResults: []
     };
   },
   methods: {
@@ -57,6 +58,8 @@ export default {
             tags: JSON.stringify(this.searchTags)
           }
         });
+
+        this.searchResults = await search(this.searchString, this.tags);
       } catch (err) {
         console.log(err);
       }
