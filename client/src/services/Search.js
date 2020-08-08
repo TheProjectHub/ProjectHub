@@ -1,17 +1,13 @@
 import http from "../http-common";
 
-export function searchProjectByKeywordTags(keyword, tags, limit = 50) {
-  return http.get(`/search/searchProjectByKeywordTags`, {
-    keyword,
-    tags,
-    limit
-  });
+export function searchProjectByKeywordTags(data) {
+  return http.get(`/search/searchProjectByKeywordTags`, data);
 }
 
-export function searchProjectByKeyword(keyword, tags, limit = 50) {
-  return http.get(`/search/searchProjectByKeyword`, { keyword, tags, limit });
+export function searchProjectByKeyword(data) {
+  return http.get(`/search/searchProjectByKeyword`, data);
 }
 
 export function searchProjectByTags(keyword, tags, limit = 50) {
-  return http.get(`/search/searchProjectByTags`, { keyword, tags, limit });
+  return http.get(`/search/searchProjectByTags`, data);
 }
