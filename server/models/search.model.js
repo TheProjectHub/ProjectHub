@@ -7,9 +7,9 @@ const Query = function (searchObject) {
   this.limit = searchObject.limit;
 };
 
-Query.searchProjectByKeywordTags = (query, res) => {};
+Query.searchProjectByKeywordTags = (query, result) => {};
 
-Query.searchProjectByKeyword = (query, res) => {
+Query.searchProjectByKeyword = (query, result) => {
   sql.query(
     "SELECT id FROM projects WHERE MATCH (name,description,search_filters) AGAINST (? IN NATURAL LANGUAGE MODE) AND looking_for_new_members = 1 LIMIT ?",
     [query.keyword, query.limit],
@@ -19,12 +19,12 @@ Query.searchProjectByKeyword = (query, res) => {
         result(err, null);
         return;
       }
-      console.log("search query complete ${res}");
+      console.log("search query complete for\n", query, "\nwith result\n", res);
       result(null, res);
     }
   );
 };
 
-Query.searchProjectByTags = (query, res) => {};
+Query.searchProjectByTags = (query, result) => {};
 
 module.exports = Query;

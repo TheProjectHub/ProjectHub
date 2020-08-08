@@ -39,7 +39,6 @@ import {
   searchProjectByKeyword,
   searchProjectByTags
 } from "../services/Search";
-import { formQuery } from "../utilities/search/query.utilities";
 
 export default {
   name: "Search",
@@ -57,14 +56,15 @@ export default {
       }
 
       try {
-        let q = formQuery(this.searchString, this.tags);
-
         if (this.searchString && this.tags) {
-          this.searchResults = await searchProjectByKeywordTags(q);
+          this.searchResults = await searchProjectByKeywordTags(
+            this.searchString,
+            this.tags
+          );
         } else if (this.searchString && !this.tags) {
-          this.searchResults = await searchProjectByKeyword(q);
+          this.searchResults = await searchProjectByKeyword(this.searchString);
         } else if (!this.searchString && this.tags) {
-          this.searchResults = await searchProjectByTags(q);
+          this.searchResults = await searchProjectByTags(this.tags);
         }
 
         this.$router.replace({
