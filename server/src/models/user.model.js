@@ -1,4 +1,4 @@
-const sql = require('./db');
+const sql = require("./db");
 
 // constructor
 const User = function (user) {
@@ -18,14 +18,14 @@ const User = function (user) {
 };
 
 User.create = (user, result) => {
-  sql.query('INSERT INTO users SET ?', user, (err, res) => {
+  sql.query("INSERT INTO users SET ?", user, (err, res) => {
     if (err) {
-      console.log('error: ', err);
+      console.log("error: ", err);
       result(err, null);
       return;
     }
 
-    console.log('created user: ', { id: res.insertId, ...user });
+    // console.log('created user: ', { id: res.insertId, ...user });
     result(null, { id: res.insertId, ...user });
   });
 };
@@ -33,7 +33,7 @@ User.create = (user, result) => {
 User.findById = (userID, result) => {
   sql.query(`SELECT * FROM users WHERE id = ${userID}`, (err, res) => {
     if (err) {
-      console.log('error: ', err);
+      console.log("error: ", err);
       result(err, null);
       return;
     }
@@ -44,14 +44,14 @@ User.findById = (userID, result) => {
     }
 
     // not found User with the id
-    result({ kind: 'not_found' }, null);
+    result({ kind: "not_found" }, null);
   });
 };
 
 User.findByEmail = (email, result) => {
   sql.query(`SELECT * FROM users WHERE email = \'${email}\'`, (err, res) => {
     if (err) {
-      console.log('error: ', err);
+      console.log("error: ", err);
       result(err, null);
       return;
     }
@@ -62,17 +62,17 @@ User.findByEmail = (email, result) => {
     }
 
     // not found User with the id
-    result({ kind: 'not_found' }, null);
+    result({ kind: "not_found" }, null);
   });
 };
 
 User.updateById = (id, user, result) => {
   sql.query(
-    'UPDATE users SET \
+    "UPDATE users SET \
     first_name = ?, last_name = ?, project_affiliation = ?, email = ?, \
     search_filters = ?, looking_for_project = ?, skills = ?, bio = ?, conversations = ?, \
     unread_conversations = ?, age = ?, location = ?, requested_conversations = ?\
-    WHERE id = ?',
+    WHERE id = ?",
     [
       user.first_name,
       user.last_name,
@@ -86,25 +86,25 @@ User.updateById = (id, user, result) => {
       user.unread_conversations,
       user.age,
       user.location,
-      user.id,
       user.requested_conversations,
+      id
     ],
     (err, res) => {
       if (err) {
-        console.log('error: ', err);
+        console.log("error: ", err);
         result(null, err);
         return;
       }
 
       if (res.affectedRows == 0) {
         // could not find user with the id provided
-        result({ kind: 'not_found' }, null);
+        result({ kind: "not_found" }, null);
         return;
       }
 
-      console.log('updated user: ', { id: id, ...user });
+      // console.log('updated user: ', { id: id, ...user });
       result(null, { id: id, ...user });
-    },
+    }
   );
 };
 
@@ -113,7 +113,7 @@ User.inviteToConversation = (email, convId, result) => {
     `select requested_conversations from users where email = \'${email}\'`,
     (err, res) => {
       if (err) {
-        console.log('error: ', err);
+        console.log("error: ", err);
         result(null, err);
         return;
       }
@@ -128,23 +128,23 @@ User.inviteToConversation = (email, convId, result) => {
         }
         reqConvos.push(convId);
         sql.query(
-          'update users set requested_conversations = ? where email = ?',
+          "update users set requested_conversations = ? where email = ?",
           [JSON.stringify(reqConvos), email],
           (err, res) => {
             if (err) {
-              console.log('error: ', err);
+              console.log("error: ", err);
               result(null, err);
               return;
             }
 
-            console.log('updated user: ', email);
+            // console.log('updated user: ', email);
             result(null, res[0]);
-          },
+          }
         );
       } else {
-        result({ kind: 'not_found' }, null);
+        result({ kind: "not_found" }, null);
       }
-    },
+    }
   );
 };
 
@@ -153,7 +153,7 @@ User.addConversationToUser = (id, convId, result) => {
     `select conversations, requested_conversations from users where id = \'${id}\'`,
     (err, res) => {
       if (err) {
-        console.log('error: ', err);
+        console.log("error: ", err);
         result(null, err);
         return;
       }
@@ -176,19 +176,19 @@ User.addConversationToUser = (id, convId, result) => {
           [JSON.stringify(convos), JSON.stringify(reqConvos)],
           (err, res) => {
             if (err) {
-              console.log('error: ', err);
+              console.log("error: ", err);
               result(null, err);
               return;
             }
 
-            console.log('updated user: ', id);
+            // console.log('updated user: ', id);
             result(null, res[0]);
-          },
+          }
         );
       } else {
-        result({ kind: 'not_found' }, null);
+        result({ kind: "not_found" }, null);
       }
-    },
+    }
   );
 };
 
@@ -197,7 +197,7 @@ User.rejectConversationRequest = (id, convId, result) => {
     `select requested_conversations from users where id = ${id}`,
     (err, res) => {
       if (err) {
-        console.log('error: ', err);
+        console.log("error: ", err);
         result(null, err);
         return;
       }
@@ -213,23 +213,23 @@ User.rejectConversationRequest = (id, convId, result) => {
           }
         }
         sql.query(
-          'update users set requested_conversations = ? where id = ?',
+          "update users set requested_conversations = ? where id = ?",
           [JSON.stringify(reqConvos), id],
           (err, res) => {
             if (err) {
-              console.log('error: ', err);
+              console.log("error: ", err);
               result(null, err);
               return;
             }
 
-            console.log('updated user: ', id);
+            // console.log('updated user: ', id);
             result(null, res[0]);
-          },
+          }
         );
       } else {
-        result({ kind: 'not_found' }, null);
+        result({ kind: "not_found" }, null);
       }
-    },
+    }
   );
 };
 
