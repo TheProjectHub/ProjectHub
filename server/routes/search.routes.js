@@ -2,11 +2,11 @@ module.exports = app => {
   const search = require("../controllers/search.controller");
 
   // search project by keyword and tags
-  app.get("/searchKeywordTags", search.searchByKeywordTags);
+  app.get("/search/searchProjectByKeywordTags", search.searchProjectByKeywordTags);
 
   // search project by keyword
-  app.get("/searchKeyword", search.searchKeyword);
+  app.get("/search/searchProjectByKeyword", search.searchProjectByKeyword);
 
   // search project by tags
-  app.get("/searchTags", search.searchTags);
+  app.get("/search/searchProjectByTags", search.searchProjectByTags);
 };

@@ -1,5 +1,13 @@
 const Query = require('../models/search.model');
 
+const formQuery = (obj) => {
+  return new Query({
+    keyword: body.keyword,
+    tags: body.tags,
+    limit: body.limit
+  });
+}
+
 exports.searchProjectByKeywordTags = (req, res) => {
     // validate request
     if (!req.body) {
@@ -9,7 +17,7 @@ exports.searchProjectByKeywordTags = (req, res) => {
     }
 
     // create query
-    let query = new Query(req.body);
+    let query = formQuery(req.body);
 
     // search by keyword and tags
     Query.searchProjectByKeywordTags(query, (err, data) => {
@@ -29,8 +37,10 @@ exports.searchProjectByKeyword = (req, res) => {
     });
   }
 
+  console.log(req.body);
+
   // create query
-  let query = new Query(req.body);
+  let query = formQuery(req.body);
 
   // search by keyword
   Query.searchProjectByKeyword(query, (err, data) => {
@@ -51,7 +61,7 @@ exports.searchProjectByTags = (req, res) => {
   }
 
   // create query
-  let query = new Query(req.body);
+  let query = formQuery(req.body);
 
   // search by tags
   Query.searchProjectByTags(query, (err, data) => {

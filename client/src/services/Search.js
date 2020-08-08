@@ -8,6 +8,6 @@ export function searchProjectByKeyword(data) {
   return http.get(`/search/searchProjectByKeyword`, data);
 }
 
-export function searchProjectByTags(keyword, tags, limit = 50) {
+export function searchProjectByTags(data) {
   return http.get(`/search/searchProjectByTags`, data);
 }
