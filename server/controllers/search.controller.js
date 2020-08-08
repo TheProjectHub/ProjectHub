@@ -2,9 +2,9 @@ const Query = require('../models/search.model');
 
 const formQuery = (obj) => {
   return new Query({
-    keyword: body.keyword,
-    tags: body.tags,
-    limit: body.limit
+    keyword: obj.keyword,
+    tags: obj.tags,
+    limit: obj.limit
   });
 }
 
@@ -37,10 +37,10 @@ exports.searchProjectByKeyword = (req, res) => {
     });
   }
 
-  console.log(req.body);
-
   // create query
   let query = formQuery(req.body);
+
+  console.log(req);
 
   // search by keyword
   Query.searchProjectByKeyword(query, (err, data) => {
