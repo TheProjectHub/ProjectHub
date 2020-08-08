@@ -13,9 +13,12 @@
                   placeholder="search projects"
                   v-model="searchString"
                   single-line
+                  clearable
+                  @keydown.enter="getResults"
+                  :loading="loading"
                 ></v-text-field>
 
-                <v-btn icon @click="showResults">
+                <v-btn icon @click="getResults">
                   <v-icon>search</v-icon>
                 </v-btn>
               </v-toolbar>
@@ -49,7 +52,8 @@ export default {
     return {
       searchString: "",
       searchTags: [],
-      searchResults: []
+      searchResults: [],
+      loading: false
     };
   },
   methods: {
@@ -57,6 +61,8 @@ export default {
       if (!this.searchString && !this.searchTags) {
         return;
       }
+
+      this.loading = true;
 
       try {
         if (this.searchString && this.tags) {
@@ -77,7 +83,10 @@ export default {
             tags: this.searchTags ? JSON.stringify(this.searchTags) : null
           }
         });
+
+        this.loading = false;
       } catch (err) {
+        this.loading = false;
         console.log(err);
       }
     }
@@ -89,7 +98,7 @@ export default {
       this.searchTags = q.searchTags
         ? JSON.parse(this.$route.query.tags)
         : this.searchTags;
-      await this.getResults();
+      this.getResults()
     }
   }
 };
