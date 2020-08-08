@@ -74,11 +74,11 @@ export default {
   },
   methods: {
     async getProject(id) {
-      var project = await getProject(id, this.accessToken);
+      const project = await getProject(id, this.accessToken);
       this.project = project.data;
 
       JSON.parse(this.project.members).forEach(async m => {
-        var user = await getUser(m, this.accessToken);
+        const user = await getUser(m, this.accessToken);
         this.projectMembers.push(user.data);
       });
 
@@ -86,7 +86,7 @@ export default {
       this.projectLinks = JSON.parse(this.project.links);
 
       JSON.parse(this.project.applicants).forEach(async applicantObject => {
-        var user = await getUser(applicantObject["user-id"], this.accessToken);
+        const user = await getUser(applicantObject["user-id"], this.accessToken);
         this.projectApplicants.push({
           user: user.data,
           appObj: applicantObject

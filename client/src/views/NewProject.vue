@@ -1,40 +1,44 @@
 <template>
   <html>
-    <section id="new" class="main">
+    <head>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Comfortaa:wght@700&family=Lato&family=Patrick+Hand&display=swap"
+        rel="stylesheet"
+      />
+    </head>
+    <section class="main">
       <form>
-        <h1 class="title is-1">
+        <h1 style="font-family: Comfortaa, cursive; padding: 10px" class="title is-1">
           New Project
         </h1>
         <div class="field">
-          <label class="label">Project Name:</label>
+          <label class="label" style="font-family: Comfortaa, cursive">Project Name:</label>
           <div class="control">
-            <input class="input" type="text" v-model="form.projectName" />
+            <input class="input" type="text" size = "40" v-model="form.projectName" />
           </div>
         </div>
         <div class="field">
-          <label class="label">Description:</label>
+          <label class="label" style="font-family: Comfortaa, cursive">Description:</label>
           <div class="control">
-            <input class="input" type="text" v-model="form.description" />
+            <textarea rows="4" cols="50" v-model="form.description"></textarea>
           </div>
         </div>
         <div class="field">
-          <label class="label">Links:</label>
+          <label class="label" style="font-family: Comfortaa, cursive">Links:</label>
           <div class="control">
-            <input class="input" type="text" v-model="form.links" />
+            <input class="input" type="text" size = "75" v-model="form.links" />
           </div>
         </div>
         <div class="field">
-          <div class="control">
-            <label>
-              <input type="checkbox" value="yes" v-model="form.look" />
-              Looking for New Members?
-            </label>
-          </div>
+          <label>
+            <input type="checkbox" value="true" v-model="form.lookingForNewMembers" />
+            Looking for New Members?
+          </label>
         </div>
         <input
-          class="button is-primary margin-bottom"
+          class="btn btn-primary margin-bottom"
           type="submit"
-          @click.prevent="submitProject"
+          @click.prevent="preventSubmit"
           @click="submitProject"
         />
       </form>
@@ -54,10 +58,10 @@ export default {
     return {
       takenProjectNames: [],
       form: {
-        projectName: "",
-        description: "",
-        links: "",
-        look: []
+        projectName: '',
+        description: '',
+        links: '',
+        lookingForNewMembers: ['true'],
       },
       accessToken: ""
     };
@@ -74,6 +78,14 @@ export default {
     isNameTaken(name) {
       return this.takenProjectNames.includes(name);
     },
+    async preventSubmit() {
+      if (this.form.projectName === '') {
+        this.showSubmitFeedback = true;
+        setTimeout(() => {
+          this.showSubmitFeedback = false;
+        }, 3000);
+      }
+    },
     async submitProject() {
       if (this.isNameTaken(this.form.projectName) && this.form.name) {
         alert(`The name: ${this.form.projectName} is taken!`);
@@ -83,7 +95,7 @@ export default {
           name: this.form.projectName,
           links: JSON.stringify(this.form.links.split(", ")),
           description: this.form.description,
-          looking_for_new_members: this.form.look.length,
+          looking_for_new_members: this.form.lookingForNewMembers.length,
           search_filters: "[]",
           applicants: "[]"
         };
@@ -108,12 +120,18 @@ h2,
 ul {
   color: white;
 }
+.margin-bottom {
+  margin-bottom: 15vh;
+}
 .row {
   max-width: 83vw;
   margin: auto;
 }
+h1{
+  font-size: 10vh;
+}
 h3 {
-  margin: 40px 0 0;
+  margin: 40vh 0 0;
 }
 ul {
   list-style-type: none;
@@ -121,26 +139,19 @@ ul {
 }
 li {
   display: inline-block;
-  margin: 0 10px;
+  margin: 0 10vh;
+}
+.label {
+  font-size: 5vh;
+  margin: 1vh;
 }
 a {
   color: #42b983;
 }
 html {
-  background: linear-gradient(-45deg, #b721ff, #23a6d5, #500000) fixed;
+  background: white;
   background-size: 400% 400%;
-  animation: gradient 45s ease infinite;
   height: 100vh;
-}
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  align-items: left;
 }
 </style>
