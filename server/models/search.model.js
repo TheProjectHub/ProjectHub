@@ -19,8 +19,9 @@ Query.searchProjectByKeyword = (query, result) => {
         result(err, null);
         return;
       }
-      console.log("search query complete for\n", query, "\nwith result\n", res);
-      result(null, res);
+      var data = JSON.parse(JSON.stringify(res)).map(p => p.id);
+      console.log("search query complete for\n", query, "\nwith project\n", data);
+      result(null, data);
     }
   );
 };
