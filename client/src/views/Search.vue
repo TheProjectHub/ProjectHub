@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { search } from "../services/Search";
+import search from "../services/Search";
 
 export default {
   name: "Search",
@@ -59,7 +59,22 @@ export default {
           }
         });
 
-        this.searchResults = await search(this.searchString, this.tags);
+        if (this.searchString && this.tags) {
+          this.searchResults = await search.searchProjectByKeywordTags(
+            this.searchString,
+            this.tags
+          );
+        } else if (this.searchString && !this.tags) {
+          this.searchResults = await search.searchProjectByKeyword(
+            this.searchString,
+            this.tags
+          );
+        } else if (!this.searchString && this.tags) {
+          this.searchResults = await search.searchProjectByTags(
+            this.searchString,
+            this.tags
+          );
+        }
       } catch (err) {
         console.log(err);
       }
