@@ -34,7 +34,11 @@
 </template>
 
 <script>
-import search from "../services/Search";
+import {
+  searchProjectByKeywordTags,
+  searchProjectByKeyword,
+  searchProjectByTags
+} from "../services/Search";
 
 export default {
   name: "Search",
@@ -51,39 +55,41 @@ export default {
         return;
       }
       try {
-        await this.$router.replace({
-          path: "search",
-          query: {
-            keyword: this.searchString,
-            tags: JSON.stringify(this.searchTags)
-          }
-        });
-
         if (this.searchString && this.tags) {
-          this.searchResults = await search.searchProjectByKeywordTags(
+          this.searchResults = await searchProjectByKeywordTags(
             this.searchString,
             this.tags
           );
         } else if (this.searchString && !this.tags) {
-          this.searchResults = await search.searchProjectByKeyword(
+          this.searchResults = await searchProjectByKeyword(
             this.searchString,
             this.tags
           );
         } else if (!this.searchString && this.tags) {
-          this.searchResults = await search.searchProjectByTags(
+          this.searchResults = await searchProjectByTags(
             this.searchString,
             this.tags
           );
         }
+
+        this.$router.replace({
+          query: {
+            keyword: this.searchString,
+            tags: this.searchTags ? JSON.stringify(this.searchTags) : null
+          }
+        });
       } catch (err) {
         console.log(err);
       }
     }
   },
   async mounted() {
-    if (this.$route.query) {
-      this.searchString = this.$route.query.keyword;
-      this.searchTags = JSON.parse(this.$route.query.tags);
+    let q = this.$route.query;
+    if (q) {
+      this.searchString = q.keyword ? q.keyword : this.searchString;
+      this.searchTags = q.searchTags
+        ? JSON.parse(this.$route.query.tags)
+        : this.searchTags;
       await this.showResults();
     }
   }
