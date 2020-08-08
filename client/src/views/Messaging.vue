@@ -144,6 +144,7 @@
 
 <script>
 import io from "socket.io-client";
+
 import { createConversation, getConversation } from "../services/Conversations";
 import {
   getUser,
@@ -151,6 +152,9 @@ import {
   rejectConversationRequest,
   inviteUserToConversation
 } from "../services/Users";
+
+import { onceAuthIsLoaded } from "../utilities/auth/auth.utility";
+import { onceCurrentUserIsSet } from "../utilities/vuex/vuex.utility";
 
 export default {
   data() {
@@ -165,41 +169,32 @@ export default {
       isCollectingEmails: false,
       invitees: "",
       isSettingName: false,
-      newConversationName: ""
+      newConversationName: "",
+      accessToken: ""
     };
   },
   methods: {
-    async setCurrentUser() {
-      const accessToken = await this.$auth.getTokenSilently();
-
-      getUser(this.$auth.user.email, accessToken).then(event => {
-        this.$store.commit("updateCurrentUser", event.data);
-
-        this.setConversations();
-        this.setRequestedConversations();
-      });
+    async updateDisplayedData() {
+      const user = await getUser(this.$auth.user.email, this.accessToken);
+      this.$store.commit("updateCurrentUser", user.data);
+      await this.setConversations();
+      await this.setRequestedConversations();
     },
-    async acceptInvitation(id) {
-      const accessToken = await this.$auth.getTokenSilently();
-
-      addConversationToUser(
+    async acceptInvitation(convId) {
+      await addConversationToUser(
         this.$store.state.currentUser.id,
-        id,
-        accessToken
-      ).then(() => {
-        this.setCurrentUser();
-      });
+        convId,
+        this.accessToken
+      );
+      this.updateDisplayedData();
     },
     async rejectInvitation(id) {
-      const accessToken = await this.$auth.getTokenSilently();
-
-      rejectConversationRequest(
+      await rejectConversationRequest(
         this.$store.state.currentUser.id,
         id,
-        accessToken
-      ).then(() => {
-        this.setCurrentUser();
-      });
+        this.accessToken
+      );
+      this.updateDisplayedData();
     },
     collectEmails() {
       this.isCollectingEmails = true;
@@ -220,31 +215,33 @@ export default {
         alert("You need to set a name!");
         return;
       }
-      const accessToken = await this.$auth.getTokenSilently();
 
-      createConversation(
-        {
-          users: JSON.stringify([this.$store.state.currentUser.id]),
-          name: this.newConversationName
-        },
-        accessToken
-      ).then(event => {
-        addConversationToUser(
-          this.$store.state.currentUser.id,
-          event.data.id,
-          accessToken
-        ).then(() => {
-          this.setCurrentUser();
-        });
+      const newConversation = {
+        users: JSON.stringify([this.$store.state.currentUser.id]),
+        name: this.newConversationName
+      };
 
-        const emails = this.invitees.split(", ");
-        emails.forEach(email => {
-          inviteUserToConversation(email, event.data.id, accessToken);
-        });
-        this.isCollectingEmails = false;
-        this.isCreatingNewConversation = false;
-        this.isSettingName = false;
+      const response = await createConversation(
+        newConversation,
+        this.accessToken
+      );
+
+      await addConversationToUser(
+        this.$store.state.currentUser.id,
+        response.data.id,
+        this.accessToken
+      );
+
+      this.updateDisplayedData();
+
+      const emails = this.invitees.split(", ");
+      emails.forEach(email => {
+        inviteUserToConversation(email, response.data.id, this.accessToken);
       });
+
+      this.isCollectingEmails = false;
+      this.isCreatingNewConversation = false;
+      this.isSettingName = false;
     },
     getDate(date) {
       const time = new Date(date);
@@ -269,8 +266,9 @@ export default {
         );
       }
 
-      const dateWithYear = time.toLocaleDateString();
       // return MM/DD | time
+      const dateWithYear = time.toLocaleDateString();
+
       return (
         dateWithYear.substring(0, dateWithYear.lastIndexOf("/")) +
         " | " +
@@ -283,37 +281,36 @@ export default {
         messagesList.scrollTop = messagesList.scrollHeight;
       }, 1);
     },
-    async setMessages(id) {
-      const accessToken = await this.$auth.getTokenSilently();
-
-      getConversation(id, accessToken).then(event => {
-        this.$set(this, "messages", JSON.parse(event.data.messages));
-        this.conversationName = event.data.name;
-        this.conversationId = event.data.id;
-        this.scrollToBottom();
-      });
+    async setMessages(convId) {
+      const conversation = await getConversation(convId, this.accessToken);
+      this.messages = JSON.parse(conversation.data.messages);
+      this.conversationName = conversation.data.name;
+      this.conversationId = conversation.data.id;
+      this.scrollToBottom();
     },
     async setConversations() {
       this.conversations = [];
       const convoIds = JSON.parse(this.$store.state.currentUser.conversations);
-      const accessToken = await this.$auth.getTokenSilently();
 
-      convoIds.forEach(id => {
-        getConversation(id, accessToken).then(event =>
-          this.conversations.push({ id: event.data.id, name: event.data.name })
-        );
+      convoIds.forEach(async id => {
+        const conversation = await getConversation(id, this.accessToken);
+        this.conversations.push({
+          id: conversation.data.id,
+          name: conversation.data.name
+        });
       });
     },
     async setRequestedConversations() {
       this.requestedConversations = [];
-      const accessToken = await this.$auth.getTokenSilently();
       const reqConvoIds = JSON.parse(
         this.$store.state.currentUser.requested_conversations
       );
 
-      reqConvoIds.forEach(id => {
-        getConversation(id, accessToken).then(event => {
-          this.requestedConversations.push({ id: id, name: event.data.name });
+      reqConvoIds.forEach(async id => {
+        const conversation = await getConversation(id, this.accessToken);
+        this.requestedConversations.push({
+          id: id,
+          name: conversation.data.name
         });
       });
     },
@@ -338,32 +335,33 @@ export default {
         msg.name ===
         `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`
       );
+    },
+    initSocket() {
+      this.socket.emit(
+        "initalConnection",
+        JSON.parse(this.$store.state.currentUser.conversations)
+      );
+
+      this.socket.on("newMessage", conversationId => {
+        // If the conversation that is currently being viewed was just updated
+        if (this.conversationId === conversationId) {
+          this.setMessages(conversationId);
+        }
+      });
     }
   },
   mounted() {
-    const checkIsAuthLoaded = setInterval(() => {
-      if (this.$store.state.currentUser.conversations) {
-        this.conversations = JSON.parse(
-          this.$store.state.currentUser.conversations
-        );
+    onceAuthIsLoaded(this.$auth, async () => {
+      this.accessToken = await this.$auth.getTokenSilently();
 
-        this.setMessages(this.conversations[0]);
-        this.setConversations();
-        this.setRequestedConversations();
-
-        this.socket.emit(
-          "initalConnection",
-          JSON.parse(this.$store.state.currentUser.conversations)
+      onceCurrentUserIsSet(this.$store, async () => {
+        await this.updateDisplayedData();
+        this.setMessages(
+          JSON.parse(this.$store.state.currentUser.conversations)[0]
         );
-        this.socket.on("newMessage", conversationId => {
-          // If the conversation that is currently being viewed was just updated
-          if (this.conversationId === conversationId) {
-            this.setMessages(conversationId);
-          }
-        });
-        clearInterval(checkIsAuthLoaded);
-      }
-    }, 100);
+        this.initSocket();
+      });
+    });
   }
 };
 </script>

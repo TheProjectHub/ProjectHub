@@ -35,7 +35,8 @@ const routes = [
   {
     path: "/new-project",
     name: "NewProject",
-    component: NewProject
+    component: NewProject,
+    beforeEnter: authGuard
   },
   {
     path: "/profile",

@@ -56,6 +56,9 @@
 import { getUser } from "../services/Users";
 import { getProject } from "../services/Projects";
 
+import { onceAuthIsLoaded } from "../utilities/auth/auth.utility";
+import { onceCurrentUserIsSet } from "../utilities/vuex/vuex.utility";
+
 export default {
   name: "Project",
   data() {
@@ -65,29 +68,27 @@ export default {
       projectMembers: [],
       projectTags: [],
       projectLinks: [],
-      projectApplicants: []
+      projectApplicants: [],
+      accessToken: ""
     };
   },
   methods: {
     async getProject(id) {
-      // Get the access token from the auth wrapper
-      const accessToken = await this.$auth.getTokenSilently();
-
-      var event = await getProject(id, accessToken);
-      this.project = event.data;
+      const project = await getProject(id, this.accessToken);
+      this.project = project.data;
 
       JSON.parse(this.project.members).forEach(async m => {
-        var response = await getUser(m, accessToken);
-        this.projectMembers.push(response.data);
+        const user = await getUser(m, this.accessToken);
+        this.projectMembers.push(user.data);
       });
 
       this.projectTags = JSON.parse(this.project.search_filters);
       this.projectLinks = JSON.parse(this.project.links);
 
       JSON.parse(this.project.applicants).forEach(async applicantObject => {
-        var response = await getUser(applicantObject["user-id"], accessToken);
+        const user = await getUser(applicantObject["user-id"], this.accessToken);
         this.projectApplicants.push({
-          user: response.data,
+          user: user.data,
           appObj: applicantObject
         });
       });
@@ -99,7 +100,12 @@ export default {
     }
   },
   mounted() {
-    this.getProject(this.projectId);
+    onceAuthIsLoaded(this.$auth, async () => {
+      this.accessToken = await this.$auth.getTokenSilently();
+      onceCurrentUserIsSet(this.$store, () => {
+        this.getProject(this.projectId);
+      });
+    });
   }
 };
 </script>
