@@ -26,6 +26,9 @@
             <br />
             search tags
             {{ searchTags }}
+            <br />
+            search results
+            {{ this.searchResults }}
           </v-flex>
         </v-layout>
       </v-container>
@@ -50,21 +53,22 @@ export default {
     };
   },
   methods: {
-    async showResults() {
+    async getResults() {
       if (!this.searchString && !this.searchTags) {
         return;
       }
 
       try {
         if (this.searchString && this.tags) {
-          this.searchResults = await searchProjectByKeywordTags(
-            this.searchString,
-            this.tags
-          );
+          this.searchResults = (
+            await searchProjectByKeywordTags(this.searchString, this.tags)
+          ).data;
         } else if (this.searchString && !this.tags) {
-          this.searchResults = await searchProjectByKeyword(this.searchString);
+          this.searchResults = (
+            await searchProjectByKeyword(this.searchString)
+          ).data;
         } else if (!this.searchString && this.tags) {
-          this.searchResults = await searchProjectByTags(this.tags);
+          this.searchResults = (await searchProjectByTags(this.tags)).data;
         }
 
         this.$router.replace({
@@ -85,7 +89,7 @@ export default {
       this.searchTags = q.searchTags
         ? JSON.parse(this.$route.query.tags)
         : this.searchTags;
-      await this.showResults();
+      await this.getResults();
     }
   }
 };

@@ -11,8 +11,8 @@ Query.searchProjectByKeywordTags = (query, result) => {};
 
 Query.searchProjectByKeyword = (query, result) => {
   sql.query(
-    "SELECT id FROM projects WHERE MATCH (name,description,search_filters) AGAINST (? IN NATURAL LANGUAGE MODE) AND looking_for_new_members = 1 LIMIT ?",
-    [query.keyword, query.limit],
+    "SELECT id, MATCH (name,description,search_filters) AGAINST (? IN NATURAL LANGUAGE MODE) AS score FROM projects WHERE MATCH (name,description,search_filters) AGAINST (? IN NATURAL LANGUAGE MODE) > 0 AND looking_for_new_members = 1 ORDER BY score DESC LIMIT ?",
+    [query.keyword, query.keyword, query.limit],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
