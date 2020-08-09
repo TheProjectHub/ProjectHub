@@ -1,57 +1,84 @@
 <template>
   <v-app>
     <v-main class="gradient-background">
-      <v-container fluid fill-height>
-        <v-layout align-center justify-center>
-          <v-flex xs12 sm8 md5>
-            <v-card class="mx-auto" max-width="700" outlined>
-              <v-toolbar dense flat class="mx-auto">
-                <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      <v-container fill-height>
+        <v-container>
+          <v-layout row justify-center>
+            <v-flex xs8>
+              <!-- search bar -->
+              <v-card class="mx-auto" max-width="700" outlined>
+                <v-toolbar dense flat class="mx-auto">
+                  <v-app-bar-nav-icon></v-app-bar-nav-icon>
+                  <v-text-field
+                    hide-details
+                    placeholder="search projects"
+                    v-model="searchString"
+                    single-line
+                    clearable
+                    @keydown.enter="getResults"
+                    :loading="loading"
+                  ></v-text-field>
 
-                <v-text-field
-                  hide-details
-                  placeholder="search projects"
-                  v-model="searchString"
-                  single-line
-                  clearable
-                  @keydown.enter="getResults"
-                  :loading="loading"
-                ></v-text-field>
+                  <v-btn icon @click="getResults">
+                    <v-icon>search</v-icon>
+                  </v-btn>
+                </v-toolbar>
+              </v-card>
 
-                <v-btn icon @click="getResults">
-                  <v-icon>search</v-icon>
-                </v-btn>
-              </v-toolbar>
-            </v-card>
-            search string
-            {{ searchString }}
-            <br />
-            search tags
-            {{ searchTags }}
-            <br />
-            search results
-            {{ searchResults }}
-            <br />
-            render list
-            {{ projectsList }}
-            <div
-              v-for="project in this.searchResults"
-              :key="project.name"
-              class="project-entry"
-              @click="navigateToProject(project.id)"
-            >
-              <h3>{{ project.name }}</h3>
-              <span>Members: </span>
-              <span v-for="(member, index) in project.members" :key="member"
-                ><span v-if="isUser(member)">Me</span
-                ><span v-else> {{ member }}</span
-                ><span v-if="index != project.members.length - 1">
-                  |
-                </span></span
-              >
-            </div>
-          </v-flex>
-        </v-layout>
+              <!-- debug info -->
+              <div>
+                <!-- search string
+                {{ searchString }}
+                <br />
+                search tags
+                {{ searchTags }}
+                <br />
+                search results
+                {{ searchResults }}
+                <br />
+                render list
+                {{ projectsList }} -->
+              </div>
+            </v-flex>
+          </v-layout>
+        </v-container>
+
+        <!-- research results -->
+        <v-container fluid grid-list-xl v-if="searchResults.length > 0">
+          <v-layout
+            row
+            justify-center
+            v-for="(project, index) in projectsList"
+            :key="index"
+          >
+            <v-flex xs8 md8>
+              <v-card color="#385F73" dark>
+                <v-card-title class="headline">{{ project.name }}</v-card-title>
+                <v-card-subtitle>
+                  Members:
+                  <span
+                    v-for="(member, index) in project.members"
+                    :key="member"
+                  >
+                    <b>
+                      <span v-if="isUser(member)">Me</span>
+                      <span v-else> {{ member }}</span>
+                    </b>
+                    <span v-if="index != project.members.length - 1">
+                      |
+                    </span>
+                  </span>
+                  <br />
+                  {{ project.description }}
+                </v-card-subtitle>
+                <v-card-actions>
+                  <v-btn text @click="exploreProject(project.id)"
+                  >EXPLORE</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-flex>
+          </v-layout>
+        </v-container>
       </v-container>
     </v-main>
   </v-app>
@@ -139,6 +166,14 @@ export default {
         this.loading = false;
         console.log(err);
       }
+    },
+    exploreProject(id) {
+      this.$router.push(`/projects/${id}`);
+    }, isUser(name) {
+      return (
+        name ==
+        `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`
+      );
     }
   },
   async mounted() {
@@ -161,3 +196,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+#app {
+  text-align: left;
+}
+</style>
