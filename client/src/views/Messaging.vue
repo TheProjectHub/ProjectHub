@@ -5,42 +5,99 @@
         <div class="inbox-msg">
           <div class="conversations-inbox">
             <div class="conversations">
-              <div
-                v-for="(name, index) in conversationNames"
-                v-bind:key="index"
-              >
+              <div v-for="conv in conversations" v-bind:key="conv.name">
                 <div
-                  v-if="conversationId == conversations[index]"
+                  v-if="conversationId == conv.id"
                   class="chat-list active-chat conversation-preview"
-                  @click="setMessages(conversations[index])"
+                  @click="setMessages(conv.id)"
                 >
                   <div class="chat-people">
                     <div class="chat-ib">
-                      <h5>{{ name }}</h5>
+                      <h5>{{ conv.name }}</h5>
                     </div>
                   </div>
                 </div>
                 <div
                   v-else
                   class="chat-list conversation-preview"
-                  @click="setMessages(conversations[index])"
+                  @click="setMessages(conv.id)"
                 >
                   <div class="chat-people">
                     <div class="chat-ib">
-                      <h5>{{ name }}</h5>
+                      <h5>{{ conv.name }}</h5>
                     </div>
                   </div>
                 </div>
               </div>
+              <div v-for="conv in requestedConversations" :key="conv.name">
+                <div
+                  class="chat-list conversation-preview requested-conversation"
+                >
+                  <div class="chat-people">
+                    <div class="chat-ib">
+                      <h5>
+                        You have been requested to join: "{{ conv.name }}"?
+                      </h5>
+                    </div>
+                  </div>
+                  <i
+                    class="fas fa-check"
+                    style="cursor: pointer;"
+                    @click="acceptInvitation(conv.id)"
+                  ></i>
+                  <i
+                    class="fas fa-window-close"
+                    style="margin-left: 2vw; cursor: pointer;"
+                    @click="rejectInvitation(conv.id)"
+                  ></i>
+                </div>
+              </div>
             </div>
+            <button
+              v-if="!isCreatingNewConversation"
+              @click="collectEmails"
+              type="button"
+              class="btn btn-primary"
+              style="padding-bottom: 5vh;
+                position: absolute; bottom: 0px;
+                width: 38vw; text-align: center;"
+            >
+              Create new Conversation
+            </button>
+            <form @submit.prevent="setName" v-if="isCollectingEmails">
+              <input
+                class="form-control"
+                placeholder="Enter email(s)"
+                style="padding-bottom: 2vh;
+                  position: absolute; bottom: 0px;
+                  height: 12vh; font-size: 2vh; width: 38vw;"
+                v-model="invitees"
+              />
+            </form>
+            <form @submit.prevent="createNewConversation" v-if="isSettingName">
+              <input
+                class="form-control"
+                placeholder="Enter new conversation name"
+                style="padding-bottom: 2vh;
+                  position: absolute; bottom: 0px;
+                  height: 12vh; font-size: 2vh; width: 38vw;"
+                v-model="newConversationName"
+              />
+            </form>
           </div>
           <div class="mesgs">
             <div class="msg-history custom-scrollbar" id="messages">
               <div
                 class="messages"
-                v-for="(msg, index) in this.messages"
-                v-bind:key="index"
+                v-for="msg in this.messages"
+                v-bind:key="msg.timestamp"
               >
+                <p
+                  v-if="!isMyMessage(msg)"
+                  style="padding-left: 1.2vw; margin-bottom: 2px;"
+                >
+                  {{ msg.name }}
+                </p>
                 <div class="incoming-msg" v-if="!isMyMessage(msg)">
                   <div class="received-msg">
                     <div class="received-withd-msg">
@@ -86,115 +143,226 @@
 </template>
 
 <script>
-import io from 'socket.io-client';
-import Conversation from '../services/Conversations';
+import io from "socket.io-client";
+
+import { createConversation, getConversation } from "../services/Conversations";
+import {
+  getUser,
+  addConversationToUser,
+  rejectConversationRequest,
+  inviteUserToConversation
+} from "../services/Users";
+
+import { onceAuthIsLoaded } from "../utilities/auth/auth.utility";
+import { onceCurrentUserIsSet } from "../utilities/vuex/vuex.utility";
 
 export default {
   data() {
     return {
-      message: '',
+      message: "",
       messages: [],
-      socket: io('localhost:3000'),
+      socket: io("localhost:3000"),
       conversationId: 0,
-      conversationNames: [],
       conversations: [],
+      requestedConversations: [],
+      isCreatingNewConversation: false,
+      isCollectingEmails: false,
+      invitees: "",
+      isSettingName: false,
+      newConversationName: "",
+      accessToken: ""
     };
   },
   methods: {
+    async updateDisplayedData() {
+      const user = await getUser(this.$auth.user.email, this.accessToken);
+      this.$store.commit("updateCurrentUser", user.data);
+      await this.setConversations();
+      await this.setRequestedConversations();
+    },
+    async acceptInvitation(convId) {
+      await addConversationToUser(
+        this.$store.state.currentUser.id,
+        convId,
+        this.accessToken
+      );
+      this.updateDisplayedData();
+    },
+    async rejectInvitation(id) {
+      await rejectConversationRequest(
+        this.$store.state.currentUser.id,
+        id,
+        this.accessToken
+      );
+      this.updateDisplayedData();
+    },
+    collectEmails() {
+      this.isCollectingEmails = true;
+    },
+    setName() {
+      if (!this.invitees) {
+        alert("You need to add at least one other user!");
+        return;
+      }
+      if (!this.invitees.includes("@")) {
+        alert("Please add a valid email(s)!");
+        return;
+      }
+      this.isSettingName = true;
+    },
+    async createNewConversation() {
+      if (!this.newConversationName) {
+        alert("You need to set a name!");
+        return;
+      }
+
+      const newConversation = {
+        users: JSON.stringify([this.$store.state.currentUser.id]),
+        name: this.newConversationName
+      };
+
+      const response = await createConversation(
+        newConversation,
+        this.accessToken
+      );
+
+      await addConversationToUser(
+        this.$store.state.currentUser.id,
+        response.data.id,
+        this.accessToken
+      );
+
+      this.updateDisplayedData();
+
+      const emails = this.invitees.split(", ");
+      emails.forEach(email => {
+        inviteUserToConversation(email, response.data.id, this.accessToken);
+      });
+
+      this.isCollectingEmails = false;
+      this.isCreatingNewConversation = false;
+      this.isSettingName = false;
+    },
     getDate(date) {
       const time = new Date(date);
       const now = new Date();
 
-      // Message sent today
+      // Message sent today -> return just time
       if (time.getDate() === now.getDate() && time.getDay() === now.getDay()) {
-        return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return time.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
       }
 
-      // Message sent yesterday
+      // Message sent yesterday -> return Yesterday | time
       if (
-        time.getDate() === now.getDate() - 1 && // eslint-disable-line
+        time.getDate() === now.getDate() - 1 &&
         time.getDay() === now.getDay() - 1
       ) {
-        return 'Yesterday | ' + time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // eslint-disable-line
+        return (
+          "Yesterday | " +
+          time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        );
       }
 
-      const dateWithYear = time.toLocaleDateString();
       // return MM/DD | time
+      const dateWithYear = time.toLocaleDateString();
+
       return (
-        dateWithYear.substring(0, dateWithYear.lastIndexOf('/')) + // eslint-disable-line
-        ' | ' + // eslint-disable-line
-        time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        dateWithYear.substring(0, dateWithYear.lastIndexOf("/")) +
+        " | " +
+        time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       );
     },
     scrollToBottom() {
       setTimeout(() => {
-        var objDiv = document.getElementById('messages'); // eslint-disable-line
-        objDiv.scrollTop = objDiv.scrollHeight;
+        var messagesList = document.getElementById("messages");
+        messagesList.scrollTop = messagesList.scrollHeight;
       }, 1);
     },
-    async setMessages(id) {
-      const accessToken = await this.$auth.getTokenSilently();
+    async setMessages(convId) {
+      const conversation = await getConversation(convId, this.accessToken);
+      this.messages = JSON.parse(conversation.data.messages);
+      this.conversationName = conversation.data.name;
+      this.conversationId = conversation.data.id;
+      this.scrollToBottom();
+    },
+    async setConversations() {
+      this.conversations = [];
+      const convoIds = JSON.parse(this.$store.state.currentUser.conversations);
 
-      Conversation.get(id, accessToken).then((event) => {
-        this.$set(this, 'messages', JSON.parse(event.data.messages));
-        this.conversationName = event.data.name;
-        this.conversationId = event.data.id;
-        this.scrollToBottom();
+      convoIds.forEach(async id => {
+        const conversation = await getConversation(id, this.accessToken);
+        this.conversations.push({
+          id: conversation.data.id,
+          name: conversation.data.name
+        });
       });
     },
-    async setConversationNames() {
-      const accessToken = await this.$auth.getTokenSilently();
+    async setRequestedConversations() {
+      this.requestedConversations = [];
+      const reqConvoIds = JSON.parse(
+        this.$store.state.currentUser.requested_conversations
+      );
 
-      for (let i = 0; i < this.conversations.length; i += 1) {
-        Conversation.get(this.conversations[i], accessToken).then(
-          (
-            event,
-          ) => this.conversationNames.push(event.data.name),
-        );
-      }
+      reqConvoIds.forEach(async id => {
+        const conversation = await getConversation(id, this.accessToken);
+        this.requestedConversations.push({
+          id: id,
+          name: conversation.data.name
+        });
+      });
     },
     sendMessage(e) {
+      if (!this.message) return;
       e.preventDefault();
 
-      this.socket.emit('sendMessage', {
+      this.socket.emit("sendMessage", {
         message: {
           userId: this.$store.state.currentUser.id,
           text: this.message,
           timestamp: new Date(),
-          name: `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`,
+          name: `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`
         },
-        conversationId: this.conversationId,
+        conversationId: this.conversationId
       });
-      this.message = '';
+      this.message = "";
       this.scrollToBottom();
     },
     isMyMessage(msg) {
       return (
-        msg.name === // eslint-disable-line
+        msg.name ===
         `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`
       );
     },
+    initSocket() {
+      this.socket.emit(
+        "initalConnection",
+        JSON.parse(this.$store.state.currentUser.conversations)
+      );
+
+      this.socket.on("newMessage", conversationId => {
+        // If the conversation that is currently being viewed was just updated
+        if (this.conversationId === conversationId) {
+          this.setMessages(conversationId);
+        }
+      });
+    }
   },
   mounted() {
-    const checkIsAuthLoaded = setInterval(() => {
-      if (this.$store.state.currentUser.conversations) {
-        this.conversations = JSON.parse(
-          this.$store.state.currentUser.conversations,
-        );
-        this.setMessages(this.conversations[0]);
-        this.setConversationNames();
+    onceAuthIsLoaded(this.$auth, async () => {
+      this.accessToken = await this.$auth.getTokenSilently();
 
-        this.socket.emit('initalConnection', this.conversations);
-        this.socket.on('newMessage', (conversationId) => {
-          // If the conversation that is currently being viewed was just updated
-          if (this.conversationId === conversationId) {
-            this.setMessages(conversationId);
-          }
-        });
-        clearInterval(checkIsAuthLoaded);
-      }
-    }, 100);
-  },
+      onceCurrentUserIsSet(this.$store, async () => {
+        await this.updateDisplayedData();
+        this.setMessages(
+          JSON.parse(this.$store.state.currentUser.conversations)[0]
+        );
+        this.initSocket();
+      });
+    });
+  }
 };
 </script>
 
@@ -297,9 +465,13 @@ img {
 .chat-list:hover {
   background: #f3f3f3;
 }
+.requested-conversation:hover {
+  background: white;
+}
 .conversations {
-  height: 100vh;
-  /* overflow-y: scroll; */
+  height: 89vh;
+  position: relative;
+  overflow-y: scroll;
 }
 
 .active-chat {
@@ -326,7 +498,7 @@ img {
   border-radius: 3px;
   color: #646464;
   margin: 0;
-  padding: 5px 10px 5px 12px;
+  padding: 5px 10px 5px 1vw;
   width: 100%;
 }
 .time-date {

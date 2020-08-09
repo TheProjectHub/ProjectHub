@@ -1,9 +1,8 @@
 <template>
   <html>
     <head>
-      <title>Welcome to Projectly</title>
       <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Comfortaa:wght@700&family=Lato&family=Patrick+Hand&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Lato&family=Patrick+Hand&display=swap"
         rel="stylesheet"
       />
     </head>
@@ -24,11 +23,7 @@
         </h1>
       </div>
       <div class="column">
-        <img
-          alt="Vue logo"
-          src="../assets/logo.png"
-          style="margin-top: -2vh;"
-        />
+        <img src="../assets/logo.png" style="margin-top: -2vh;" />
       </div>
       <div class="intro">
         <h2 style="margin-bottom: 2vh;">
@@ -45,7 +40,6 @@
     </div>
     <div class="login-button text-center">
       <div v-if="!$auth.loading">
-        <!-- show login when not authenticated -->
         <button
           v-if="!$auth.isAuthenticated"
           @click="login"
@@ -53,7 +47,6 @@
         >
           <strong>Get Started!</strong>
         </button>
-        <!-- show logout when authenticated -->
         <button
           v-if="$auth.isAuthenticated"
           @click="logout"
@@ -70,32 +63,26 @@
 </template>
 
 <script>
-
 export default {
-  name: 'Splash',
-  props: {
-    msg: String,
-  },
-  components: {},
+  name: "Splash",
   methods: {
     login() {
-      this.$auth.loginWithRedirect();
+      this.$auth.loginWithRedirect("/logincallback");
     },
     logout() {
       this.$auth.logout({
-        returnTo: window.location.origin,
+        returnTo: window.location.origin
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
-<!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
 h1 {
   font-size: 90px;
   color: white;
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
 }
 .column {
   float: left;
@@ -105,7 +92,7 @@ h1 {
   text-align: center;
 }
 .row:after {
-  content: '';
+  content: "";
   display: table;
   clear: both;
 }
@@ -122,11 +109,11 @@ h1 {
 }
 h2 {
   color: white;
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
 }
 p {
   color: white;
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
   text-align: center;
 }
 

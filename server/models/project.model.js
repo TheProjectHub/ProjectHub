@@ -1,4 +1,4 @@
-const sql = require("./db");
+const sql = require('./db');
 
 // constructor
 const Project = function (project) {
@@ -13,14 +13,14 @@ const Project = function (project) {
 };
 
 Project.create = (project, result) => {
-  sql.query("INSERT INTO projects SET ?", project, (err, res) => {
+  sql.query('INSERT INTO projects SET ?', project, (err, res) => {
     if (err) {
-      console.log("error: ", err);
+      console.log('error: ', err);
       result(err, null);
       return;
     }
 
-    console.log("created projects: ", { id: res.insertId, ...project });
+    console.log('created projects: ', { id: res.insertId, ...project });
     result(null, { id: res.insertId, ...project });
   });
 };
@@ -28,7 +28,7 @@ Project.create = (project, result) => {
 Project.findById = (projectID, result) => {
   sql.query(`SELECT * FROM projects WHERE id = ${projectID}`, (err, res) => {
     if (err) {
-      console.log("error: ", err);
+      console.log('error: ', err);
       result(err, null);
       return;
     }
@@ -39,7 +39,7 @@ Project.findById = (projectID, result) => {
     }
 
     // could not find Project with the id
-    result({ kind: "not_found" }, null);
+    result({ kind: 'not_found' }, null);
   });
 };
 
@@ -56,14 +56,14 @@ Project.getAllNames = (result) => {
       return;
     }
   });
-}
+};
 
 Project.updateById = (id, project, result) => {
   sql.query(
-    "UPDATE projects SET \
+    'UPDATE projects SET \
     members = ?, name = ?, links = ?, looking_for_new_members = ?, search_filters = ?, \
     applicants = ?\
-    WHERE id = ?",
+    WHERE id = ?',
     [
       project.members,
       project.name,
@@ -71,24 +71,24 @@ Project.updateById = (id, project, result) => {
       project.looking_for_new_members,
       project.search_filters,
       project.applicants,
-      id
+      id,
     ],
     (err, res) => {
       if (err) {
-        console.log("error: ", err);
+        console.log('error: ', err);
         result(null, err);
         return;
       }
 
       if (res.affectedRows == 0) {
         // could not find projects with the id provided
-        result({ kind: "not_found" }, null);
+        result({ kind: 'not_found' }, null);
         return;
       }
 
-      console.log("updated projects: ", { id: id, ...project });
+      console.log('updated projects: ', { id: id, ...project });
       result(null, { id: id, ...project });
-    }
+    },
   );
 };
 

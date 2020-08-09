@@ -9,13 +9,13 @@ module.exports = (app) => {
   app.get(
     '/conversations/:conversationId',
     auth.checkJwt,
-    conversations.getConversationByID
+    conversations.getConversationByID,
   );
 
   // Update a conversation with conversationsId
   app.put(
     '/conversations/:conversationId',
     auth.checkJwt,
-    conversations.update
+    conversations.update,
   );
 };

@@ -1,8 +1,5 @@
 <template>
   <html>
-    <head>
-      <title>Welcome to Projectly</title>
-    </head>
     <body>
       <div class="home">
         <Splash />
@@ -12,31 +9,19 @@
 </template>
 
 <script>
-import Splash from '../components/Splash.vue';
-import User from '../services/Users';
+import Splash from "../components/Splash.vue";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    Splash,
-  },
-  methods: {
-    async setCurrentUser() {
-      const accessToken = await this.$auth.getTokenSilently();
-      // Use the eventService to call the getEventSingle method
-      User.get(this.$auth.user.email, accessToken).then((event) => {
-        this.$store.commit('updateCurrentUser', event.data);
-      });
-    },
-  },
-  mounted() {
-    setTimeout(() => this.setCurrentUser(), 2000);
-  },
+    Splash
+  }
 };
 </script>
 
 <style>
-body {
+body,
+.gradient-background {
   background: linear-gradient(-45deg, #239472, #23a6d5, #6d1919) fixed;
   background-size: 400% 400%;
   animation: gradient 45s ease infinite;
