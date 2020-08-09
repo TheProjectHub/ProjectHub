@@ -22,6 +22,7 @@
 
 <script>
 import { getUser } from "./services/Users";
+import { onceAuthIsLoaded } from "./utilities/auth/auth.utility";
 
 export default {
   name: "App",
@@ -42,12 +43,12 @@ export default {
           icon: "fa fa-user"
         },
         {
-          href: "/myprojects",
+          href: "/my-projects",
           title: "My Projects",
           icon: "fa fa-chart-area"
         },
         {
-          href: "/about",
+          href: "/search",
           title: "Search for Projects",
           icon: "fa fa-search"
         },
@@ -89,12 +90,7 @@ export default {
     }
   },
   mounted() {
-    const checkIsAuthLoaded = setInterval(() => {
-      if (!this.$auth.loading) {
-        this.setCurrentUser();
-        clearInterval(checkIsAuthLoaded);
-      }
-    }, 100);
+    onceAuthIsLoaded(this.$auth, this.setCurrentUser);
     document.title = "Projectly";
   }
 };

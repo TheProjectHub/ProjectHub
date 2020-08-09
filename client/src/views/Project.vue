@@ -53,58 +53,63 @@
 </template>
 
 <script>
-/* eslint-disable */
-import { getUser } from '../services/Users';
-import { getProject } from '../services/Projects';
+import { getUser } from "../services/Users";
+import { getProject } from "../services/Projects";
+
+import { onceAuthIsLoaded } from "../utilities/auth/auth.utility";
+import { onceCurrentUserIsSet } from "../utilities/vuex/vuex.utility";
 
 export default {
-  name: 'Project',
+  name: "Project",
   data() {
     return {
+      projectId: this.$route.params.projectId,
       project: {},
       projectMembers: [],
       projectTags: [],
       projectLinks: [],
       projectApplicants: [],
+      accessToken: ""
     };
   },
   methods: {
     async getProject(id) {
-      // Get the access token from the auth wrapper
-      const accessToken = await this.$auth.getTokenSilently();
+      const project = await getProject(id, this.accessToken);
+      this.project = project.data;
 
-      var event = await getProject(id, accessToken);
-      this.project = event.data;
-
-      JSON.parse(this.project.members).forEach(async (m) => {
-        var response = await getUser(m, accessToken);
-        this.projectMembers.push(response.data);
+      JSON.parse(this.project.members).forEach(async m => {
+        const user = await getUser(m, this.accessToken);
+        this.projectMembers.push(user.data);
       });
 
       this.projectTags = JSON.parse(this.project.search_filters);
       this.projectLinks = JSON.parse(this.project.links);
 
-      JSON.parse(this.project.applicants).forEach(async (applicantObject) => {
-        var response = await getUser(applicantObject['user-id'], accessToken);
+      JSON.parse(this.project.applicants).forEach(async applicantObject => {
+        const user = await getUser(applicantObject["user-id"], this.accessToken);
         this.projectApplicants.push({
-          user: response.data,
-          appObj: applicantObject,
+          user: user.data,
+          appObj: applicantObject
         });
       });
     },
     goodLink(url) {
-      return !(url.startsWith('http://') || url.startsWith('https://'))
+      return !(url.startsWith("http://") || url.startsWith("https://"))
         ? `http://${url}`
         : url;
-    },
+    }
   },
   mounted() {
-    this.getProject(2); // <- this will be dynamically set in later updates
-  },
+    onceAuthIsLoaded(this.$auth, async () => {
+      this.accessToken = await this.$auth.getTokenSilently();
+      onceCurrentUserIsSet(this.$store, () => {
+        this.getProject(this.projectId);
+      });
+    });
+  }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 p,
 h2,
