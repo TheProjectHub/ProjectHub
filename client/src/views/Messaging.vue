@@ -172,7 +172,7 @@ export default {
     async setCurrentUser() {
       const accessToken = await this.$auth.getTokenSilently();
 
-      getUser(this.$auth.user.email, accessToken).then((event) => {
+      getUser(this.$auth.user.email, accessToken).then(event => {
         this.$store.commit("updateCurrentUser", event.data);
 
         this.setConversations();
@@ -233,7 +233,7 @@ export default {
           name: this.newConversationName
         },
         accessToken
-      ).then((event) => {
+      ).then(event => {
         addConversationToUser(
           this.$store.state.currentUser.id,
           event.data.id,
@@ -243,7 +243,7 @@ export default {
         });
 
         const emails = this.invitees.split(", ");
-        emails.forEach((email) => {
+        emails.forEach(email => {
           inviteUserToConversation(email, event.data.id, accessToken);
         });
         this.isCollectingEmails = false;
@@ -291,7 +291,7 @@ export default {
     async setMessages(id) {
       const accessToken = await this.$auth.getTokenSilently();
 
-      getConversation(id, accessToken).then((event) => {
+      getConversation(id, accessToken).then(event => {
         this.$set(this, "messages", JSON.parse(event.data.messages));
         this.conversationName = event.data.name;
         this.conversationId = event.data.id;
@@ -303,8 +303,8 @@ export default {
       const convoIds = JSON.parse(this.$store.state.currentUser.conversations);
       const accessToken = await this.$auth.getTokenSilently();
 
-      convoIds.forEach((id) => {
-        getConversation(id, accessToken).then(async (event) => {
+      convoIds.forEach(id => {
+        getConversation(id, accessToken).then(async event => {
           const users = JSON.parse(event.data.users);
           console.log(users);
           if (users.length < 2) return;
@@ -322,8 +322,8 @@ export default {
         this.$store.state.currentUser.requested_conversations
       );
 
-      reqConvoIds.forEach((id) => {
-        getConversation(id, accessToken).then((event) => {
+      reqConvoIds.forEach(id => {
+        getConversation(id, accessToken).then(event => {
           this.requestedConversations.push({ id: id, name: event.data.name });
         });
       });
@@ -379,7 +379,7 @@ export default {
           "initalConnection",
           JSON.parse(this.$store.state.currentUser.conversations)
         );
-        this.socket.on("newMessage", (conversationId) => {
+        this.socket.on("newMessage", conversationId => {
           // If the conversation that is currently being viewed was just updated
           if (this.conversationId === conversationId) {
             this.setMessages(conversationId);
