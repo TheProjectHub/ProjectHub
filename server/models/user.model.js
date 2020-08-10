@@ -149,6 +149,42 @@ User.inviteToConversation = (email, convId, result) => {
 };
 
 User.addConversationToUser = (userID, convId, result) => {
+  // update conv object to include userId as member
+  sql.query(
+    `select users from conversations where id = ${convId}`,
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+        return;
+      }
+      if (res.length) {
+        users = JSON.parse(res[0].users);
+        if (!users.includes(userID)) users.push(userID);
+
+        sql.query(
+          `update conversations set users = \'${JSON.stringify(
+            users
+          )}\' where id = ${convId}`,
+          (err, res) => {
+            if (err) {
+              console.log("error: ", err);
+              result(null, err);
+              return;
+            }
+          }
+        );
+      } else {
+        result(
+          {
+            kind: "not_found"
+          },
+          null
+        );
+      }
+    }
+  );
+  // update user object to include new convId
   sql.query(
     `select conversations, requested_conversations from users where id = \'${userID}\'`,
     (err, res) => {
@@ -186,7 +222,12 @@ User.addConversationToUser = (userID, convId, result) => {
           }
         );
       } else {
-        result({ kind: "not_found" }, null);
+        result(
+          {
+            kind: "not_found"
+          },
+          null
+        );
       }
     }
   );
@@ -232,7 +273,7 @@ User.rejectConversationRequest = (userID, convId, result) => {
       }
     }
   );
-  // remove conversation from inviter
+  // remove conversation from inviter and delete conversation if dm
   sql.query(
     `select conversations, id from users where conversations like \'%${convId}%\'`,
     (err, res) => {
@@ -255,11 +296,12 @@ User.rejectConversationRequest = (userID, convId, result) => {
               result(null, err);
               return;
             }
-
             console.log("updated user: ", userID);
-            result(null, res[0]);
           }
         );
+        sql.query(`select name from conversations where id = ${convId}`, (err, res) => {
+          if (res[0].name == "DM") sql.query(`delete from conversations where id = ${convId}`, (err, res));
+        })
       } else {
         result({ kind: "not_found" }, null);
       }
