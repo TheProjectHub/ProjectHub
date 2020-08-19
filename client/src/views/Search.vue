@@ -73,7 +73,8 @@
                 </v-card-subtitle>
                 <v-card-actions>
                   <v-btn text @click="exploreProject(project.id)"
-                  >EXPLORE</v-btn>
+                    >EXPLORE</v-btn
+                  >
                 </v-card-actions>
               </v-card>
             </v-flex>
@@ -169,7 +170,8 @@ export default {
     },
     exploreProject(id) {
       this.$router.push(`/projects/${id}`);
-    }, isUser(name) {
+    },
+    isUser(name) {
       return (
         name ==
         `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`

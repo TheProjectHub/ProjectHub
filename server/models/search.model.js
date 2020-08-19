@@ -7,11 +7,16 @@ const Query = function (searchObject) {
   this.limit = searchObject.limit;
 };
 
-Query.searchProjectByKeywordTags = (query, result) => {};
+Query.searchProjectByKeywordTags = (query, result) => { };
 
 Query.searchProjectByKeyword = (query, result) => {
   sql.query(
-    "SELECT id, MATCH (name,description,search_filters) AGAINST (? IN NATURAL LANGUAGE MODE) AS score FROM projects WHERE MATCH (name,description,search_filters) AGAINST (? IN NATURAL LANGUAGE MODE) > 0 AND looking_for_new_members = 1 ORDER BY score DESC LIMIT ?",
+    "SELECT id, MATCH (name,description,search_filters) AGAINST (? IN NATURAL LANGUAGE MODE) AS score\
+    FROM projects\
+    WHERE MATCH (name,description,search_filters) AGAINST (? IN NATURAL LANGUAGE MODE) > 0\
+    AND looking_for_new_members = 1\
+    ORDER BY score\
+    DESC LIMIT ?",
     [query.keyword, query.keyword, query.limit],
     (err, res) => {
       if (err) {
@@ -26,6 +31,26 @@ Query.searchProjectByKeyword = (query, result) => {
   );
 };
 
-Query.searchProjectByTags = (query, result) => {};
+Query.searchProjectByTags = (query, result) => {
+  sql.query(
+    "SELECT p.id\
+    FROM projects as p, tagging as t\
+    WHERE p.id = t.project_id\
+    AND (t.tag in ( ? ))\
+    GROUP BY p.id\
+    HAVING count(*) = ?;",
+    [query.tags, query.tags.length],
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+      var data = JSON.parse(JSON.stringify(res)).map(p => p.id);
+      console.log("search query complete for\n", query, "\nwith project\n", data);
+      result(null, data);
+    }
+  )
+};
 
 module.exports = Query;
