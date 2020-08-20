@@ -32,7 +32,7 @@ Query.searchProjectByKeywordTags = (query, result) => {
       }
       var data = JSON.parse(JSON.stringify(res)).map(p => p.id);
       console.log(
-        "search query complete for\n",
+        "searchProjectByKeywordTags - search query complete for\n",
         query,
         "\nwith projects\n",
         data
@@ -59,7 +59,7 @@ Query.searchProjectByKeyword = (query, result) => {
       }
       var data = JSON.parse(JSON.stringify(res)).map(p => p.id);
       console.log(
-        "search query complete for\n",
+        "searchProjectByKeyword - search query complete for\n",
         query,
         "\nwith projects\n",
         data
@@ -86,7 +86,7 @@ Query.searchProjectByTags = (query, result) => {
       }
       var data = JSON.parse(JSON.stringify(res)).map(p => p.id);
       console.log(
-        "search query complete for\n",
+        "searchProjectByTags - search query complete for\n",
         query,
         "\nwith projects\n",
         data

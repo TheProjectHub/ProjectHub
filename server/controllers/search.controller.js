@@ -3,7 +3,7 @@ const Query = require("../models/search.model");
 const formQuery = obj => {
   return new Query({
     keyword: obj.keyword,
-    tags: obj.tags ? JSON.parse(obj.tags) : obj.tags,
+    tags: obj.tags,
     limit: obj.limit ? JSON.parse(obj.limit) : obj.limit
   });
 };

@@ -17,12 +17,41 @@
                     clearable
                     @keydown.enter="getResults"
                     :loading="loading"
-                  ></v-text-field>
+                  >
+                  </v-text-field>
+
+                  <v-chip
+                    v-for="(t, i) in searchTags"
+                    :key="i"
+                    class="mr-2"
+                    close
+                    @click:close="removeTag(i)"
+                  >
+                    {{ t }}
+                  </v-chip>
+
+                  <v-btn icon @click="promptForTag">
+                    <v-icon>add</v-icon>
+                  </v-btn>
 
                   <v-btn icon @click="getResults">
                     <v-icon>search</v-icon>
                   </v-btn>
                 </v-toolbar>
+                <!-- <v-toolbar dense flat class="mx-auto">
+                  <v-combobox
+                    hide-details
+                    placeholder="search tags"
+                    v-model="searchTags"
+                    chips
+                    multiple
+                    single-line
+                    clearable
+                    @keydown.enter="getResults"
+                    :loading="loading"
+                  >
+                  </v-combobox>
+                </v-toolbar> -->
               </v-card>
 
               <!-- debug info -->
@@ -55,7 +84,9 @@
               <v-card color="#385F73" dark>
                 <v-card-title class="headline">
                   {{ project.name }}
+                  <v-spacer />
                   <v-chip
+                    outlined
                     v-for="(t, i) in project.tags"
                     class="blue-grey lighten-2 mr-2"
                     :key="i"
@@ -128,16 +159,18 @@ export default {
 
       try {
         // get project ids matching search query
-        if (this.searchString && this.tags) {
+        if (this.searchString && this.searchTags.length) {
           this.searchResults = (
-            await searchProjectByKeywordTags(this.searchString, this.tags)
+            await searchProjectByKeywordTags(this.searchString, this.searchTags)
           ).data;
-        } else if (this.searchString && !this.tags) {
+        } else if (this.searchString && !this.searchTags.length) {
           this.searchResults = (
             await searchProjectByKeyword(this.searchString)
           ).data;
-        } else if (!this.searchString && this.tags) {
-          this.searchResults = (await searchProjectByTags(this.tags)).data;
+        } else if (!this.searchString && this.searchTags.length) {
+          this.searchResults = (
+            await searchProjectByTags(this.searchTags)
+          ).data;
         }
 
         // get projects corresponding to the IDs
@@ -178,8 +211,15 @@ export default {
         console.log(err);
       }
     },
+    promptForTag() {
+      let tag = prompt("Enter a tag:");
+      this.searchTags.push(tag);
+    },
     exploreProject(id) {
       this.$router.push(`/projects/${id}`);
+    },
+    removeTag(i) {
+      this.searchTags.pop(i);
     },
     isUser(name) {
       return (
