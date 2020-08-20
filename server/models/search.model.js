@@ -37,18 +37,15 @@ Query.searchProjectByKeyword = (query, result) => {
 };
 
 Query.searchProjectByTags = (query, result) => {
-  // convert array of tags to usable form in sql query
-  // ex: ['a', 'b'] -> " 'a', 'b' "
-  let queryFormat = query.tags.map((str) => `'${str}'`).join(", ")
-
   sql.query(
     `SELECT p.id\
     FROM projects as p, tagging as t\
     WHERE p.id = t.project_id\
-    AND (t.tag in ( ${queryFormat} ))\
+    AND (t.tag in ( ? ))\
     GROUP BY p.id\
     HAVING count(*) = ?;`,
-    [query.tags.length],
+    [query.tags,
+      query.tags.length],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
