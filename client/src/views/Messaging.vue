@@ -35,8 +35,12 @@
                 >
                   <div class="chat-people">
                     <div class="chat-ib">
-                      <h5>
+                      <h5 v-if="!conv.isDM">
                         You have been requested to join: "{{ conv.name }}"?
+                      </h5>
+                      <h5 v-else>
+                        You have been requested to start a DM with:
+                        {{ conv.name }}
                       </h5>
                     </div>
                   </div>
@@ -208,6 +212,11 @@ export default {
         alert("Please add a valid email(s)!");
         return;
       }
+      if (this.invitees.split(", ").length == 1) {
+        this.newConversationName = "DM";
+        this.createNewConversation();
+        return;
+      }
       this.isSettingName = true;
     },
     async createNewConversation() {
@@ -242,6 +251,8 @@ export default {
       this.isCollectingEmails = false;
       this.isCreatingNewConversation = false;
       this.isSettingName = false;
+      this.invitees = "";
+      this.newConversationName = "";
     },
     getDate(date) {
       const time = new Date(date);
@@ -292,11 +303,13 @@ export default {
       this.conversations = [];
       const convoIds = JSON.parse(this.$store.state.currentUser.conversations);
 
-      convoIds.forEach(async id => {
-        const conversation = await getConversation(id, this.accessToken);
-        this.conversations.push({
-          id: conversation.data.id,
-          name: conversation.data.name
+      convoIds.forEach(id => {
+        getConversation(id, this.accessToken).then(async event => {
+          const users = JSON.parse(event.data.users);
+          if (users.length < 2) return;
+          let name = event.data.name;
+          if (name == "DM") name = await this.getDMName(users);
+          this.conversations.push({ id: event.data.id, name });
         });
       });
     },
@@ -310,7 +323,11 @@ export default {
         const conversation = await getConversation(id, this.accessToken);
         this.requestedConversations.push({
           id: id,
-          name: conversation.data.name
+          name:
+            conversation.data.name == "DM"
+              ? await this.getDMName(JSON.parse(conversation.data.users))
+              : conversation.data.name,
+          isDM: conversation.data.name == "DM"
         });
       });
     },
@@ -331,8 +348,20 @@ export default {
       this.scrollToBottom();
     },
     isMyMessage(msg) {
+      return this.isMe(msg.name);
+    },
+    async getDMName(members) {
+      const accessToken = await this.$auth.getTokenSilently();
+      let otherUserId = members[0];
+      if (members[0] == this.$store.state.currentUser.id) {
+        otherUserId = members[1];
+      }
+      const res = await getUser(otherUserId, accessToken);
+      return `${res.data.first_name} ${res.data.last_name}`;
+    },
+    isMe(name) {
       return (
-        msg.name ===
+        name ==
         `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`
       );
     },
