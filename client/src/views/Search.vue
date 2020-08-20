@@ -53,7 +53,9 @@
           >
             <v-flex xs8 md8>
               <v-card color="#385F73" dark>
-                <v-card-title class="headline">{{ project.name }}</v-card-title>
+                <v-card-title class="headline">
+                  {{ project.name }}
+                </v-card-title>
                 <v-card-subtitle>
                   Members:
                   <span
@@ -69,7 +71,15 @@
                     </span>
                   </span>
                   <br />
+                  <br />
                   {{ project.description }}
+                  <br />
+                  <v-chip
+                    v-for="(t, i) in project.tags"
+                    class="blue-grey lighten-2 mr-2"
+                    :key="i"
+                    ><strong>{{ t }}</strong>
+                  </v-chip>
                 </v-card-subtitle>
                 <v-card-actions>
                   <v-btn text @click="exploreProject(project.id)"
@@ -146,6 +156,7 @@ export default {
             id: project.data.id,
             name: project.data.name,
             description: project.data.description,
+            tags: JSON.parse(project.data.search_filters),
             members: userNames
           };
           return obj;
