@@ -86,7 +86,10 @@ export default {
       this.projectLinks = JSON.parse(this.project.links);
 
       JSON.parse(this.project.applicants).forEach(async applicantObject => {
-        const user = await getUser(applicantObject["user-id"], this.accessToken);
+        const user = await getUser(
+          applicantObject["user-id"],
+          this.accessToken
+        );
         this.projectApplicants.push({
           user: user.data,
           appObj: applicantObject
