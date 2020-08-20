@@ -55,6 +55,12 @@
               <v-card color="#385F73" dark>
                 <v-card-title class="headline">
                   {{ project.name }}
+                  <v-chip
+                    v-for="(t, i) in project.tags"
+                    class="blue-grey lighten-2 mr-2"
+                    :key="i"
+                    ><strong>{{ t }}</strong>
+                  </v-chip>
                 </v-card-title>
                 <v-card-subtitle>
                   Members:
@@ -71,15 +77,8 @@
                     </span>
                   </span>
                   <br />
-                  <br />
                   {{ project.description }}
                   <br />
-                  <v-chip
-                    v-for="(t, i) in project.tags"
-                    class="blue-grey lighten-2 mr-2"
-                    :key="i"
-                    ><strong>{{ t }}</strong>
-                  </v-chip>
                 </v-card-subtitle>
                 <v-card-actions>
                   <v-btn text @click="exploreProject(project.id)"
