@@ -25,21 +25,30 @@ Query.searchProjectByKeyword = (query, result) => {
         return;
       }
       var data = JSON.parse(JSON.stringify(res)).map(p => p.id);
-      console.log("search query complete for\n", query, "\nwith project\n", data);
+      console.log(
+        "search query complete for\n",
+        query,
+        "\nwith projects\n",
+        data
+      );
       result(null, data);
     }
   );
 };
 
 Query.searchProjectByTags = (query, result) => {
+  // convert array of tags to usable form in sql query
+  // ex: ['a', 'b'] -> " 'a', 'b' "
+  let queryFormat = query.tags.map((str) => `'${str}'`).join(", ")
+
   sql.query(
-    "SELECT p.id\
+    `SELECT p.id\
     FROM projects as p, tagging as t\
     WHERE p.id = t.project_id\
-    AND (t.tag in ( ? ))\
+    AND (t.tag in ( ${queryFormat} ))\
     GROUP BY p.id\
-    HAVING count(*) = ?;",
-    [query.tags, query.tags.length],
+    HAVING count(*) = ?;`,
+    [query.tags.length],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -47,10 +56,15 @@ Query.searchProjectByTags = (query, result) => {
         return;
       }
       var data = JSON.parse(JSON.stringify(res)).map(p => p.id);
-      console.log("search query complete for\n", query, "\nwith project\n", data);
+      console.log(
+        "search query complete for\n",
+        query,
+        "\nwith projects\n",
+        data
+      );
       result(null, data);
     }
-  )
+  );
 };
 
 module.exports = Query;
