@@ -8,7 +8,7 @@
         crossorigin="anonymous"
       />
       <sidebar-menu
-        v-if="this.$store.state.currentUser != {}"
+        v-if="Object.values(this.$store.state.currentUser).length"
         @toggle-collapse="this.onToggleCollapse"
         :menu="menu"
         :collapsed="collapsed"
@@ -85,7 +85,7 @@ export default {
       const accessToken = await this.$auth.getTokenSilently();
 
       getUser(this.$auth.user.email, accessToken).then(event => {
-        this.$store.commit("updateCurrentUser", event.data);
+        if (event) this.$store.commit("updateCurrentUser", event.data);
       });
     }
   },
