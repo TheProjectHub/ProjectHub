@@ -38,20 +38,6 @@
                     <v-icon>search</v-icon>
                   </v-btn>
                 </v-toolbar>
-                <!-- <v-toolbar dense flat class="mx-auto">
-                  <v-combobox
-                    hide-details
-                    placeholder="search tags"
-                    v-model="searchTags"
-                    chips
-                    multiple
-                    single-line
-                    clearable
-                    @keydown.enter="getResults"
-                    :loading="loading"
-                  >
-                  </v-combobox>
-                </v-toolbar> -->
               </v-card>
 
               <!-- debug info -->
@@ -159,43 +145,16 @@ export default {
 
       try {
         // get project ids matching search query
-        if (this.searchString && this.searchTags.length) {
-          this.searchResults = (
-            await searchProjectByKeywordTags(this.searchString, this.searchTags)
-          ).data;
-        } else if (this.searchString && !this.searchTags.length) {
-          this.searchResults = (
-            await searchProjectByKeyword(this.searchString)
-          ).data;
-        } else if (!this.searchString && this.searchTags.length) {
-          this.searchResults = (
-            await searchProjectByTags(this.searchTags)
-          ).data;
-        }
+        this.searchResults = await this.makeQuery();
 
         // get projects corresponding to the IDs
-        let projectListPromise = this.searchResults.map(async id => {
-          const project = await getProject(id, this.accessToken);
-          let userNames = [];
-          let members = JSON.parse(project.data.members);
-
-          members.forEach(async id => {
-            const user = await getUser(id, this.accessToken);
-            userNames.push(`${user.data.first_name} ${user.data.last_name}`);
-          });
-
-          let obj = {
-            id: project.data.id,
-            name: project.data.name,
-            description: project.data.description,
-            tags: JSON.parse(project.data.search_filters),
-            members: userNames
-          };
-          return obj;
-        });
+        let projectListPromise = this.searchResults.map(
+          this.getProjectInfoFromId
+        );
 
         this.projectsList = await Promise.all(projectListPromise);
 
+        // change route
         this.$router
           .replace({
             query: {
@@ -210,6 +169,36 @@ export default {
         this.loading = false;
         console.log(err);
       }
+    },
+    async makeQuery() {
+      if (this.searchString && this.searchTags.length) {
+        return (
+          await searchProjectByKeywordTags(this.searchString, this.searchTags)
+        ).data;
+      } else if (this.searchString && !this.searchTags.length) {
+        return (await searchProjectByKeyword(this.searchString)).data;
+      } else if (!this.searchString && this.searchTags.length) {
+        return (await searchProjectByTags(this.searchTags)).data;
+      }
+    },
+    async getProjectInfoFromId(id) {
+      const project = await getProject(id, this.accessToken);
+      let userNames = [];
+      let members = JSON.parse(project.data.members);
+
+      members.forEach(async id => {
+        const user = await getUser(id, this.accessToken);
+        userNames.push(`${user.data.first_name} ${user.data.last_name}`);
+      });
+
+      let obj = {
+        id: project.data.id,
+        name: project.data.name,
+        description: project.data.description,
+        tags: JSON.parse(project.data.search_filters),
+        members: userNames
+      };
+      return obj;
     },
     promptForTag() {
       let tag = prompt("Enter a tag:");
