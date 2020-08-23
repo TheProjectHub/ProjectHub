@@ -12,7 +12,7 @@ exports.searchProjectByKeywordTags = (req, res) => {
   // validate request
   if (!req.query) {
     res.status(400).send({
-      message: "Query can't be empty, bitch!"
+      message: "Query can not be empty."
     });
   }
 
@@ -33,7 +33,7 @@ exports.searchProjectByKeyword = (req, res) => {
   // validate request
   if (!req.query) {
     res.status(400).send({
-      message: "Query can't be empty, bitch!"
+      message: "Query can not be empty."
     });
   }
 
@@ -54,7 +54,7 @@ exports.searchProjectByTags = (req, res) => {
   // validate request
   if (!req.query) {
     res.status(400).send({
-      message: "Query can't be empty, bitch!"
+      message: "Query can not be empty."
     });
   }
 
