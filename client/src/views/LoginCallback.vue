@@ -7,19 +7,15 @@ import { getUser } from "../services/Users";
 import { onceAuthIsLoaded } from "../utilities/auth/auth.utility";
 
 export default {
-  name: "callback",
+  name: "LoginCallback",
   methods: {
     async checkIfUserExists() {
       const accessToken = await this.$auth.getTokenSilently();
 
       try {
-        getUser(this.$auth.user.email, accessToken).then(event => {
-          if (event.data.email) {
-            this.$router.push("/");
-          }
-        });
-      } catch (error) {
-        console.log("User not found in db, sending to login page.");
+        const event = await getUser(this.$auth.user.email, accessToken);
+        if (event.data.email) this.$router.push("/");
+      } catch (err) {
         this.$router.push("/signup");
       }
     }

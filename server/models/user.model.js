@@ -122,7 +122,7 @@ User.inviteToConversation = (email, convId, result) => {
         let reqConvos = JSON.parse(res[0].requested_conversations);
 
         // if inviting user to a conversation they are already a part of
-        if (reqConvos.includes(convId)) {
+        if (reqConvos.length && reqConvos.includes(convId)) {
           result(null, email);
           return;
         }
