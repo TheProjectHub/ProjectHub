@@ -8,30 +8,48 @@
     </head>
     <section class="main">
       <form>
-        <h1 style="font-family: Comfortaa, cursive; padding: 10px" class="title is-1">
+        <h1
+          style="font-family: Comfortaa, cursive; padding: 10px"
+          class="title is-1"
+        >
           New Project
         </h1>
         <div class="field">
-          <label class="label" style="font-family: Comfortaa, cursive">Project Name:</label>
+          <label class="label" style="font-family: Comfortaa, cursive"
+            >Project Name:</label
+          >
           <div class="control">
-            <input class="input" type="text" size = "40" v-model="form.projectName" />
+            <input
+              class="input"
+              type="text"
+              size="40"
+              v-model="form.projectName"
+            />
           </div>
         </div>
         <div class="field">
-          <label class="label" style="font-family: Comfortaa, cursive">Description:</label>
+          <label class="label" style="font-family: Comfortaa, cursive"
+            >Description:</label
+          >
           <div class="control">
             <textarea rows="4" cols="50" v-model="form.description"></textarea>
           </div>
         </div>
         <div class="field">
-          <label class="label" style="font-family: Comfortaa, cursive">Links:</label>
+          <label class="label" style="font-family: Comfortaa, cursive"
+            >Links:</label
+          >
           <div class="control">
-            <input class="input" type="text" size = "75" v-model="form.links" />
+            <input class="input" type="text" size="75" v-model="form.links" />
           </div>
         </div>
         <div class="field">
           <label>
-            <input type="checkbox" value="true" v-model="form.lookingForNewMembers" />
+            <input
+              type="checkbox"
+              value="true"
+              v-model="form.lookingForNewMembers"
+            />
             Looking for New Members?
           </label>
         </div>
@@ -57,10 +75,10 @@ export default {
     return {
       takenProjectNames: [],
       form: {
-        projectName: '',
-        description: '',
-        links: '',
-        lookingForNewMembers: ['true'],
+        projectName: "",
+        description: "",
+        links: "",
+        lookingForNewMembers: ["true"]
       },
       accessToken: ""
     };
@@ -78,9 +96,17 @@ export default {
       return this.takenProjectNames.includes(name);
     },
     async preventSubmit() {
+<<<<<<< HEAD
       if (!this.form.projectName) {
         alert("Please add a name.");
         return;
+=======
+      if (this.form.projectName === "") {
+        this.showSubmitFeedback = true;
+        setTimeout(() => {
+          this.showSubmitFeedback = false;
+        }, 3000);
+>>>>>>> dev
       }
     },
     async submitProject() {
@@ -124,7 +150,7 @@ ul {
   max-width: 83vw;
   margin: auto;
 }
-h1{
+h1 {
   font-size: 10vh;
 }
 h3 {

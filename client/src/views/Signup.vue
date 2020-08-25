@@ -94,10 +94,11 @@ export default {
         bio: this.bio,
         conversations: "[]",
         unread_conversations: "[]",
+        requested_conversations: "[]",
         age: this.age,
         location: this.location
       };
-      createUser(user, accessToken);
+      await createUser(user, accessToken);
       this.$router.push("/");
     },
     addSkill() {

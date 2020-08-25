@@ -55,9 +55,12 @@ const routes = [
     name: "Signup",
     component: Signup,
     beforeEnter: (to, from, next) => {
-      if (from.name != "Callback") {
+      if (from.name != "LoginCallback") {
         next({ name: "Home" });
-      } else next();
+      } else {
+        console.log(from.name)
+        next();
+      }
     }
   },
   {
