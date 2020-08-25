@@ -26,6 +26,27 @@ module.exports = (app) => {
     users.addConversationToUser,
   );
 
+  // Invite user to new project
+  app.post(
+    '/users/invitetoproject',
+    auth.checkJwt,
+    users.inviteToProject,
+  );
+
+  // Reject project invite
+  app.post(
+    '/users/rejectprojectrequest',
+    auth.checkJwt,
+    users.rejectProjectRequest,
+  );
+
+  // Add project to user's project list
+  app.post(
+    '/users/addprojecttouser',
+    auth.checkJwt,
+    users.addProjectToUser,
+  );
+
   // Retrieve a single user with userId
   app.get('/users/:identifier', auth.checkJwt, users.getUser);
 

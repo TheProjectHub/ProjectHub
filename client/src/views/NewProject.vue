@@ -38,8 +38,7 @@
         <input
           class="btn btn-primary margin-bottom"
           type="submit"
-          @click.prevent="preventSubmit"
-          @click="submitProject"
+          @click.prevent="submitProject"
         />
       </form>
     </section>
@@ -79,11 +78,9 @@ export default {
       return this.takenProjectNames.includes(name);
     },
     async preventSubmit() {
-      if (this.form.projectName === '') {
-        this.showSubmitFeedback = true;
-        setTimeout(() => {
-          this.showSubmitFeedback = false;
-        }, 3000);
+      if (!this.form.projectName) {
+        alert("Please add a name.");
+        return;
       }
     },
     async submitProject() {

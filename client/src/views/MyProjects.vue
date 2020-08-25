@@ -16,6 +16,21 @@
             ><span v-else> {{ member }}</span
             ><span v-if="index != project.members.length - 1"> | </span></span
           >
+          <button
+            v-if="!isInviting"
+            @click="collectEmails"
+            type="button"
+            class="btn btn-primary"
+          >
+            Invite To Project
+          </button>
+          <form @submit.prevent="setEmail" v-if="isCollectingEmails">
+            <input
+              class="form-control"
+              placeholder="Enter email(s)"
+              v-model="invitees"
+            />
+          </form>
         </div>
       </div>
     </div>
@@ -24,7 +39,12 @@
 
 <script>
 import { getProject } from "../services/Projects";
-import { getUser } from "../services/Users";
+import {
+  getUser,
+  addProjectToUser,
+  rejectProjectRequest,
+  inviteUserToProject
+} from "../services/Users";
 
 import { onceAuthIsLoaded } from "../utilities/auth/auth.utility";
 import { onceCurrentUserIsSet } from "../utilities/vuex/vuex.utility";
@@ -35,6 +55,31 @@ export default {
     return { projects: [], accessToken: "" };
   },
   methods: {
+    async updateDisplayedData() {
+      const user = await getUser(this.$auth.user.email, this.accessToken);
+      this.$store.commit("updateCurrentUser", user.data);
+      await this.setProjects();
+      //await this.setRequestedConversations();
+    },
+    async acceptInvitation(projID) {
+      await addProjectToUser(
+        this.$store.state.currentUser.id,
+        projID,
+        this.accessToken
+      );
+      this.updateDisplayedData();
+    },
+    async rejectInvitation(id) {
+      await rejectProjectRequest(
+        this.$store.state.currentUser.id,
+        id,
+        this.accessToken
+      );
+      this.updateDisplayedData();
+    },
+    collectEmails() {
+      this.isCollectingEmails = true;
+    },
     async setProjects() {
       const projectIds = JSON.parse(
         this.$store.state.currentUser.project_affiliation
@@ -57,6 +102,13 @@ export default {
         });
       });
     },
+    setEmail() {
+      if (!this.invitees || !this.invitees.includes("@")) {
+        alert("Please add a valid email(s)!");
+        return;
+      }
+      this.isSettingName = true;
+    },
     navigateToProject(id) {
       this.$router.push(`/projects/${id}`);
     },
@@ -65,6 +117,13 @@ export default {
         name ==
         `${this.$store.state.currentUser.first_name} ${this.$store.state.currentUser.last_name}`
       );
+    },
+    async invite(id) {
+      // still under construction?
+      const emails = this.invitees.split(", ");
+      emails.forEach(email => {
+        inviteUserToProject(email, id, this.accessToken);
+      });
     }
   },
   mounted() {

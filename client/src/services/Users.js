@@ -20,10 +20,10 @@ export function inviteUserToConversation(email, convId, token) {
   );
 }
 
-export function addConversationToUser(id, convId, token) {
+export function addConversationToUser(id, projID, token) {
   return http.post(
     "/users/addconversationtouser",
-    { id, convId },
+    { id, projID },
     {
       headers: {
         Authorization: `Bearer ${token}`
@@ -32,10 +32,46 @@ export function addConversationToUser(id, convId, token) {
   );
 }
 
-export function rejectConversationRequest(id, convId, token) {
+export function rejectConversationRequest(id, projID, token) {
   return http.post(
     "/users/rejectconversationrequest",
-    { id, convId },
+    { id, projID },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+}
+
+export function inviteUserToProject(email, projID, token) {
+  return http.post(
+    "/users/invitetoproject",
+    { email, projID },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+}
+
+export function addProjectToUser(id, projID, token) {
+  return http.post(
+    "/users/addprojecttouser",
+    { id, projID },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+}
+
+export function rejectProjectRequest(id, projID, token) {
+  return http.post(
+    "/users/rejectprojectrequest",
+    { id, projID },
     {
       headers: {
         Authorization: `Bearer ${token}`
