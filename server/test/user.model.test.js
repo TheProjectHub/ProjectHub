@@ -2,7 +2,6 @@ const assert = require("assert");
 var random_name = require("node-random-name");
 
 const User = require("../src/models/user.model");
-const sql = require("../src/models/db");
 
 describe("User Model Test", () => {
   const name = random_name().split(" ");
@@ -26,6 +25,8 @@ describe("User Model Test", () => {
   it("should create and find a user by id", async () => {
     User.create(user, (err, newUser) => {
       User.findById(newUser.id, (err, res) => {
+        console.log("newUserID:", newUser.id);
+        console.log("user age", user.age, "res age", res.age);
         assert.equal(res.age, user.age);
         assert.deepEqual(JSON.parse(res.search_filters), search_filters);
         assert.deepEqual(JSON.parse(res.skills), skills);
@@ -36,19 +37,20 @@ describe("User Model Test", () => {
       });
     });
   });
-  it("should find a user by email", () => {
+  it("should find a user by email", async () => {
     User.findByEmail(user.email, (err, res) => {
       assert.equal(res.first_name, user.first_name);
     });
   });
-  it("should update a user by id", () => {
+  it("should update a user by id", async () => {
     const randomAge = Math.floor(Math.random() * 100) + 1;
-    user.age = randomAge;
-    User.updateById(30, user, (err, res) => assert.notEqual(res, null));
-    User.findById(30, (err, res) => {
-      console.log("user age", user.age, "res age", res.age)
+    console.log("randomAge", randomAge);
+    let newUser = user;
+    newUser.age = randomAge;
+    User.updateById(1, newUser, (err, res) => assert.notEqual(res, null));
+    User.findById(1, (err, res) => {
       assert.equal(randomAge, res.age);
-      assert.equal(user.first_name, res.first_name);
+      assert.equal(newUser.first_name, res.first_name);
     });
   });
 });
