@@ -17,7 +17,7 @@ import { domain, clientId, audience } from "../auth_config.json";
 // Import the plugin here
 import { Auth0Plugin } from "./auth";
 
-import vuetify from "./plugins/vuetify";
+// import vuetify from "./plugins/vuetify";
 
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 
@@ -59,6 +59,6 @@ const store = new Vuex.Store({
 new Vue({
   router,
   render: h => h(App),
-  vuetify,
+  // vuetify,
   store
 }).$mount("#app");
