@@ -1,9 +1,9 @@
 <template>
   <html>
     <body>
-      <div class="home">
+      <v-main>
         <Splash />
-      </div>
+      </v-main>
     </body>
   </html>
 </template>
