@@ -58,7 +58,7 @@ const routes = [
       if (from.name != "LoginCallback") {
         next({ name: "Home" });
       } else {
-        console.log(from.name)
+        console.log(from.name);
         next();
       }
     }
