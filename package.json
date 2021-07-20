@@ -1,0 +1,33 @@
+{
+  "name": "projecthub",
+  "version": "1.0.0",
+  "description": "An application for users to find others to work on projects with",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-jwt": "^6.0.0",
+    "jwks-rsa": "^1.8.1",
+    "mysql": "^2.18.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "run": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheProjectHub/ProjectHub.git"
+  },
+  "author": "Shaham Noorani, Jacob Thomas, Joseph Jin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TheProjectHub/ProjectHub/issues"
+  },
+  "homepage": "https://github.com/TheProjectHub/ProjectHub#readme"
+}

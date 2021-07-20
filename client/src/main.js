@@ -36,7 +36,7 @@ Vue.use(Auth0Plugin, {
         : window.location.pathname
     );
   },
-  redirectUri: "http://localhost:8080/logincallback"
+  redirectUri: "/logincallback",
 });
 
 // Setup dev mode
@@ -47,18 +47,18 @@ Vue.use(Vuex);
 // Vuex state configuration
 const store = new Vuex.Store({
   state: {
-    currentUser: {}
+    currentUser: {},
   },
   mutations: {
     updateCurrentUser(state, newUser) {
       state.currentUser = newUser;
-    }
-  }
+    },
+  },
 });
 
 new Vue({
   router,
   render: h => h(App),
   // vuetify,
-  store
+  store,
 }).$mount("#app");

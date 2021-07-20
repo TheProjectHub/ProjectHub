@@ -165,7 +165,7 @@ export default {
     return {
       message: "",
       messages: [],
-      socket: io("localhost:3000"),
+      socket: io(""),
       conversationId: 0,
       conversations: [],
       requestedConversations: [],
